@@ -114,14 +114,6 @@ export default function SignInForm(props) {
               onClick={() => Auth.federatedSignIn({ provider: 'Facebook' })}>
               Sign in with Facebook
             </Button>
-            <Button
-              style={{ pointerEvents: state.disabled ? 'none' : 'auto' }}
-              type="button"
-              block
-              className="account__btn"
-              onClick={() => Auth.federatedSignIn({ provider: 'Facebook' })}>
-              LinkedIn
-            </Button>
           </div>
         </div>
       </form>

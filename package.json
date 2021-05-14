@@ -33,8 +33,12 @@
     "nohoist": []
   },
   "dependencies": {
+    "@material-ui/core": "^4.11.4",
+    "@types/yup": "^0.29.11",
+    "formik": "^2.2.6",
     "pod-install": "^0.1.22",
-    "react-native": "*"
+    "react-native": "*",
+    "yup": "^0.32.9"
   },
   "author": "vivekvt",
   "license": "MIT",

@@ -15,6 +15,12 @@ import aws_exports from '@frontend/shared/aws-exports';
 import { setAuthUser, initialAuthUser } from '@frontend/shared/redux/actions/auth';
 import colors from '@frontend/shared/config/colors';
 // import { loadUserType } from '@frontend/shared/redux/actions/user';
+import { Header } from '../src/components/header/Header'
+import { Balance } from '../src/components/balance/Balance'
+import { IncomeExpenses } from '../src/components/incomeExpenses/IncomeExpenses'
+import { TransactionList } from '../src/components/transaction/TransactionList'
+import { AddTransaction } from '../src/components/transaction/AddTransaction'
+
 
 // Global CSS
 // import '../src/styles/styles.css';
@@ -22,6 +28,7 @@ import colors from '@frontend/shared/config/colors';
 // CSS from node modules
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'react-toastify/dist/ReactToastify.css';
+import '../src/components/header/Header.css';
 
 Amplify.configure({
   ...aws_exports,
@@ -48,6 +55,14 @@ function App({ Component, pageProps }: AppProps) {
             <ReduxLoadingBar style={{ color: 'red', zIndex: 9989, position: 'fixed', top: 0 }} />
             <GetData />
             <Component {...pageProps} />
+            <Header/>
+            <div className="container">
+              <Balance/>
+              <IncomeExpenses/>
+              <TransactionList/>
+              <AddTransaction/>
+
+            </div>
           </Elements>
         </ThemeProvider>
       </ApolloProvider>
