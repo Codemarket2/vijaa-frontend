@@ -37,13 +37,19 @@ export const useOnBoarding = () => {
   const [updateUserSubcription] = useMutation(USER_MUTATION.UPDATE_USER_SUBCRIPTION);
   const dispatch = useDispatch();
   const handleSelectRole = (role: string) => {
+    if(role === 'coach')
     setState({ ...state, role, step: 'coachOnboardStepOne' });
+
+    if(role === 'client')
+    setState({ ...state, role, step: 'clientOnboardStepOne' });
   };
 
   const handleCoachOnboardStepOneContinueButton = (step: string) => {
     setState({ ...state, step });
   };
-
+  const handleClientOnboardStepOneContinueButton = (step: string) => {
+    setState({ ...state, step });
+  };
   const handleSubscribe = async (subscriptionType) => {
     const { data } = await updateUserSubcription({
       variables: {
@@ -64,6 +70,7 @@ export const useOnBoarding = () => {
   return { state, 
     handleSelectRole, 
     handleCoachOnboardStepOneContinueButton, 
+    handleClientOnboardStepOneContinueButton,
     handleSubscribe };
 };
 
