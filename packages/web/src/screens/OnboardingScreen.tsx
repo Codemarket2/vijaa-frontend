@@ -2,13 +2,16 @@ import React, { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { useSelector } from 'react-redux';
 import { useOnBoarding } from '@frontend/shared/hooks/onBoarding';
-import Step1 from '../components/onboarding/Step1';
-import Step2 from '../components/onboarding/Step2';
-import Step3 from '../components/onboarding/Step3';
+import OnboardingStart from '../components/onboarding/OnboardingStart';
+import CoachOnboardStepOne from '../components/onboarding/CoachOnboardStepOne';
+import CoachOnboardStepTwo from '../components/onboarding/CoachOnboardStepTwo';
 
 export default function OnBoarding() {
   const user = useSelector(({ auth }: any) => auth.user);
-  const { state, handleContinue, handleSelectRole, handleSubscribe } = useOnBoarding();
+  const { state, 
+    handleCoachOnboardStepOneContinueButton , 
+    handleSelectRole, 
+    handleSubscribe } = useOnBoarding();
   const router = useRouter();
 
   useEffect(() => {
@@ -18,11 +21,11 @@ export default function OnBoarding() {
     }
   }, [user]);
 
-  if (state.step === 2) {
-    return <Step2 handleContinue={handleContinue} />;
+  if (state.step === 'coachOnboardStepOne') {
+    return <CoachOnboardStepOne handleCoachOnboardStepOneContinueButton ={handleCoachOnboardStepOneContinueButton } />;
   }
-  if (state.step === 3) {
-    return <Step3 handleSubscribe={handleSubscribe} />;
+  if (state.step === 'coachOnboardStepTwo') {
+    return <CoachOnboardStepTwo handleSubscribe={handleSubscribe} />;
   }
-  return <Step1 handleSelectRole={handleSelectRole} />;
+  return <OnboardingStart handleSelectRole={handleSelectRole} />;
 }

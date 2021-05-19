@@ -5,7 +5,7 @@ interface IProps {
   handleSelectRole: (role: string) => void;
 }
 
-export default function Step1({ handleSelectRole }: IProps) {
+export default function OnboardingStart({ handleSelectRole }: IProps) {
   return (
     <div className="d-flex justify-content-center align-items-center vh-100">
       <div>

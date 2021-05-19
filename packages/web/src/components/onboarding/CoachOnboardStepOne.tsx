@@ -10,7 +10,7 @@ import {
 } from '@material-ui/core';
 import ImageIcon from '@material-ui/icons/Image';
 
-export default function Step2({ handleContinue }) {
+export default function CoachOnboardStepOne({ handleCoachOnboardStepOneContinueButton }) {
   return (
     <div>
       <Typography variant="h1" align="center" color="primary" className="mb-5">
@@ -49,7 +49,7 @@ export default function Step2({ handleContinue }) {
         </List>
       </div>
       <div className="text-center mt-5">
-        <Button variant="contained" color="primary" size="large" onClick={() => handleContinue(3)}>
+        <Button variant="contained" color="primary" size="large" onClick={() => handleCoachOnboardStepOneContinueButton('coachOnboardStepTwo')}>
           Continue
         </Button>
       </div>

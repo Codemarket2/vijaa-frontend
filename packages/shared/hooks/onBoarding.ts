@@ -7,7 +7,7 @@ import USER_MUTATION from '../graphql/mutation/user';
 import { userSubscriptionData } from '../redux/actions/auth';
 
 interface IState {
-  step: number;
+  step: string;
   role: string | null;
 }
 
@@ -33,14 +33,14 @@ const subscriptions = {
 };
 
 export const useOnBoarding = () => {
-  const [state, setState] = useState<IState>({ step: 1, role: null });
+  const [state, setState] = useState<IState>({ step: 'onboardingStart', role: null });
   const [updateUserSubcription] = useMutation(USER_MUTATION.UPDATE_USER_SUBCRIPTION);
   const dispatch = useDispatch();
   const handleSelectRole = (role: string) => {
-    setState({ ...state, role, step: 2 });
+    setState({ ...state, role, step: 'coachOnboardStepOne' });
   };
 
-  const handleContinue = (step: number) => {
+  const handleCoachOnboardStepOneContinueButton = (step: string) => {
     setState({ ...state, step });
   };
 
@@ -61,7 +61,10 @@ export const useOnBoarding = () => {
     }
   };
 
-  return { state, handleSelectRole, handleContinue, handleSubscribe };
+  return { state, 
+    handleSelectRole, 
+    handleCoachOnboardStepOneContinueButton, 
+    handleSubscribe };
 };
 
 export const useCancelSubscription = () => {

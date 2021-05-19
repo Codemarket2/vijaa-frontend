@@ -6,7 +6,7 @@ interface IProps {
   handleSubscribe: (subscriptionType: string) => void;
 }
 
-export default function Step3({ handleSubscribe }: IProps) {
+export default function CoachOnboardStepTwo({ handleSubscribe }: IProps) {
   return (
     <div>
       <Typography color="primary" variant="h1" align="center">
