@@ -25,8 +25,8 @@ interface IProps {
 export default function Step1({ handleContinue }) {
   return (
     <StyledWraper>
-      <Headline style={{ textAlign: 'center' }}>{onboarding.step2.title}</Headline>
-      <Subheading style={{ textAlign: 'center' }}>{onboarding.step2.subTitle}</Subheading>
+      <Headline style={{ textAlign: 'center' }}>{onboarding.coachOnboardStepOne.title}</Headline>
+      <Subheading style={{ textAlign: 'center' }}>{onboarding.coachOnboardStepOne.subTitle}</Subheading>
       <Gap />
       <CardComponent
         caption={`Coaching is personal. No matter what your expertise is,${'\n'} this is the place to share it.`}

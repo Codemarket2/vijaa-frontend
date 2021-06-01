@@ -15,10 +15,10 @@ export default function CoachOnboardStepOne({ handleCoachOnboardStepOneContinueB
   return (
     <div>
       <Typography variant="h1" align="center" color="primary" className="mb-5">
-        {onboarding.step2.title}
+        {onboarding.coachOnboardStepOne.title}
       </Typography>
       <Typography variant="h4" align="center">
-        {onboarding.step2.subTitle}
+        {onboarding.coachOnboardStepOne.subTitle}
       </Typography>
       <div className="mt-5 justify-content-center align-items-center w-100 text-center">
         <List>

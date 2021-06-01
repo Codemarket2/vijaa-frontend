@@ -13,7 +13,7 @@ import {
   CardActions,
 } from '@material-ui/core';
 
-export default function DashboardScreen() {
+export default function ClientDashboardScreen() {
   const user = useSelector(({ auth }: any) => auth.user);
   const { handleCancelSubscribe } = useCancelSubscription();
   const router = useRouter();
