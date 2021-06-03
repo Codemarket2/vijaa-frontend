@@ -3,16 +3,20 @@ import InboxCard from '../components/coachInbox/InboxCard';
 import Navbar from '../components/Navbar';
 import Sidebar from '../components/coachInbox/Sidebar';
 import Grid from '@material-ui/core/Grid';
-
+import { useTheme } from '@material-ui/core/styles';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
+import { match } from 'assert';
 export default function CoachInboxScreen() {
+  const theme = useTheme();
+  const matches = useMediaQuery(theme.breakpoints.down('xs'));
   return (
     <div style={{ backgroundColor: '#F8F9FA' }}>
       <Navbar />
       <Grid container>
-        <Grid item xs={3}>
+        <Grid item md={3} xs={12}>
           <Sidebar />
         </Grid>
-        <Grid item xs={7} style={{ marginTop: 100 }}>
+        <Grid item md={7} xs={12} style={match ? { marginTop: 0 } : { marginTop: 100 }}>
           <InboxCard
             profilePicture={inboxCardWebData.profilePicture}
             name={inboxCardWebData.nameI1453117569}
