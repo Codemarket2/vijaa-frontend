@@ -30,13 +30,15 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 const StyledContainer = styled.div`
-flex-grow: 1,
-margin-bottom: 20,
+  flex-grow: 1;
+  margin-bottom: 20;
 `;
-const StyledPaper = styled(Paper)` padding:40,
-margin: 'auto',
-max-width: 750,
-box-shadow: '0px 4px 8px #6161612e, 0px 2px 4px #6161612e',`;
+const StyledPaper = styled(Paper)`
+  padding: 40;
+  margin: auto;
+  max-width: 750;
+  box-shadow: '0px 4px 8px #6161612e, 0px 2px 4px #6161612e';
+`;
 
 export default function InboxCard2({ profilePicture, name, date, body }) {
   const classes = useStyles();

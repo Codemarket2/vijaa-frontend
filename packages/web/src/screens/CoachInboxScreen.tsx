@@ -1,18 +1,20 @@
 import * as React from 'react';
-import InboxCard from '../components/coachInbox/InboxCard';
 import Navbar from '../components/Navbar';
-import Sidebar from '../components/coachInbox/Sidebar';
-import Grid from '@material-ui/core/Grid';
-import { useTheme } from '@material-ui/core/styles';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
-import { match } from 'assert';
+import BottomBar from '../components/common/BottomBar';
+// import InboxCard from '../components/coachInbox/InboxCard';
+// import Sidebar from '../components/coachInbox/Sidebar';
+// import Grid from '@material-ui/core/Grid';
+// import { useTheme } from '@material-ui/core/styles';
+// import useMediaQuery from '@material-ui/core/useMediaQuery';
+// import { match } from 'assert';
+
 export default function CoachInboxScreen() {
-  const theme = useTheme();
-  const matches = useMediaQuery(theme.breakpoints.down('xs'));
+  // const theme = useTheme();
+  // const matches = useMediaQuery(theme.breakpoints.down('xs'));
   return (
-    <div style={{ backgroundColor: '#F8F9FA' }}>
+    <div style={{ backgroundColor: '#F8F9FA', paddingTop: 77 }}>
       <Navbar />
-      <Grid container>
+      {/* <Grid container>
         <Grid item md={3} xs={12}>
           <Sidebar />
         </Grid>
@@ -36,7 +38,9 @@ export default function CoachInboxScreen() {
             body={inboxCardWeb2Data.spanText}
           />
         </Grid>
-      </Grid>
+      </Grid> */}
+
+      <BottomBar className="d-none" />
     </div>
   );
 }
