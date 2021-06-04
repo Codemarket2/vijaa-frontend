@@ -14,6 +14,7 @@ import { setAuthUser, initialAuthUser } from '@frontend/shared/redux/actions/aut
 import { useInitialUser } from '@frontend/shared/hooks/users';
 import palette, { mainPalette } from '@frontend/shared/config/colors';
 import { createMuiTheme, ThemeProvider as MUThemeProvider } from '@material-ui/core/styles';
+
 // import { loadUserType } from '@frontend/shared/redux/actions/user';
 
 // Global CSS

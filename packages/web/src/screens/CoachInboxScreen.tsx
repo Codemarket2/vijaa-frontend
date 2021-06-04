@@ -1,24 +1,23 @@
 import * as React from 'react';
 import Navbar from '../components/Navbar';
 import BottomBar from '../components/common/BottomBar';
-// import InboxCard from '../components/coachInbox/InboxCard';
-// import Sidebar from '../components/coachInbox/Sidebar';
-// import Grid from '@material-ui/core/Grid';
-// import { useTheme } from '@material-ui/core/styles';
-// import useMediaQuery from '@material-ui/core/useMediaQuery';
-// import { match } from 'assert';
+import InboxCard from '../components/coachInbox/InboxCard';
+import Sidebar from '../components/coachInbox/Sidebar';
+import Grid from '@material-ui/core/Grid';
+import { useTheme } from '@material-ui/core/styles';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 export default function CoachInboxScreen() {
-  // const theme = useTheme();
-  // const matches = useMediaQuery(theme.breakpoints.down('xs'));
+  const theme = useTheme();
+  const matches = useMediaQuery(theme.breakpoints.down('xs'));
   return (
-    <div style={{ backgroundColor: '#F8F9FA', paddingTop: 77 }}>
+    <div style={{ backgroundColor: '#F8F9FA' }}>
       <Navbar />
-      {/* <Grid container>
+      <Grid container>
         <Grid item md={3} xs={12}>
           <Sidebar />
         </Grid>
-        <Grid item md={7} xs={12} style={match ? { marginTop: 0 } : { marginTop: 100 }}>
+        <Grid item md={7} xs={12} style={{ marginTop: 100 }}>
           <InboxCard
             profilePicture={inboxCardWebData.profilePicture}
             name={inboxCardWebData.nameI1453117569}
@@ -38,7 +37,7 @@ export default function CoachInboxScreen() {
             body={inboxCardWeb2Data.spanText}
           />
         </Grid>
-      </Grid> */}
+      </Grid>
 
       <BottomBar className="d-none" />
     </div>

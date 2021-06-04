@@ -33,8 +33,8 @@ const StyledHeader = styled(Typography)`
 `;
 
 const StyledNav = styled(AppBar)`
-  background-color: #fff;
-  /* box-shadow: 0px 2px 4px #61616133; 0px 1px 2px #61616133; */
+  background-color: #fff !important;
+  box-shadow: 0px 2px 4px #61616133; 0px 1px 2px #61616133; 
   height: 77;
   display: flex;
   justify-content: center;
