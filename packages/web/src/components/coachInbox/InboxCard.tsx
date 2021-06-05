@@ -1,11 +1,7 @@
 import React from 'react';
-import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import Grid from '@material-ui/core/Grid';
-import Paper from '@material-ui/core/Paper';
-import Typography from '@material-ui/core/Typography';
+import { useTheme, makeStyles, createStyles, Theme } from '@material-ui/core/styles';
+import { Grid, Paper, Typography, useMediaQuery } from '@material-ui/core';
 import styled from 'styled-components';
-import { useTheme } from '@material-ui/core/styles';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

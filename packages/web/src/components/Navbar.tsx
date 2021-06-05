@@ -1,17 +1,14 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-import IconButton from '@material-ui/core/IconButton';
-import styled from 'styled-components';
-import CustomIcon from './CustomIcon';
+import { AppBar, Toolbar, Typography, IconButton } from '@material-ui/core';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
-import GroupIcon from '@material-ui/icons/Group';
+import CustomIcon from './CustomIcon';
 import DateRangeIcon from '@material-ui/icons/DateRange';
-import SettingsIcon from '@material-ui/icons/Settings';
+import GroupIcon from '@material-ui/icons/Group';
 import InboxIcon from '@material-ui/icons/Inbox';
 import LocalOfferIcon from '@material-ui/icons/LocalOffer';
+import SettingsIcon from '@material-ui/icons/Settings';
+import styled from 'styled-components';
 
 const useStyles = makeStyles((theme) => ({
   root: {
