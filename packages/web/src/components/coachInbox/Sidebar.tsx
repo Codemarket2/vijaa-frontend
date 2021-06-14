@@ -11,26 +11,10 @@ const StyledCard = styled(Card)`
   box-shadow: '0px 1px 2px rgba(97, 97, 97, 0.2), 0px 2px 4px rgba(97, 97, 97, 0.2)';
   display: flex;
   justify-content: center;
-  @media (max-width: 768px) {
-    background-color: orange !important;
-    margin-top: 70px !important ;
-    margin-lef: 0 !important;
-    height: 40px !important;
-    margin: o auto !important;
-  }
 `;
 
 const StyledContainer = styled(CardContent)`
   padding: 40px !important;
-  @media (max-width: 768px) {
-    display: flex !important;
-    flex-direction: row !important;
-    justify-content: space-between !important;
-    padding: 0 !important;
-    background-color: yellow !important;
-    height: 40px !important;
-    width: 330px !important;
-  }
 `;
 const StyledButton1 = styled(Button)`
   text-align: center !important;
@@ -43,17 +27,6 @@ const StyledButton1 = styled(Button)`
   width: 260px !important;
   font-size: 17px !important;
   margin-top: 9px !important;
-  &:hover {
-    background-color: white !important;
-    color: #4a148c !important;
-    border: 1px solid #4a148c !important;
-  }
-  @media (max-width: 768px) {
-    width: 48px !important;
-    height: 30px !important;
-    background-color: red !important;
-    font-size: 12px !important;
-  }
 `;
 
 const StyledButton2 = styled(Button)`
@@ -68,25 +41,17 @@ const StyledButton2 = styled(Button)`
   width: 260px !important;
   font-size: 17px !important;
   margin-top: 9px !important;
-  &:hover: {
-    background-color: #4a148c !important;
-    color: white !important;
-  }
-  @media (max-width: 768px) {
-    background-color: green !important;
-    font-size: 12px !important;
-  }
 `;
 
+// flex-direction: row;
+// justify-content: space-evenly !important;
+// align-items: center !important;
 const StyledContainerMobile = styled.div`
+  padding: 6px 15px !important;
   margin-top: 60px;
   height: 30px;
   width: 386px;
   display: flex;
-  flex-direction: row;
-  justify-content: space-between !important;
-  align-items: center;
-  padding: 6px 15px;
 `;
 const StyledButtonMobile = styled(Button)`
   height: 30px;
@@ -101,11 +66,7 @@ const StyledButtonMobile = styled(Button)`
   order: 0;
   align-self: stretch;
   flex-grow: 0;
-  margin: 0px 11px;
-  &:hover: {
-    background-color: #4a148c !important;
-    color: white !important;
-  }
+  margin: 0px 3px !important;
 `;
 
 export default function SimpleCard() {
@@ -117,7 +78,6 @@ export default function SimpleCard() {
         <StyledButtonMobile>Notification</StyledButtonMobile>
         <StyledButtonMobile>Bookings</StyledButtonMobile>
       </StyledContainerMobile>
-
       <StyledCard className="d-none d-md-block d-lg-block">
         <StyledContainer>
           <StyledButton1>All</StyledButton1>

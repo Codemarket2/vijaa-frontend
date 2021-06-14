@@ -1,37 +1,74 @@
-import * as React from 'react';
-import { Grid } from '@material-ui/core';
+import React from 'react';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
+import { Grid } from '@material-ui/core';
+import DateFnsUtils from '@date-io/date-fns';
+import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
+import 'date-fns';
 
 import BottomBar from '../components/common/BottomBar';
-import InboxCard from '../components/common/InboxCard';
 import Navbar from '../components/Navbar';
-import Sidebar from '../components/coachInbox/Sidebar';
+import InboxCard from '../components/common/InboxCard';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
+    bgColor: {
+      backgroundColor: '#F8F9FA !important',
+      height: '100vh !important',
+    },
+
+    datePicker: {
+      marginTop: '70px',
+      display: 'flex',
+      justifyContent: 'center',
+    },
     grid: {
       marginTop: 100,
       [theme.breakpoints.down('sm')]: {
         marginTop: 20,
       },
     },
-    bgColor: {
-      backgroundColor: '#F8F9FA !important',
-      height: '100vh !important',
+    gridDatePicker: {
+      marginTop: 100,
+      [theme.breakpoints.down('sm')]: {
+        marginTop: 70,
+      },
+      display: 'flex',
+      justifyContent: 'center',
     },
   }),
 );
 
-export default function CoachInboxScreen() {
+export default function CoachCalenderScreen() {
+  const [selectedDate, setSelectedDate] = React.useState<Date | null>(new Date());
+
+  const handleDateChange = (date: Date | null) => {
+    setSelectedDate(date);
+  };
+
   const classes = useStyles();
+
   return (
     <div className={classes.bgColor}>
-      <Navbar />
+      <Navbar title="Booking Details" />
       <Grid container>
-        <Grid item md={3} xs={12}>
-          <Sidebar />
+        <Grid item lg={3} md={3} xs={12} className={classes.gridDatePicker}>
+          <MuiPickersUtilsProvider utils={DateFnsUtils}>
+            <KeyboardDatePicker
+              disableToolbar
+              variant="inline"
+              format="MM/dd/yyyy"
+              margin="normal"
+              id="date-picker-inline"
+              label="Select Date"
+              value={selectedDate}
+              onChange={handleDateChange}
+              KeyboardButtonProps={{
+                'aria-label': 'change date',
+              }}
+            />
+          </MuiPickersUtilsProvider>
         </Grid>
-        <Grid item md={7} xs={12} className={classes.grid}>
+        <Grid item lg={7} xs={12} className={classes.grid}>
           <InboxCard
             profilePicture={inboxCardWebData.profilePicture}
             name={inboxCardWebData.nameI1453117569}
@@ -51,36 +88,13 @@ export default function CoachInboxScreen() {
             body={inboxCardWeb2Data.spanText}
           />
         </Grid>
-      </Grid>
-      <Grid item md={3} xs={12}>
-        <BottomBar />
+        <Grid item md={3} xs={12}>
+          <BottomBar />
+        </Grid>
       </Grid>
     </div>
   );
 }
-
-const navbarData = {
-  brandLogoI145197: 'Drreamz',
-  text1: 'Inbox',
-  vector2:
-    'https://anima-uploads.s3.amazonaws.com/projects/60a8b428d2f388dac9235ff2/releases/60a8b4c0ca45c5cf1a894870/img/vector-6@2x.svg',
-  text2: 'Calender',
-  offer:
-    'https://anima-uploads.s3.amazonaws.com/projects/60a8b428d2f388dac9235ff2/releases/60a8b4c0ca45c5cf1a894870/img/offer@2x.svg',
-  text3: 'Offerings',
-  vector3:
-    'https://anima-uploads.s3.amazonaws.com/projects/60a8b428d2f388dac9235ff2/releases/60a8b4c0ca45c5cf1a894870/img/vector-7@2x.svg',
-  text4: 'Session',
-  vector4:
-    'https://anima-uploads.s3.amazonaws.com/projects/60a8b428d2f388dac9235ff2/releases/60a8b4c0ca45c5cf1a894870/img/vector-8@2x.svg',
-  text5: 'Clients',
-  vector5:
-    'https://anima-uploads.s3.amazonaws.com/projects/60a8b428d2f388dac9235ff2/releases/60a8b4c0ca45c5cf1a894870/img/vector-4@2x.svg',
-  text6: 'Settings',
-  profile:
-    'https://anima-uploads.s3.amazonaws.com/projects/60a8b428d2f388dac9235ff2/releases/60a8b4c0ca45c5cf1a894870/img/profile@2x.svg',
-  text7: 'Profile',
-};
 
 const inboxCardWebData = {
   profilePicture:
@@ -104,15 +118,4 @@ const inboxCardWeb3Data = {
   nameI1455117569: 'sam',
   dateI1455117570: '03-May-2021',
   spanText: 'Loreum Ipsum Loreum Ipsum Loreum Ipsum Loreum Ipsum',
-};
-
-const webpage7Data = {
-  text: 'All',
-  text2: 'Messages',
-  text3: 'Notifications',
-  text4: 'Bookings',
-  navbarProps: navbarData,
-  inboxCardWebProps: inboxCardWebData,
-  inboxCardWeb2Props: inboxCardWeb2Data,
-  inboxCardWeb3Props: inboxCardWeb3Data,
 };

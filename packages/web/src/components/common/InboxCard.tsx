@@ -34,6 +34,7 @@ const StyledPaper = styled(Paper)`
 `;
 
 //mobile inbox card
+
 const StyledMobileCard = styled.div`
   background-color: var(--white);
   border-radius: 10px;
