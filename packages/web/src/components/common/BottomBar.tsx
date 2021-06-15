@@ -78,7 +78,7 @@ export default function BottomAppBar() {
             <ToggleButton value="date" onClick={() => router.push('/coachCalender')}>
               <DateRangeIcon />
             </ToggleButton>
-            <ToggleButton value="offer">
+            <ToggleButton value="offer" onClick={() => router.push('/coachOffering')}>
               <LocalOfferIcon />
             </ToggleButton>
             <ToggleButton value="custom">

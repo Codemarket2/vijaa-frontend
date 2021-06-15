@@ -60,7 +60,7 @@ export default function ButtonAppBar({ title }) {
             <IconButton onClick={() => router.push('/coachCalender')}>
               <DateRangeIcon />
             </IconButton>
-            <IconButton>
+            <IconButton onClick={() => router.push('/coachOffering')}>
               <LocalOfferIcon />
             </IconButton>
             <IconButton>
