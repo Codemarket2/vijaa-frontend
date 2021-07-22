@@ -1,13 +1,11 @@
 import React from 'react';
-import { Headline } from 'react-native-paper';
-import SignIn from '../../components/auth/SignIn';
+import SignInForm from '../../components/auth/SignInForm';
 import Screen from '../../components/common/Screen';
 
-export default function SignInScreen() {
+export default function MyTabs() {
   return (
-    <Screen safeArea>
-      <Headline style={{ textAlign: 'center' }}>Sign In</Headline>
-      <SignIn />
+    <Screen>
+      <SignInForm />
     </Screen>
   );
 }

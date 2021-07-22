@@ -1,4 +1,4 @@
-# drreamz Frontend Monorepo
+# Vijaa Frontend Monorepo
 
 # Next.js + React Native
 
@@ -30,14 +30,23 @@ To run stories of your storybook open a new termianl and run:
 $ yarn web:storybook
 ```
 
-# Jest unit test cases
+# Run Test Cases
 
-To run Jest unit cases for react components:
+To run Cypress test cases for web react components(headless - tests will run in terminal without opening the browser)
 
 ```sh
 $ yarn web:test
 ```
 
+![cypress headless](https://github.com/Codemarket2/drreamz-frontend2/blob/vivekt/images/cypress_headless.jpg?raw=true)
+
+To run Cypress test cases for web react components(head - tests will run in browser)
+
+```sh
+$ yarn web:test:head
+```
+
+![cypress web](https://github.com/Codemarket2/drreamz-frontend2/blob/vivekt/images/cypress_web.jpg?raw=true)
 Build Web:
 
 ```sh

@@ -1,82 +1,64 @@
 import React from 'react';
-import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
+import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import {Text} from 'react-native';
+import InboxScreen from '../screens/InboxScreen';
 
 const Tab = createMaterialBottomTabNavigator();
 
 export default function TabNavigator() {
   return (
-    <Tab.Navigator
-      initialRouteName="Feed"
-      activeColor="#ffffff"
-      barStyle={{backgroundColor: '#6200EE'}}>
+    <Tab.Navigator shifting={false}>
       <Tab.Screen
-        name="Inbox"
-        component={SampleComponent}
+        name="InboxScreen"
+        component={InboxScreen}
         options={{
           tabBarLabel: 'Inbox',
-          tabBarIcon: ({color}) => (
+          tabBarIcon: ({ color }) => (
             <MaterialCommunityIcons name="message" color={color} size={26} />
           ),
         }}
       />
       <Tab.Screen
         name="Calendar"
-        component={SampleComponent}
+        component={InboxScreen}
         options={{
+          tabBarBadge: 10,
           tabBarLabel: 'Calendar',
-          tabBarIcon: ({color}) => (
-            <MaterialCommunityIcons
-              name="calendar-blank"
-              color={color}
-              size={26}
-            />
+          tabBarIcon: ({ color }) => (
+            <MaterialCommunityIcons name="calendar-blank" color={color} size={26} />
           ),
         }}
       />
       <Tab.Screen
         name="Offering"
-        component={SampleComponent}
+        component={InboxScreen}
         options={{
           tabBarLabel: 'Offering',
-          tabBarIcon: ({color}) => (
-            <MaterialCommunityIcons
-              name="clipboard-text-outline"
-              color={color}
-              size={26}
-            />
+          tabBarIcon: ({ color }) => (
+            <MaterialCommunityIcons name="clipboard-text-outline" color={color} size={26} />
           ),
         }}
       />
       <Tab.Screen
         name="Sessions"
-        component={SampleComponent}
+        component={InboxScreen}
         options={{
           tabBarLabel: 'Sessions',
-          tabBarIcon: ({color}) => (
+          tabBarIcon: ({ color }) => (
             <MaterialCommunityIcons name="video" color={color} size={26} />
           ),
         }}
       />
       <Tab.Screen
         name="Clients"
-        component={SampleComponent}
+        component={InboxScreen}
         options={{
           tabBarLabel: 'Clients',
-          tabBarIcon: ({color}) => (
-            <MaterialCommunityIcons
-              name="account-multiple"
-              color={color}
-              size={26}
-            />
+          tabBarIcon: ({ color }) => (
+            <MaterialCommunityIcons name="account-multiple" color={color} size={26} />
           ),
         }}
       />
     </Tab.Navigator>
   );
-}
-
-function SampleComponent() {
-  return <Text>SampleComponent</Text>;
 }

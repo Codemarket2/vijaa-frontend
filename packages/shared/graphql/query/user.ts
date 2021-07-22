@@ -1,24 +1,20 @@
 import { gql } from '@apollo/client';
 
-export const GET_ALL = gql`
+export const GET_USERS = gql`
   query getUsers(
     $limit: Int!
     $page: Int!
     $search: String
     $sortBy: String
-    $bookings: Int
-    $listings: Int
     $active: Boolean
-    $lowerRange: String
-    $higherRange: String
+    $lowerRange: AWSDateTime
+    $higherRange: AWSDateTime
   ) {
     getUsers(
       limit: $limit
       page: $page
       search: $search
       sortBy: $sortBy
-      bookings: $bookings
-      listings: $listings
       active: $active
       lowerRange: $lowerRange
       higherRange: $higherRange
@@ -31,44 +27,19 @@ export const GET_ALL = gql`
         email
         name
         picture
-        status
-        username
-        bookings
-        listings
+        userId
         createdAt
       }
     }
   }
 `;
 
-const GET_ONE = gql`
-  query QUERY($userId: String!) {
-    getUserByCognitoUserId(userId: $userId) {
-      subscription {
-        _id
-        active
-        amount
-        description
-        expiringOn
-        subscribedOn
-        subscriptionType
-      }
+export const GET_USER = gql`
+  query QUERY($_id: ID!) {
+    getUser(_id: $_id) {
       _id
-      active
-      confirmed
-      createdAt
-      createdBy
-      email
       name
       picture
-      updatedAt
-      updatedBy
-      userId
     }
   }
 `;
-
-export default {
-  GET_ALL,
-  GET_ONE,
-};

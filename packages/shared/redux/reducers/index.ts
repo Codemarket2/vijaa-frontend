@@ -1,11 +1,12 @@
 import { combineReducers } from 'redux';
-import { loadingBarReducer } from 'react-redux-loading';
-
+import loading from './loading';
 import auth from './auth';
+import list from './list';
 
 const rootReducer = combineReducers({
-  loadingBar: loadingBarReducer,
   auth,
+  loading,
+  list,
 });
 
 export default rootReducer;

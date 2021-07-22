@@ -1,16 +1,14 @@
 import React from 'react';
 import Index from './pages/index';
-import Users from './pages/users';
-import Login from './pages/login';
-import Sample from './pages/Sample';
+// import Users from './pages/users';
+// import Auth from './pages/';
 
 export default function Entry() {
   return (
     <div>
       <Index />
-      <Login />
-      <Users />
-      <Sample />
+      {/* <Auth /> */}
+      {/* <Users /> */}
     </div>
   );
 }

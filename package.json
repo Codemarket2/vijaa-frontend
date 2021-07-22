@@ -1,5 +1,5 @@
 {
-  "name": "frontend",
+  "name": "vijaa-frontend2",
   "version": "1.0.0",
   "main": "index.js",
   "private": true,
@@ -14,12 +14,18 @@
     "ios:clean": "yarn workspace @frontend/mobile run ios:clean",
     "pod:install": "yarn workspace @frontend/mobile run pod:install",
     "web": "yarn workspace @frontend/web run dev",
+    "web:ssl": "local-ssl-proxy --source 3001 --target 3000",
+    "web:debug": "yarn workspace @frontend/web run debug",
     "web:build": "yarn workspace @frontend/web run build",
     "web:start": "yarn workspace @frontend/web run start",
     "web:deploy": "yarn workspace @frontend/web run deploy",
     "web:test": "yarn workspace @frontend/web run test",
+    "web:test:head": "yarn workspace @frontend/web run test:head",
+    "web:cypress": "yarn workspace @frontend/web run cypress",
     "web:storybook": "yarn workspace @frontend/web run storybook",
-    "video-server": "yarn workspace @frontend/video-server start",
+    "shared:test": "yarn workspace @frontend/shared test",
+    "template": "yarn workspace @frontend/template run dev",
+    "template:build": "yarn workspace @frontend/template run build",
     "lint": "eslint .",
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json}\"",
     "postinstall": "jetify",
@@ -33,25 +39,24 @@
     "nohoist": []
   },
   "dependencies": {
-    "pod-install": "^0.1.22",
-    "react-native": "*"
+    "react-native": "0.64.1"
   },
   "author": "vivekvt",
   "license": "MIT",
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^4.22.0",
-    "@typescript-eslint/parser": "^4.22.0",
-    "eslint": "^7.16.0",
-    "eslint-config-airbnb": "^18.2.1",
-    "eslint-config-prettier": "^7.1.0",
-    "eslint-plugin-import": "^2.22.1",
-    "eslint-plugin-jsx-a11y": "^6.4.1",
-    "eslint-plugin-prettier": "^3.4.0",
-    "eslint-plugin-react": "^7.21.5",
-    "eslint-plugin-react-hooks": "^4.2.0",
-    "husky": "^6.0.0",
-    "jetifier": "^1.6.6",
-    "lerna": "^4.0.0",
-    "prettier": "^2.2.1"
+    "@typescript-eslint/eslint-plugin": "4.22.0",
+    "@typescript-eslint/parser": "4.22.0",
+    "eslint": "7.16.0",
+    "eslint-config-airbnb": "18.2.1",
+    "eslint-config-prettier": "7.1.0",
+    "eslint-plugin-import": "2.22.1",
+    "eslint-plugin-jsx-a11y": "6.4.1",
+    "eslint-plugin-prettier": "3.4.0",
+    "eslint-plugin-react": "7.21.5",
+    "eslint-plugin-react-hooks": "4.2.0",
+    "husky": "6.0.0",
+    "jetifier": "1.6.6",
+    "lerna": "4.0.0",
+    "prettier": "2.2.1"
   }
 }

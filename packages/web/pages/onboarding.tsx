@@ -1,11 +1,11 @@
 import React from 'react';
-import { Container } from '@material-ui/core';
 import OnboardingScreen from '../src/screens/OnboardingScreen';
+import UserLayout from '../src/components/common/UserLayout';
 
 export default function OnboardingPage() {
   return (
-    <Container>
+    <UserLayout authRequired>
       <OnboardingScreen />
-    </Container>
+    </UserLayout>
   );
 }
