@@ -33,16 +33,16 @@ export default function FeedsList() {
   return (
     <div>
       <Paper
-        className="my-2 d-flex justify-content-between align-items-center px-2 py-0 bg-dangerr"
+        className="my-2 d-flex justify-content-between align-items-center"
+        variant="outlined"
         style={{ minHeight: 55 }}>
-        <Typography variant="h4" className="mr-2">
+        <Typography variant="h4" className="mx-3">
           Feeds
         </Typography>
         {postsState.showSearch ? (
           <TextField
             size="small"
-            className="w-75"
-            // fullWidth
+            fullWidth
             variant="outlined"
             label="Search"
             InputProps={{
@@ -68,17 +68,10 @@ export default function FeedsList() {
       </Paper>
       <Backdrop open={bookmarkState.saveTagLoading} />
       {!postsState.search && (
-        <Paper className="px-2 py-1">
+        <Paper className="px-2 py-1" variant="outlined">
           <PostForm />
         </Paper>
       )}
-      {/* <div className="text-right">
-        <Link href="/create-post">
-          <Button variant="contained" color="primary">
-            Create Post
-          </Button>
-        </Link>
-      </div> */}
       {error || !data || !data.getPosts ? (
         <ErrorLoading error={error}>
           <PostCardSkeleton />
@@ -87,7 +80,7 @@ export default function FeedsList() {
         </ErrorLoading>
       ) : (
         <>
-          {loading && <Loading />}
+          {/* {loading && <Loading />} */}
           {data.getPosts.data.map((post) => (
             <PostCard
               key={post._id}
