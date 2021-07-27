@@ -27,6 +27,22 @@ const UPDATE_USER_SUBCRIPTION = gql`
   }
 `;
 
+const UPDATE_USER_PROFILE = gql`
+  mutation MyMutation($userProfile: UserProfileInput) {
+    updateUserProfile(userProfile: $userProfile) {
+      userProfile {
+        cancerType
+        dateOfDiagnose
+        symptoms
+        doctors {
+          hospital
+          name
+        }
+      }
+    }
+  }
+`;
+
 const CANCEL_USER_SUBCRIPTION = gql`
   mutation MyMutation($updatedBy: String!, $userId: String!) {
     cancelUserSubscription(updatedBy: $updatedBy, userId: $userId) {
@@ -86,5 +102,6 @@ export default {
   REMOVE_USER_ENPOINT,
   DELETE_OLD_ENDPOINT,
   UPDATE_USER_SUBCRIPTION,
+  UPDATE_USER_PROFILE,
   CANCEL_USER_SUBCRIPTION,
 };
