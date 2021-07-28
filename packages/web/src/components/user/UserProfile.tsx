@@ -8,7 +8,8 @@ import ProfileCard from './ProfileCard';
 import MyPostsList from '../post/MyPostsList';
 import BookmarkList from '../bookmark/BookmarkList';
 import FBSettings from '../facebook/FBSettings';
-import UpdateUserProfile from './UpdateUserProfile';
+import CreateUserProfile from './CreateUserProfile';
+import UserProfile2 from './UserProfile2';
 
 export default function ProfileScreen() {
   const [value, setValue] = useState('posts');
@@ -30,13 +31,13 @@ export default function ProfileScreen() {
           <Tab label="About" value="about" />
           <Tab label="Saved Tags" value="bookmarks" />
           <Tab label="Facebook Setting" value="facebookPostSetting" />
-          <Tab label="User Profile" value="updateUserProfile" />
+          <Tab label="View User Profile" value="userProfile2" />
         </Tabs>
       </Paper>
       {value === 'posts' && <MyPostsList />}
       {value === 'bookmarks' && <BookmarkList />}
       {value === 'facebookPostSetting' && <FBSettings showUser={true} />}
-      {value === 'updateUserProfile' && <UpdateUserProfile />}
+      {value === 'userProfile2' && <UserProfile2 />}
     </div>
   );
 }

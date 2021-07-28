@@ -43,3 +43,19 @@ export const GET_USER = gql`
     }
   }
 `;
+
+export const GET_USER_PROFILE = gql`
+  query QUERY {
+    getUserProfile {
+      userProfile {
+        cancerType
+        dateOfDiagnose
+        doctors {
+          hospital
+          name
+        }
+        symptoms
+      }
+    }
+  }
+`;

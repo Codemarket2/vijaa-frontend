@@ -14,7 +14,7 @@ const StyledGridContainer = styled(Grid)`
   align-items: center;
 `;
 
-export default function UpdateUserProfile() {
+export default function CreateUserProfile({ title = 'Create User Profile' }) {
   const { data, error, handleUpdateUserProfile, loading, setState, state } = useUpdateUserProfile();
 
   const handleDateChange = (date: Date | null) => {
@@ -45,7 +45,12 @@ export default function UpdateUserProfile() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('state ', state);
+    console.log(state);
+    handleUpdateUserProfile({
+      variables: {
+        userProfile: state,
+      },
+    });
   };
   const handleSymptoms = (symptom) => {
     setState({ ...state, symptoms: symptom });
@@ -58,7 +63,7 @@ export default function UpdateUserProfile() {
         className="my-2 pr-1 d-flex justify-content-between align-items-center"
         style={{ minHeight: 55 }}>
         <Container>
-          <Typography>Create User Profile</Typography>
+          <Typography>{title}</Typography>
           <form onSubmit={handleSubmit}>
             <TextField
               id="outlined-name"
