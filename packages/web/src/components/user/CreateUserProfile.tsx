@@ -4,9 +4,9 @@ import DateFnsUtils from '@date-io/date-fns';
 import { KeyboardDatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import 'date-fns';
 import styled from 'styled-components';
-import ChipInput from 'material-ui-chip-input';
 
 import { useUpdateUserProfile } from '../../../../shared/hooks/user/users';
+import ChipInput from './ChipInput';
 
 const StyledGridContainer = styled(Grid)`
   display: flex;
@@ -90,7 +90,6 @@ export default function CreateUserProfile({ title = 'Create User Profile' }) {
                 }}
               />
             </MuiPickersUtilsProvider>
-
             {state.doctors.map((inputField, index) => (
               <StyledGridContainer container lg={12} key={index} spacing={1}>
                 <Grid item lg={6} md={6} sm={12} xs={12}>
@@ -139,15 +138,7 @@ export default function CreateUserProfile({ title = 'Create User Profile' }) {
                 )}
               </StyledGridContainer>
             ))}
-
-            <ChipInput
-              defaultValue={['Symptoms']}
-              onChange={(chips) => handleSymptoms(chips)}
-              fullWidth
-              style={{ marginTop: 20, marginBottom: 20 }}
-              placeholder="Add Symptoms"
-            />
-
+            <ChipInput onChange={handleSymptoms} />
             <Grid item lg={12} md={12} sm={12} xs={12}>
               <Button fullWidth variant="contained" color="primary" type="submit">
                 Submit

@@ -1,14 +1,11 @@
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
-import Divider from '@material-ui/core/Divider';
-import Paper from '@material-ui/core/Paper';
-import ProfileCard from './ProfileCard';
-import MyPostsList from '../post/MyPostsList';
+import { Tabs, Tab, Divider, Paper } from '@material-ui/core';
+
 import BookmarkList from '../bookmark/BookmarkList';
 import FBSettings from '../facebook/FBSettings';
-import CreateUserProfile from './CreateUserProfile';
+import MyPostsList from '../post/MyPostsList';
+import ProfileCard from './ProfileCard';
 import UserProfile2 from './UserProfile2';
 
 export default function ProfileScreen() {
