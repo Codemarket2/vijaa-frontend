@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Tabs, Tab, Divider, Paper } from '@material-ui/core';
 
+import About from './About';
 import BookmarkList from '../bookmark/BookmarkList';
 import FBSettings from '../facebook/FBSettings';
 import MyPostsList from '../post/MyPostsList';
@@ -32,6 +33,7 @@ export default function ProfileScreen() {
         </Tabs>
       </Paper>
       {value === 'posts' && <MyPostsList />}
+      {value === 'about' && <About />}
       {value === 'bookmarks' && <BookmarkList />}
       {value === 'facebookPostSetting' && <FBSettings showUser={true} />}
       {value === 'userProfile2' && <UserProfile2 />}

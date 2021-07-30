@@ -59,3 +59,11 @@ export const GET_USER_PROFILE = gql`
     }
   }
 `;
+
+export const GET_ABOUT = gql`
+  query MyQuery {
+    getAbout {
+      about
+    }
+  }
+`;

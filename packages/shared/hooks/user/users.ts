@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useQuery, useMutation } from '@apollo/client';
 import { useSelector } from 'react-redux';
 import USER_MUTATION from '../../graphql/mutation/user';
-import { GET_USER, GET_USERS, GET_USER_PROFILE } from '../../graphql/query/user';
+import { GET_USER, GET_USERS, GET_USER_PROFILE, GET_ABOUT } from '../../graphql/query/user';
 import { guestClient } from '../../graphql';
 import { now } from 'moment';
 import { date, string } from 'yup/lib/locale';
@@ -46,11 +46,6 @@ export function useUpdateUserProfile() {
       onCompleted: resetInput,
     },
   );
-  // handleUpdateUserProfile({
-  //   variables: {
-  //     userProfile: state,
-  //   },
-  // });
 
   return {
     state,
@@ -59,6 +54,27 @@ export function useUpdateUserProfile() {
     data,
     loading,
     error,
+  };
+}
+
+export function useAbout() {
+  function createAbout() {
+    const [handleCreateAbout, { data, error, loading }] = useMutation(USER_MUTATION.CREATE_ABOUT, {
+      refetchQueries: [{ query: GET_ABOUT }],
+    });
+    return { handleCreateAbout, data, error, loading };
+  }
+  function getAbout() {
+    const { loading, error, data } = useQuery(GET_ABOUT);
+    return {
+      loading,
+      error,
+      data,
+    };
+  }
+  return {
+    createAbout,
+    getAbout,
   };
 }
 

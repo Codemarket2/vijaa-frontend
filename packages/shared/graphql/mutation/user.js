@@ -43,6 +43,14 @@ const UPDATE_USER_PROFILE = gql`
   }
 `;
 
+const CREATE_ABOUT = gql`
+  mutation MyMutation($about: String) {
+    createAbout(about: $about) {
+      about
+    }
+  }
+`;
+
 const CANCEL_USER_SUBCRIPTION = gql`
   mutation MyMutation($updatedBy: String!, $userId: String!) {
     cancelUserSubscription(updatedBy: $updatedBy, userId: $userId) {
@@ -104,4 +112,5 @@ export default {
   UPDATE_USER_SUBCRIPTION,
   UPDATE_USER_PROFILE,
   CANCEL_USER_SUBCRIPTION,
+  CREATE_ABOUT,
 };
