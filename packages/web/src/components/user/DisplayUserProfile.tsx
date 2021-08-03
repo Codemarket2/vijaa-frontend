@@ -1,44 +1,56 @@
-import { Button, Container, Paper, Typography } from '@material-ui/core';
 import React from 'react';
-import styled from 'styled-components';
+import { Table, TableBody, TableCell, TableContainer, TableRow } from '@material-ui/core';
 
-const StyledContainer = styled(Container)`
-  display: flex !important;
-  justify-content: center !important;
-  align-items: center;
-  flex-direction: column;
-  padding: 5%;
-`;
+import { formatDate } from '../../../../shared/config/dateFilter';
 
-export default function DisplayUserProfile({ data, setShowUserProfile, showUserProfile }) {
+export default function DisplayUserProfile({ data }) {
   const { cancerType, dateOfDiagnose, symptoms, doctors } = data?.getUserProfile?.userProfile;
   return (
-    <div>
-      <Paper
-        variant="outlined"
-        className="my-2 pr-1 d-flex justify-content-between align-items-center"
-        style={{ minHeight: 55 }}>
-        <StyledContainer>
-          <Typography>Cancer Type : {cancerType}</Typography>
-          <Typography>Date Of Diagnose : {dateOfDiagnose}</Typography>
-          {doctors.map((doctor) => (
-            <div key={doctor?._id}>
-              <Typography>Doctor Name: {doctor?.name}</Typography>
-              <Typography>Hospital Name: {doctor?.hospital}</Typography>
-            </div>
-          ))}
-          <Typography>
-            symptoms:
-            {symptoms.map((symptom) => `${symptom} `)}
-          </Typography>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => setShowUserProfile(!showUserProfile)}>
-            Update UserProfile
-          </Button>
-        </StyledContainer>
-      </Paper>
-    </div>
+    <>
+      <TableContainer>
+        <Table aria-label="simple table">
+          <TableBody>
+            <TableRow>
+              <TableCell component="th" scope="row">
+                Cancer Type
+              </TableCell>
+              <TableCell align="right">{cancerType}</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell component="th" scope="row">
+                Date Of Diagnose
+              </TableCell>
+              <TableCell align="right">{formatDate(dateOfDiagnose)}</TableCell>
+            </TableRow>
+            {doctors.map((doctor) => (
+              <>
+                <TableRow key={doctor?._id}>
+                  <TableCell component="th" scope="row">
+                    Doctor Name
+                  </TableCell>
+                  <TableCell align="right">{doctor?.name}</TableCell>
+                </TableRow>
+                <TableRow key={doctor?._id}>
+                  <TableCell component="th" scope="row">
+                    Hospital Name
+                  </TableCell>
+                  <TableCell align="right">{doctor?.hospital}</TableCell>
+                </TableRow>
+              </>
+            ))}
+            <TableRow>
+              <TableCell component="th" scope="row">
+                symptoms
+              </TableCell>
+              <TableCell align="right">
+                {symptoms.map((symptom, index) => (
+                  <div key={index}>{symptom}</div>
+                ))}
+              </TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </>
   );
 }

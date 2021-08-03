@@ -1,11 +1,10 @@
-import React, { useState } from 'react';
-import { Container, Paper, TextField, Typography, Grid, Button } from '@material-ui/core';
 import DateFnsUtils from '@date-io/date-fns';
+import { Button, Container, Grid, TextField } from '@material-ui/core';
 import { KeyboardDatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import 'date-fns';
+import React from 'react';
 import styled from 'styled-components';
 
-import { useUpdateUserProfile } from '../../../../shared/hooks/user/users';
 import ChipInput from './ChipInput';
 
 const StyledGridContainer = styled(Grid)`
@@ -14,9 +13,16 @@ const StyledGridContainer = styled(Grid)`
   align-items: center;
 `;
 
-export default function CreateUserProfile({ title = 'Create User Profile' }) {
-  const { data, error, handleUpdateUserProfile, loading, setState, state } = useUpdateUserProfile();
-
+export default function CreateUserProfile({
+  setShowForm,
+  showForm,
+  data,
+  error,
+  loading,
+  handleUpdateUserProfile,
+  setState,
+  state,
+}) {
   const handleDateChange = (date: Date | null) => {
     setState({ ...state, dateOfDiagnose: date });
     console.log(state.dateOfDiagnose);
@@ -45,108 +51,103 @@ export default function CreateUserProfile({ title = 'Create User Profile' }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(state);
     handleUpdateUserProfile({
       variables: {
         userProfile: state,
       },
     });
+    setShowForm(!showForm);
   };
+
   const handleSymptoms = (symptom) => {
     setState({ ...state, symptoms: symptom });
   };
 
   return (
     <div>
-      <Paper
-        variant="outlined"
-        className="my-2 pr-1 d-flex justify-content-between align-items-center"
-        style={{ minHeight: 55 }}>
-        <Container>
-          <Typography>{title}</Typography>
-          <form onSubmit={handleSubmit}>
-            <TextField
-              id="outlined-name"
-              label="Cancer Type"
-              value={state.cancerType}
-              onChange={handleCancerType}
-              fullWidth
+      <Container>
+        <form onSubmit={handleSubmit}>
+          <TextField
+            id="outlined-name"
+            label="Cancer Type"
+            value={state.cancerType}
+            onChange={handleCancerType}
+            fullWidth
+            margin="normal"
+            variant="outlined"
+          />
+          <MuiPickersUtilsProvider utils={DateFnsUtils}>
+            <KeyboardDatePicker
+              disableToolbar
+              variant="dialog"
+              format="MM/dd/yyyy"
               margin="normal"
-              variant="outlined"
+              id="date-picker-inline"
+              label="Select Date of Diagnose"
+              fullWidth
+              value={state.dateOfDiagnose}
+              onChange={handleDateChange}
+              KeyboardButtonProps={{
+                'aria-label': 'Date of Diagnose ',
+              }}
             />
-            <MuiPickersUtilsProvider utils={DateFnsUtils}>
-              <KeyboardDatePicker
-                disableToolbar
-                variant="dialog"
-                format="MM/dd/yyyy"
-                margin="normal"
-                id="date-picker-inline"
-                label="Select Date of Diagnose"
-                fullWidth
-                value={state.dateOfDiagnose}
-                onChange={handleDateChange}
-                KeyboardButtonProps={{
-                  'aria-label': 'Date of Diagnose ',
-                }}
-              />
-            </MuiPickersUtilsProvider>
-            {state.doctors.map((inputField, index) => (
-              <StyledGridContainer container lg={12} key={index} spacing={1}>
-                <Grid item lg={6} md={6} sm={12} xs={12}>
-                  <TextField
-                    id="outlined-name"
-                    label="Doctor Name"
-                    name="name"
-                    value={inputField.name}
-                    fullWidth
-                    margin="normal"
-                    variant="outlined"
-                    onChange={(event) => handleChangeInput(index, event)}
-                  />
-                </Grid>
-                <Grid item lg={6} md={6} sm={12} xs={12}>
-                  <TextField
-                    id="outlined-name"
-                    label="Hospital Name"
-                    name="hospital"
-                    value={inputField.hospital}
-                    onChange={(event) => handleChangeInput(index, event)}
-                    fullWidth
-                    margin="normal"
-                    variant="outlined"
-                  />
-                </Grid>
+          </MuiPickersUtilsProvider>
+          {state.doctors.map((inputField, index) => (
+            <StyledGridContainer container lg={12} key={index} spacing={1}>
+              <Grid item lg={6} md={6} sm={12} xs={12}>
+                <TextField
+                  id="outlined-name"
+                  label="Doctor Name"
+                  name="name"
+                  value={inputField.name}
+                  fullWidth
+                  margin="normal"
+                  variant="outlined"
+                  onChange={(event) => handleChangeInput(index, event)}
+                />
+              </Grid>
+              <Grid item lg={6} md={6} sm={12} xs={12}>
+                <TextField
+                  id="outlined-name"
+                  label="Hospital Name"
+                  name="hospital"
+                  value={inputField.hospital}
+                  onChange={(event) => handleChangeInput(index, event)}
+                  fullWidth
+                  margin="normal"
+                  variant="outlined"
+                />
+              </Grid>
+              <Grid item lg={3} md={3} sm={6} xs={6}>
+                <Button
+                  fullWidth
+                  variant="contained"
+                  color="primary"
+                  onClick={() => handleAddFields()}>
+                  Add
+                </Button>
+              </Grid>
+              {state.doctors.length === 1 ? null : (
                 <Grid item lg={3} md={3} sm={6} xs={6}>
                   <Button
                     fullWidth
                     variant="contained"
-                    color="primary"
-                    onClick={() => handleAddFields()}>
-                    Add
+                    color="secondary"
+                    onClick={() => handleRemoveFields(index)}>
+                    remove
                   </Button>
                 </Grid>
-                {state.doctors.length === 1 ? null : (
-                  <Grid item lg={3} md={3} sm={6} xs={6}>
-                    <Button
-                      fullWidth
-                      variant="contained"
-                      color="secondary"
-                      onClick={() => handleRemoveFields(index)}>
-                      remove
-                    </Button>
-                  </Grid>
-                )}
-              </StyledGridContainer>
-            ))}
-            <ChipInput onChange={handleSymptoms} />
-            <Grid item lg={12} md={12} sm={12} xs={12}>
-              <Button fullWidth variant="contained" color="primary" type="submit">
-                Submit
-              </Button>
-            </Grid>
-          </form>
-        </Container>
-      </Paper>
+              )}
+            </StyledGridContainer>
+          ))}
+          <ChipInput onChange={handleSymptoms} />
+          <Grid item lg={12} md={12} sm={12} xs={12}>
+            <Button fullWidth variant="contained" color="primary" type="submit">
+              Submit
+            </Button>
+          </Grid>
+        </form>
+      </Container>
     </div>
   );
 }

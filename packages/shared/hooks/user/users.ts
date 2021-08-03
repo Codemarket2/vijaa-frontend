@@ -44,6 +44,7 @@ export function useUpdateUserProfile() {
     USER_MUTATION.UPDATE_USER_PROFILE,
     {
       onCompleted: resetInput,
+      refetchQueries: [{ query: GET_USER_PROFILE }],
     },
   );
 
@@ -79,7 +80,7 @@ export function useAbout() {
 }
 
 export function useGetUserProfile() {
-  const { loading, error, data } = useQuery(GET_USER_PROFILE);
+  const { loading, error, data } = useQuery(GET_USER_PROFILE, {});
   return {
     loading,
     error,
