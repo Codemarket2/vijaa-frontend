@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useQuery, useMutation } from '@apollo/client';
 import { useSelector } from 'react-redux';
+import produce from 'immer';
+
 import USER_MUTATION from '../../graphql/mutation/user';
 import { GET_USER, GET_USERS, GET_USER_PROFILE, GET_ABOUT } from '../../graphql/query/user';
 import { guestClient } from '../../graphql';
@@ -24,8 +26,18 @@ export function useGetOneUser({ _id }: any) {
   return state;
 }
 
+interface Doctor {
+  name: string;
+  hospital: string;
+}
+interface State {
+  cancerType: string;
+  dateOfDiagnose: Date;
+  doctors: [Doctor];
+  symptoms: [];
+}
 export function useUpdateUserProfile() {
-  const [state, setState] = useState({
+  const [state, setState] = useState<State | null>({
     cancerType: '',
     dateOfDiagnose: new Date(),
     doctors: [{ name: '', hospital: '' }],
@@ -59,14 +71,32 @@ export function useUpdateUserProfile() {
 }
 
 export function useAbout() {
+  function updateAbout(client, props) {
+    let getQuery = client.readQuery({
+      query: GET_ABOUT,
+    });
+    const data = produce(getQuery, (draft) => {
+      draft.getAbout.about = props.data.createAbout.about;
+    });
+    console.log('data');
+    console.log(data);
+
+    client.writeQuery({
+      query: GET_ABOUT,
+      data,
+    });
+  }
   function createAbout() {
     const [handleCreateAbout, { data, error, loading }] = useMutation(USER_MUTATION.CREATE_ABOUT, {
-      refetchQueries: [{ query: GET_ABOUT }],
+      // refetchQueries: [{ query: GET_ABOUT }],
+      update: updateAbout,
     });
     return { handleCreateAbout, data, error, loading };
   }
   function getAbout() {
-    const { loading, error, data } = useQuery(GET_ABOUT);
+    const { loading, error, data } = useQuery(GET_ABOUT, {
+      fetchPolicy: 'cache-and-network',
+    });
     return {
       loading,
       error,

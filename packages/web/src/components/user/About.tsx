@@ -13,7 +13,7 @@ import styled from 'styled-components';
 
 import Loading from '../common/Loading';
 import ErrorLoading from '../common/ErrorLoading';
-import { useAbout } from '../../../../shared/hooks/user/users';
+import { useAbout } from '@frontend/shared/hooks/user/users';
 
 const StyledContainer = styled(Container)`
   padding: 2%;
@@ -51,7 +51,6 @@ export default function About() {
     });
     setShowForm(!showForm);
   };
-  console.log(`About ${state}`);
   if (loading) return <Loading />;
   if (error) return <ErrorLoading error={error} />;
   const { about } = data?.getAbout;
@@ -80,6 +79,7 @@ export default function About() {
                 value={state}
                 onChange={handleChange}
                 fullWidth
+                name="about"
                 margin="normal"
               />
               <Button fullWidth variant="contained" color="primary" type="submit">
@@ -87,7 +87,7 @@ export default function About() {
               </Button>
             </form>
           )}
-          {!showForm && <Typography>{createLoading ? <Loading /> : about && about}</Typography>}
+          {!showForm && <Typography>{loading ? <Loading /> : about && about}</Typography>}
         </StyledContainer>
       </Paper>
     </>

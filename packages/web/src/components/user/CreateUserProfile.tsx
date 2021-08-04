@@ -13,6 +13,27 @@ const StyledGridContainer = styled(Grid)`
   align-items: center;
 `;
 
+interface Doctor {
+  name: string;
+  hospital: string;
+}
+interface State {
+  cancerType: string;
+  dateOfDiagnose: Date;
+  doctors: [Doctor];
+  symptoms: [];
+}
+interface Iprops {
+  setShowForm: any;
+  showForm: any;
+  data: any;
+  error: any;
+  loading: any;
+  handleUpdateUserProfile: any;
+  setState: any;
+  state: State;
+}
+
 export default function CreateUserProfile({
   setShowForm,
   showForm,
@@ -20,16 +41,28 @@ export default function CreateUserProfile({
   error,
   loading,
   handleUpdateUserProfile,
-  setState,
-  state,
-}) {
+  setState = () => {
+    return {
+      cancerType: '',
+      dateOfDiagnose: new Date(),
+      doctors: [{ name: '', hospital: '' }],
+      symptoms: [],
+    };
+  },
+  state = {
+    cancerType: '',
+    dateOfDiagnose: new Date(),
+    doctors: [{ name: '', hospital: '' }],
+    symptoms: [],
+  },
+}: Iprops) {
   const handleDateChange = (date: Date | null) => {
     setState({ ...state, dateOfDiagnose: date });
     console.log(state.dateOfDiagnose);
   };
 
-  const handleCancerType = (e) => {
-    const cancerType = e.target.value;
+  const handleCancerType = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const cancerType: undefined | string = e.target.value;
     setState({ ...state, cancerType: cancerType });
   };
 
@@ -49,7 +82,7 @@ export default function CreateUserProfile({
     setState({ ...state, doctors: values });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     handleUpdateUserProfile({
       variables: {
@@ -75,6 +108,7 @@ export default function CreateUserProfile({
             fullWidth
             margin="normal"
             variant="outlined"
+            data-testid="cancerType"
           />
           <MuiPickersUtilsProvider utils={DateFnsUtils}>
             <KeyboardDatePicker
@@ -90,6 +124,7 @@ export default function CreateUserProfile({
               KeyboardButtonProps={{
                 'aria-label': 'Date of Diagnose ',
               }}
+              data-testid="date"
             />
           </MuiPickersUtilsProvider>
           {state.doctors.map((inputField, index) => (
@@ -104,6 +139,7 @@ export default function CreateUserProfile({
                   margin="normal"
                   variant="outlined"
                   onChange={(event) => handleChangeInput(index, event)}
+                  data-testid="doctorName"
                 />
               </Grid>
               <Grid item lg={6} md={6} sm={12} xs={12}>
@@ -116,6 +152,7 @@ export default function CreateUserProfile({
                   fullWidth
                   margin="normal"
                   variant="outlined"
+                  data-testid="hospitalName"
                 />
               </Grid>
               <Grid item lg={3} md={3} sm={6} xs={6}>
@@ -123,6 +160,7 @@ export default function CreateUserProfile({
                   fullWidth
                   variant="contained"
                   color="primary"
+                  data-testid="add-button"
                   onClick={() => handleAddFields()}>
                   Add
                 </Button>
@@ -142,7 +180,12 @@ export default function CreateUserProfile({
           ))}
           <ChipInput onChange={handleSymptoms} />
           <Grid item lg={12} md={12} sm={12} xs={12}>
-            <Button fullWidth variant="contained" color="primary" type="submit">
+            <Button
+              fullWidth
+              variant="contained"
+              color="primary"
+              type="submit"
+              data-testid="submit-button">
               Submit
             </Button>
           </Grid>

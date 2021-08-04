@@ -47,6 +47,7 @@ export default function ChipInput({ onChange }) {
         onChange={handleChange}
         onKeyDown={handleKeyDown}
         fullWidth
+        data-testid="addSymptoms"
       />
 
       <StyledChipContainer>

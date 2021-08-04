@@ -3,7 +3,7 @@ import { Container, Paper, IconButton, Grid } from '@material-ui/core';
 import CreateIcon from '@material-ui/icons/Create';
 import styled from 'styled-components';
 
-import { useGetUserProfile, useUpdateUserProfile } from '../../../../shared/hooks/user/users';
+import { useGetUserProfile, useUpdateUserProfile } from '@frontend/shared/hooks/user/users';
 import Loading from '../common/Loading';
 import ErrorLoading from '../common/ErrorLoading';
 import CreateUserProfile from './CreateUserProfile';
@@ -28,7 +28,7 @@ export default function UserProfile2() {
 
   const [showForm, setShowForm] = useState(false);
 
-  if (getUserProfileLoading) return <Loading />;
+  // if (getUserProfileLoading) return <Loading />;
   if (getUserProfileError) return <ErrorLoading error={getUserProfileError} />;
 
   const { userProfile } = getUserProfileData?.getUserProfile;
