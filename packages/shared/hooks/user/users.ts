@@ -75,15 +75,18 @@ export function useAbout() {
     let getQuery = client.readQuery({
       query: GET_ABOUT,
     });
-    const data = produce(getQuery, (draft) => {
-      draft.getAbout.about = props.data.createAbout.about;
-    });
-    console.log('data');
-    console.log(data);
+    // const newData = produce(getQuery, (draft) => {
+    //   draft.getAbout.about = props.data.createAbout.about;
+    // });
+    const newVal = props.data.createAbout.about;
+    console.log('newVal');
+    console.log(newVal);
 
     client.writeQuery({
       query: GET_ABOUT,
-      data,
+      data: produce(getQuery, (draft) => {
+        draft.getAbout.about = newVal;
+      }),
     });
   }
   function createAbout() {

@@ -28,7 +28,7 @@ export default function UserProfile2() {
 
   const [showForm, setShowForm] = useState(false);
 
-  // if (getUserProfileLoading) return <Loading />;
+  if (getUserProfileLoading) return <Loading />;
   if (getUserProfileError) return <ErrorLoading error={getUserProfileError} />;
 
   const { userProfile } = getUserProfileData?.getUserProfile;
@@ -75,7 +75,12 @@ export default function UserProfile2() {
               state={state}
             />
           )}
-          {!showForm && (loading ? <Loading /> : <DisplayUserProfile data={getUserProfileData} />)}
+          {!showForm &&
+            (getUserProfileLoading ? (
+              <Loading />
+            ) : (
+              <DisplayUserProfile data={getUserProfileData} />
+            ))}
         </StyledContainer>
       </Paper>
     </>

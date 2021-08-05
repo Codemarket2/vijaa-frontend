@@ -23,7 +23,7 @@ interface State {
   doctors: [Doctor];
   symptoms: [];
 }
-interface Iprops {
+interface IProps {
   setShowForm: any;
   showForm: any;
   data: any;
@@ -55,13 +55,13 @@ export default function CreateUserProfile({
     doctors: [{ name: '', hospital: '' }],
     symptoms: [],
   },
-}: Iprops) {
+}: IProps) {
   const handleDateChange = (date: Date | null) => {
     setState({ ...state, dateOfDiagnose: date });
     console.log(state.dateOfDiagnose);
   };
 
-  const handleCancerType = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleCancerType = (e) => {
     const cancerType: undefined | string = e.target.value;
     setState({ ...state, cancerType: cancerType });
   };
@@ -82,7 +82,7 @@ export default function CreateUserProfile({
     setState({ ...state, doctors: values });
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     handleUpdateUserProfile({
       variables: {
