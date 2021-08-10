@@ -1,8 +1,11 @@
-import React, { useState } from 'react';
 import { Container, Paper, IconButton, Divider, Grid, Typography } from '@material-ui/core';
-
+import 'date-fns';
+import React, { useState } from 'react';
 import styled from 'styled-components';
+
 import AutoComplete from './AutoComplete';
+import ChipComponent from './AutoComplete/ChipComponent';
+import DatePicker from './AutoComplete/DatePicker';
 
 const StyledContainer = styled(Container)`
   padding: 2%;
@@ -22,9 +25,31 @@ export default function UserProfile2() {
               <Divider />
             </Grid>
           </Grid>
-          <AutoComplete />
+          <AutoComplete addtitle="Cancer Type" data={cancerTypes} label="Add Cancer Type" />
+          <AutoComplete addtitle="Dr name" data={drNames} label="Add Doctor Name" />
+          <DatePicker />
+          <ChipComponent />
         </StyledContainer>
       </Paper>
     </>
   );
 }
+
+const drNames = [
+  { name: 'muzzamil' },
+  { name: 'simon' },
+  { name: 'alex' },
+  { name: 'jennifer' },
+  { name: 'max' },
+];
+
+const cancerTypes = [
+  { cancerType: 'Bladder Cancer' },
+  { cancerType: 'Colorectal Cancer' },
+  { cancerType: 'Kidney Cancer' },
+  { cancerType: 'Lung Cancer - Non-Small Cell' },
+  { cancerType: 'Lymphoma - Non-Hodgkin' },
+  { cancerType: 'Melanoma' },
+  { cancerType: 'Oral and Oropharyngeal Cancer' },
+  { cancerType: 'Pancreatic Cancer' },
+];

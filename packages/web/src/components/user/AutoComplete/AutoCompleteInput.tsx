@@ -3,7 +3,16 @@ import { TextField } from '@material-ui/core';
 import Autocomplete, { createFilterOptions } from '@material-ui/lab/Autocomplete';
 
 const filter = createFilterOptions();
-export default function AutoCompleteInput({ value, setValue, cancerTypes }) {
+
+interface IProps {
+  label: string;
+  data: any;
+  value: any;
+  setValue: any;
+  generateKey: any;
+}
+
+export default function AutoCompleteInput({ value, setValue, data, label, generateKey }: IProps) {
   return (
     <>
       <Autocomplete
@@ -11,12 +20,12 @@ export default function AutoCompleteInput({ value, setValue, cancerTypes }) {
         onChange={(event, newValue) => {
           if (typeof newValue === 'string') {
             setValue({
-              cancerType: newValue,
+              [generateKey(data, 'getDataKey')]: newValue,
             });
           } else if (newValue && newValue.inputValue) {
             // Create a new value from the user input
             setValue({
-              cancerType: newValue.inputValue,
+              [generateKey(data, 'getDataKey')]: newValue.inputValue,
             });
           } else {
             setValue(newValue);
@@ -29,7 +38,7 @@ export default function AutoCompleteInput({ value, setValue, cancerTypes }) {
           if (params.inputValue !== '') {
             filtered.push({
               inputValue: params.inputValue,
-              cancerType: `Add "${params.inputValue}"`,
+              [generateKey(data, 'getDataKey')]: `Add "${params.inputValue}"`,
             });
           }
 
@@ -39,8 +48,10 @@ export default function AutoCompleteInput({ value, setValue, cancerTypes }) {
         // clearOnBlur
         // handleHomeEndKeys
         id="free-solo-with-text-demo"
-        options={cancerTypes}
+        options={data}
         getOptionLabel={(option) => {
+          const getKeys = Object.keys(option);
+          let keyS = getKeys[0];
           // Value selected with enter, right from the input
           if (typeof option === 'string') {
             return option;
@@ -50,12 +61,13 @@ export default function AutoCompleteInput({ value, setValue, cancerTypes }) {
             return option.inputValue;
           }
           // Regular option
-          return option.cancerType;
+          // generateKey(option);
+          return option[keyS];
         }}
-        renderOption={(option) => option.cancerType}
+        renderOption={(option) => generateKey(option)}
         freeSolo
         renderInput={(params) => (
-          <TextField {...params} label="Add Cancer Type" variant="outlined" fullWidth />
+          <TextField {...params} label={label} variant="outlined" fullWidth />
         )}
       />
     </>
