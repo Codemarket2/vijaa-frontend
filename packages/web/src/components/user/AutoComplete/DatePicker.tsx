@@ -1,47 +1,24 @@
-import {
-  Button,
-  Container,
-  Grid,
-  IconButton,
-  Paper,
-  Typography,
-  TextField,
-} from '@material-ui/core';
+import { Button, Container, Grid, IconButton } from '@material-ui/core';
 import { KeyboardDatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import React, { useState } from 'react';
 import SaveIcon from '@material-ui/icons/Save';
-import styled from 'styled-components';
 
 import CRUDMenu from '../../common/CRUDMenu';
 import { formatDate } from '@frontend/shared/config/dateFilter';
-
-const StyledH6 = styled.h6`
-  margin-top: 10px;
-  margin-bottom: 10px;
-`;
-
-const StyledGridContainer = styled(Grid)`
-  display: flex;
-  justify-content: space-between;
-`;
-
-const StyledIconGrid = styled(Grid)`
-  display: flex;
-  justify-content: space-between;
-`;
-
-const StyledIconGrid2 = styled(Grid)`
-  display: flex;
-  align-items: center !important;
-  padding: 2%;
-`;
+import {
+  StyledDisplayText,
+  StyledGridContainer,
+  StyledH5,
+  StyledIconGrid,
+  StyledIconGrid2,
+} from '../../../utils/CustomStyledComponents';
 
 export default function DatePicker() {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [dateOfDiagnose, setDateOfDiagnose] = useState(null);
-  const [display, setDispaly] = useState(false);
+  const [display, setDisplay] = useState(false);
 
   const handleClose = () => {
     setAnchorEl(null);
@@ -53,10 +30,10 @@ export default function DatePicker() {
     setDateOfDiagnose(date);
   };
   const handleEdit = () => {
-    setDispaly(!display);
+    setDisplay(!display);
   };
   const handleSubmit = () => {
-    setDispaly(!display);
+    setDisplay(!display);
   };
 
   if (dateOfDiagnose === null || display) {
@@ -81,7 +58,7 @@ export default function DatePicker() {
               />
             </MuiPickersUtilsProvider>
           </Grid>
-          <StyledIconGrid item xs={3} sm={2} md={1} lg={1}>
+          <StyledIconGrid item xs={1} sm={1} md={1} lg={1}>
             <IconButton onClick={handleSubmit}>
               <SaveIcon color="primary" />
             </IconButton>
@@ -95,11 +72,10 @@ export default function DatePicker() {
     <>
       {!display && (
         <>
-          <StyledH6>Date of Diagnose</StyledH6>
+          <StyledH5>Date of Diagnose</StyledH5>
           <StyledIconGrid2 container>
             <Grid item xs={11} sm={11} md={11} lg={11}>
-              {/* <p style={{ fontSize: 16 }}>{dateOfDiagnose}</p> */}
-              <p style={{ fontSize: 16 }}>{formatDate(dateOfDiagnose)}</p>
+              <StyledDisplayText>{formatDate(dateOfDiagnose)}</StyledDisplayText>
             </Grid>
             <Grid item xs={1} sm={1} md={1} lg={1}>
               <IconButton onClick={handleClick}>

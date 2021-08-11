@@ -1,71 +1,41 @@
-import {
-  Button,
-  Container,
-  Grid,
-  IconButton,
-  Paper,
-  Typography,
-  TextField,
-} from '@material-ui/core';
+import AddBoxOutlinedIcon from '@material-ui/icons/AddBoxOutlined';
+import { Grid, IconButton } from '@material-ui/core';
 import CancelIcon from '@material-ui/icons/Cancel';
+import produce from 'immer';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import React, { useState } from 'react';
 import SaveIcon from '@material-ui/icons/Save';
-import styled from 'styled-components';
 
 import AutoCompleteInput from './AutoCompleteInput';
 import CRUDMenu from '../../common/CRUDMenu';
-
-const StyledH6 = styled.h6`
-  margin-top: 10px;
-  margin-bottom: 10px;
-`;
-
-const StyledGridContainer = styled(Grid)`
-  display: flex;
-  justify-content: space-between;
-`;
-
-const StyledIconGrid = styled(Grid)`
-  display: flex;
-  justify-content: space-between;
-`;
-
-const StyledIconGrid2 = styled(Grid)`
-  display: flex;
-  align-items: center !important;
-  padding: 2%;
-`;
+import {
+  StyledDisplayText,
+  StyledGridContainer,
+  StyledH5,
+  StyledIconDiv,
+  StyledIconGrid,
+  StyledIconGrid2,
+} from '../../../utils/CustomStyledComponents';
 
 interface IPrpos {
-  addtitle: string;
   data: any;
   label: string;
+  title: string;
 }
 
 export default function AutoComplete({
-  addtitle = 'demo',
-  data = [{ test: 'test 1' }, { test: 'test 2' }],
+  data = [{ title: 'test 1' }, { title: 'test 2' }],
   label = 'add label',
+  title = 'demo',
 }: IPrpos) {
   const [showForm, setShowForm] = useState(false);
   const [displayData, setDisplayData] = useState(false);
-  const [value, setValue] = useState(null);
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [value, setValue] = useState([]);
 
-  const generateKey = (option: any, setOption?: string) => {
-    const getKeys = Object.keys(option);
-    let keyS = getKeys[0];
-    if (setOption === 'getDataKey') {
-      return keyS;
-    } else {
-      return option[keyS];
-    }
-  };
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
   const handleCancelForm = () => {
     setShowForm(!showForm);
-    // setDisplayData(true);
   };
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -74,65 +44,79 @@ export default function AutoComplete({
   const handleClose = () => {
     setAnchorEl(null);
   };
-  const handleEdit = () => {
-    setShowForm(!showForm);
-    setDisplayData(!displayData);
+
+  const handleDelete = (index) => {
+    setValue(
+      produce(value, (draft) => {
+        draft.splice(index, 1);
+      }),
+    );
   };
-  const handleSumbit = () => {
-    setShowForm(!showForm);
-    setDisplayData(!displayData);
+  const handleEdit = () => {
+    // setShowForm(!showForm);
+    // setDisplayData(!displayData);
   };
 
-  if (value === null || showForm) {
-    return (
-      <>
-        <StyledH6>{addtitle}</StyledH6>
+  const handleShowFormInput = () => {
+    setShowForm(true);
+    setDisplayData(false);
+  };
+  const handleSumbit = () => {
+    setShowForm(false);
+    setDisplayData(true);
+  };
+
+  console.log('value');
+  console.log(value);
+
+  return (
+    <>
+      <StyledH5>{title}</StyledH5>
+      <StyledIconDiv>
+        <AddBoxOutlinedIcon onClick={handleShowFormInput} />
+        <h6 style={{ marginLeft: 5, fontWeight: 'bold' }}>Add {title}</h6>
+      </StyledIconDiv>
+      {showForm && (
         <StyledGridContainer container>
           <Grid item xs={9} sm={10} md={11} lg={11}>
-            <AutoCompleteInput
-              label={label}
-              data={data}
-              setValue={setValue}
-              value={value}
-              generateKey={generateKey}
-            />
+            <AutoCompleteInput label={label} data={data} setValue={setValue} value={value} />
           </Grid>
           <StyledIconGrid item xs={3} sm={2} md={1} lg={1}>
-            {showForm && (
-              <IconButton onClick={handleCancelForm}>
-                <CancelIcon color="secondary" />
-              </IconButton>
-            )}
+            <IconButton onClick={handleCancelForm}>
+              <CancelIcon color="secondary" />
+            </IconButton>
             <IconButton onClick={handleSumbit}>
               <SaveIcon color="primary" />
             </IconButton>
           </StyledIconGrid>
         </StyledGridContainer>
-      </>
-    );
-  }
+      )}
 
-  return (
-    <>
-      <StyledH6>{addtitle}</StyledH6>
-      <StyledIconGrid2 container>
-        <Grid item xs={11} sm={11} md={11} lg={11}>
-          <p style={{ fontSize: 16 }}>
-            {value[generateKey(value, 'getDataKey')] && value[generateKey(value, 'getDataKey')]}
-          </p>
-        </Grid>
-        <Grid item xs={1} sm={1} md={1} lg={1}>
-          <IconButton onClick={handleClick}>
-            <MoreHorizIcon />
-          </IconButton>
-          <CRUDMenu
-            onClose={handleClose}
-            onEdit={handleEdit}
-            onDelete={() => console.log('object')}
-            show={anchorEl}
-          />
-        </Grid>
-      </StyledIconGrid2>
+      {displayData && (
+        <>
+          {value.map((item, index) => (
+            <>
+              <StyledIconGrid2 container key={index}>
+                <Grid item xs={11} sm={11} md={11} lg={11}>
+                  {/* <StyledDisplayText>{item.title && item.title}</StyledDisplayText> */}
+                  <h6>{item.title && item.title}</h6>
+                </Grid>
+                <Grid item xs={1} sm={1} md={1} lg={1}>
+                  <IconButton onClick={handleClick}>
+                    <MoreHorizIcon />
+                  </IconButton>
+                  <CRUDMenu
+                    onClose={handleClose}
+                    onEdit={handleEdit}
+                    onDelete={() => handleDelete(index)}
+                    show={anchorEl}
+                  />
+                </Grid>
+              </StyledIconGrid2>
+            </>
+          ))}
+        </>
+      )}
     </>
   );
 }

@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { TextField } from '@material-ui/core';
 import Autocomplete, { createFilterOptions } from '@material-ui/lab/Autocomplete';
+import produce from 'immer';
 
 const filter = createFilterOptions();
 
@@ -9,26 +10,37 @@ interface IProps {
   data: any;
   value: any;
   setValue: any;
-  generateKey: any;
 }
 
-export default function AutoCompleteInput({ value, setValue, data, label, generateKey }: IProps) {
+export default function AutoCompleteInput({ value, setValue, data, label }: IProps) {
+  const [getValue, setGetValue] = useState(null);
   return (
     <>
       <Autocomplete
-        value={value}
+        value={getValue}
         onChange={(event, newValue) => {
           if (typeof newValue === 'string') {
-            setValue({
-              [generateKey(data, 'getDataKey')]: newValue,
-            });
+            setValue(
+              produce(value, (draft) => {
+                draft.push({
+                  title: newValue,
+                });
+              }),
+            );
           } else if (newValue && newValue.inputValue) {
-            // Create a new value from the user input
-            setValue({
-              [generateKey(data, 'getDataKey')]: newValue.inputValue,
-            });
+            setValue(
+              produce(value, (draft) => {
+                draft.push({
+                  title: newValue.inputValue,
+                });
+              }),
+            );
           } else {
-            setValue(newValue);
+            setValue(
+              produce(value, (draft) => {
+                draft.push(newValue);
+              }),
+            );
           }
         }}
         filterOptions={(options, params) => {
@@ -38,7 +50,7 @@ export default function AutoCompleteInput({ value, setValue, data, label, genera
           if (params.inputValue !== '') {
             filtered.push({
               inputValue: params.inputValue,
-              [generateKey(data, 'getDataKey')]: `Add "${params.inputValue}"`,
+              title: `Add "${params.inputValue}"`,
             });
           }
 
@@ -50,8 +62,6 @@ export default function AutoCompleteInput({ value, setValue, data, label, genera
         id="free-solo-with-text-demo"
         options={data}
         getOptionLabel={(option) => {
-          const getKeys = Object.keys(option);
-          let keyS = getKeys[0];
           // Value selected with enter, right from the input
           if (typeof option === 'string') {
             return option;
@@ -61,10 +71,9 @@ export default function AutoCompleteInput({ value, setValue, data, label, genera
             return option.inputValue;
           }
           // Regular option
-          // generateKey(option);
-          return option[keyS];
+          return option.title;
         }}
-        renderOption={(option) => generateKey(option)}
+        renderOption={(option) => option.title}
         freeSolo
         renderInput={(params) => (
           <TextField {...params} label={label} variant="outlined" fullWidth />

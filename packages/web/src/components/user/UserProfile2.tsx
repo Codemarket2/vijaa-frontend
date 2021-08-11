@@ -4,7 +4,6 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 
 import AutoComplete from './AutoComplete';
-import ChipComponent from './AutoComplete/ChipComponent';
 import DatePicker from './AutoComplete/DatePicker';
 
 const StyledContainer = styled(Container)`
@@ -25,10 +24,10 @@ export default function UserProfile2() {
               <Divider />
             </Grid>
           </Grid>
-          <AutoComplete addtitle="Cancer Type" data={cancerTypes} label="Add Cancer Type" />
-          <AutoComplete addtitle="Dr name" data={drNames} label="Add Doctor Name" />
+          <AutoComplete title="Cancer Type" data={cancerTypes} label="Add Cancer Type" />
+          <AutoComplete title="Doctors " data={drNames} label="Add Doctor Name" />
+          <AutoComplete title="symptoms " data={symptoms} label="Add symptoms " />
           <DatePicker />
-          <ChipComponent />
         </StyledContainer>
       </Paper>
     </>
@@ -36,20 +35,27 @@ export default function UserProfile2() {
 }
 
 const drNames = [
-  { name: 'muzzamil' },
-  { name: 'simon' },
-  { name: 'alex' },
-  { name: 'jennifer' },
-  { name: 'max' },
+  { title: 'Muzzamil' },
+  { title: 'Simon' },
+  { title: 'Alex' },
+  { title: 'Jennifer' },
+  { title: 'Max' },
 ];
 
+const symptoms = [
+  { title: 'Pain' },
+  { title: 'Fatigue' },
+  { title: 'Fever' },
+  { title: 'Weight loss without trying.' },
+  { title: 'Changes in your skin.' },
+];
 const cancerTypes = [
-  { cancerType: 'Bladder Cancer' },
-  { cancerType: 'Colorectal Cancer' },
-  { cancerType: 'Kidney Cancer' },
-  { cancerType: 'Lung Cancer - Non-Small Cell' },
-  { cancerType: 'Lymphoma - Non-Hodgkin' },
-  { cancerType: 'Melanoma' },
-  { cancerType: 'Oral and Oropharyngeal Cancer' },
-  { cancerType: 'Pancreatic Cancer' },
+  { title: 'Bladder Cancer' },
+  { title: 'Colorectal Cancer' },
+  { title: 'Kidney Cancer' },
+  { title: 'Lung Cancer - Non-Small Cell' },
+  { title: 'Lymphoma - Non-Hodgkin' },
+  { title: 'Melanoma' },
+  { title: 'Oral and Oropharyngeal Cancer' },
+  { title: 'Pancreatic Cancer' },
 ];
