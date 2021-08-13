@@ -1,46 +1,44 @@
-import React, { useState } from 'react';
-import { TextField } from '@material-ui/core';
 import Autocomplete, { createFilterOptions } from '@material-ui/lab/Autocomplete';
-import produce from 'immer';
+import { Button, TextField, Grid } from '@material-ui/core';
+import React, { useState } from 'react';
+
+interface IProps {
+  labelText?: string;
+  data: any;
+  editForm?: boolean;
+  editInputValue?: any;
+  handleCancel: any;
+  handleSave: any;
+}
 
 const filter = createFilterOptions();
 
-interface IProps {
-  label: string;
-  data: any;
-  value: any;
-  setValue: any;
-}
+export default function AutoCompleteInput({
+  labelText,
+  data,
+  editForm,
+  editInputValue = null,
+  handleCancel,
+  handleSave,
+}: IProps) {
+  const [value, setValue] = useState(null);
 
-export default function AutoCompleteInput({ value, setValue, data, label }: IProps) {
-  const [getValue, setGetValue] = useState(null);
   return (
     <>
       <Autocomplete
-        value={getValue}
+        value={value || editInputValue}
         onChange={(event, newValue) => {
           if (typeof newValue === 'string') {
-            setValue(
-              produce(value, (draft) => {
-                draft.push({
-                  title: newValue,
-                });
-              }),
-            );
+            setValue({
+              title: newValue,
+            });
           } else if (newValue && newValue.inputValue) {
-            setValue(
-              produce(value, (draft) => {
-                draft.push({
-                  title: newValue.inputValue,
-                });
-              }),
-            );
+            // Create a new value from the user input
+            setValue({
+              title: newValue,
+            });
           } else {
-            setValue(
-              produce(value, (draft) => {
-                draft.push(newValue);
-              }),
-            );
+            setValue(newValue);
           }
         }}
         filterOptions={(options, params) => {
@@ -56,10 +54,6 @@ export default function AutoCompleteInput({ value, setValue, data, label }: IPro
 
           return filtered;
         }}
-        // selectOnFocus
-        // clearOnBlur
-        // handleHomeEndKeys
-        id="free-solo-with-text-demo"
         options={data}
         getOptionLabel={(option) => {
           // Value selected with enter, right from the input
@@ -74,11 +68,22 @@ export default function AutoCompleteInput({ value, setValue, data, label }: IPro
           return option.title;
         }}
         renderOption={(option) => option.title}
-        freeSolo
         renderInput={(params) => (
-          <TextField {...params} label={label} variant="outlined" fullWidth />
+          <TextField {...params} label={labelText} variant="outlined" fullWidth />
         )}
       />
+      <Grid container lg={2} spacing={1} style={{ marginTop: 10 }}>
+        <Grid item>
+          <Button color="secondary" variant="contained" onClick={() => handleCancel(setValue)}>
+            cancel
+          </Button>
+        </Grid>
+        <Grid item>
+          <Button color="primary" variant="contained" onClick={() => handleSave(value, setValue)}>
+            save
+          </Button>
+        </Grid>
+      </Grid>
     </>
   );
 }

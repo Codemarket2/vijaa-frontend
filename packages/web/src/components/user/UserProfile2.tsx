@@ -24,9 +24,9 @@ export default function UserProfile2() {
               <Divider />
             </Grid>
           </Grid>
-          <AutoComplete title="Cancer Type" data={cancerTypes} label="Add Cancer Type" />
-          <AutoComplete title="Doctors " data={drNames} label="Add Doctor Name" />
-          <AutoComplete title="symptoms " data={symptoms} label="Add symptoms " />
+          <AutoComplete buttonTitle="Add Cancer type" data={cancerTypes} title="Cancer Type" />
+          <AutoComplete buttonTitle="Add Doctor" data={drNames} title="Add Doctor" />
+          <AutoComplete buttonTitle="Add symptoms" data={symptoms} title="Add symptoms" />
           <DatePicker />
         </StyledContainer>
       </Paper>
@@ -35,27 +35,24 @@ export default function UserProfile2() {
 }
 
 const drNames = [
-  { title: 'Muzzamil' },
-  { title: 'Simon' },
-  { title: 'Alex' },
-  { title: 'Jennifer' },
-  { title: 'Max' },
+  { title: 'Muzzamil', id: 1 },
+  { title: 'Simon', id: 2 },
+  { title: 'Alex', id: 3 },
+  { title: 'Jennifer', id: 4 },
+  { title: 'Max', id: 5 },
 ];
 
 const symptoms = [
-  { title: 'Pain' },
-  { title: 'Fatigue' },
-  { title: 'Fever' },
-  { title: 'Weight loss without trying.' },
-  { title: 'Changes in your skin.' },
+  { title: 'Pain', id: 1 },
+  { title: 'Fatigue', id: 2 },
+  { title: 'Fever', id: 3 },
+  { title: 'Weight loss without trying.', id: 4 },
+  { title: 'Changes in your skin.', id: 5 },
 ];
 const cancerTypes = [
-  { title: 'Bladder Cancer' },
-  { title: 'Colorectal Cancer' },
-  { title: 'Kidney Cancer' },
-  { title: 'Lung Cancer - Non-Small Cell' },
-  { title: 'Lymphoma - Non-Hodgkin' },
-  { title: 'Melanoma' },
-  { title: 'Oral and Oropharyngeal Cancer' },
-  { title: 'Pancreatic Cancer' },
+  { title: 'Bladder Cancer', id: 1 },
+  { title: 'Colorectal Cancer', id: 2 },
+  { title: 'Kidney Cancer', id: 3 },
+  { title: 'Lung Cancer - Non-Small Cell', id: 4 },
+  { title: 'Lymphoma - Non-Hodgkin', id: 5 },
 ];

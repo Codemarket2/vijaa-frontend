@@ -1,122 +1,89 @@
-import AddBoxOutlinedIcon from '@material-ui/icons/AddBoxOutlined';
-import { Grid, IconButton } from '@material-ui/core';
-import CancelIcon from '@material-ui/icons/Cancel';
+import AddIcon from '@material-ui/icons/Add';
+import { Button } from '@material-ui/core';
 import produce from 'immer';
-import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import React, { useState } from 'react';
-import SaveIcon from '@material-ui/icons/Save';
 
 import AutoCompleteInput from './AutoCompleteInput';
-import CRUDMenu from '../../common/CRUDMenu';
-import {
-  StyledDisplayText,
-  StyledGridContainer,
-  StyledH5,
-  StyledIconDiv,
-  StyledIconGrid,
-  StyledIconGrid2,
-} from '../../../utils/CustomStyledComponents';
-
-interface IPrpos {
-  data: any;
-  label: string;
+import DisplayItems from './DisplayItems';
+interface IProps {
   title: string;
+  buttonTitle: string;
+  data: any;
 }
+export default function AutoComplete({ buttonTitle, data, title }: IProps) {
+  const [showForm, setShowFrom] = useState(false);
+  const [displayItems, setDisplayItems] = useState([]);
 
-export default function AutoComplete({
-  data = [{ title: 'test 1' }, { title: 'test 2' }],
-  label = 'add label',
-  title = 'demo',
-}: IPrpos) {
-  const [showForm, setShowForm] = useState(false);
-  const [displayData, setDisplayData] = useState(false);
-  const [value, setValue] = useState([]);
-
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-
-  const handleCancelForm = () => {
-    setShowForm(!showForm);
-  };
-
-  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-  const handleClose = () => {
-    setAnchorEl(null);
+  const handleCancel = (setValue) => {
+    setValue(null);
+    setShowFrom(false);
   };
 
   const handleDelete = (index) => {
-    setValue(
-      produce(value, (draft) => {
+    setDisplayItems(
+      produce(displayItems, (draft) => {
         draft.splice(index, 1);
       }),
     );
   };
-  const handleEdit = () => {
-    // setShowForm(!showForm);
-    // setDisplayData(!displayData);
+
+  const handleUpdateInput = (item, setEditForm) => (value, setValue) => {
+    if (value !== null) {
+      const index = displayItems.findIndex((index) => index.id === item.id);
+      setDisplayItems(
+        produce(displayItems, (draft) => {
+          draft[index].title = value.title;
+        }),
+      );
+      setValue(null);
+      setEditForm(false);
+    }
   };
 
-  const handleShowFormInput = () => {
-    setShowForm(true);
-    setDisplayData(false);
+  const handleSave = (value, setValue) => {
+    if (value !== null) {
+      setDisplayItems([...displayItems, value]);
+      setValue(null);
+      setShowFrom(false);
+    }
   };
-  const handleSumbit = () => {
-    setShowForm(false);
-    setDisplayData(true);
-  };
-
-  console.log('value');
-  console.log(value);
 
   return (
-    <>
-      <StyledH5>{title}</StyledH5>
-      <StyledIconDiv>
-        <AddBoxOutlinedIcon onClick={handleShowFormInput} />
-        <h6 style={{ marginLeft: 5, fontWeight: 'bold' }}>Add {title}</h6>
-      </StyledIconDiv>
-      {showForm && (
-        <StyledGridContainer container>
-          <Grid item xs={9} sm={10} md={11} lg={11}>
-            <AutoCompleteInput label={label} data={data} setValue={setValue} value={value} />
-          </Grid>
-          <StyledIconGrid item xs={3} sm={2} md={1} lg={1}>
-            <IconButton onClick={handleCancelForm}>
-              <CancelIcon color="secondary" />
-            </IconButton>
-            <IconButton onClick={handleSumbit}>
-              <SaveIcon color="primary" />
-            </IconButton>
-          </StyledIconGrid>
-        </StyledGridContainer>
-      )}
-
-      {displayData && (
-        <>
-          {value.map((item, index) => (
-            <>
-              <StyledIconGrid2 container key={index}>
-                <Grid item xs={11} sm={11} md={11} lg={11}>
-                  {/* <StyledDisplayText>{item.title && item.title}</StyledDisplayText> */}
-                  <h6>{item.title && item.title}</h6>
-                </Grid>
-                <Grid item xs={1} sm={1} md={1} lg={1}>
-                  <IconButton onClick={handleClick}>
-                    <MoreHorizIcon />
-                  </IconButton>
-                  <CRUDMenu
-                    onClose={handleClose}
-                    onEdit={handleEdit}
-                    onDelete={() => handleDelete(index)}
-                    show={anchorEl}
-                  />
-                </Grid>
-              </StyledIconGrid2>
-            </>
-          ))}
-        </>
-      )}
-    </>
+    <div>
+      <h6>{title}</h6>
+      <div style={{ marginBottom: 20 }}>
+        {!showForm && (
+          <Button
+            variant="contained"
+            color="primary"
+            startIcon={<AddIcon />}
+            onClick={() => setShowFrom(!showForm)}>
+            {buttonTitle}
+          </Button>
+        )}
+        {showForm && (
+          <>
+            <AutoCompleteInput
+              handleCancel={handleCancel}
+              handleSave={handleSave}
+              data={data}
+              labelText={buttonTitle}
+            />
+          </>
+        )}
+      </div>
+      {displayItems &&
+        displayItems.map((item, index) => (
+          <div key={item.id}>
+            <DisplayItems
+              index={index}
+              handleDelete={handleDelete}
+              data={data}
+              handleUpdateInput={handleUpdateInput}
+              item={item}
+            />
+          </div>
+        ))}
+    </div>
   );
 }
