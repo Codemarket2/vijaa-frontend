@@ -1,5 +1,9 @@
 import parse from 'html-react-parser';
-import { useGetListTypeBySlug, useDeleteListType } from '@frontend/shared/hooks/list';
+import {
+  useGetListTypeBySlug,
+  useDeleteListType,
+  useCRUDListTypes,
+} from '@frontend/shared/hooks/list';
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
@@ -11,7 +15,6 @@ import Divider from '@material-ui/core/Divider';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import EditIcon from '@material-ui/icons/Edit';
-import { useCRUDListTypes } from '@frontend/shared/hooks/list';
 import UserLayout from '../components/common/UserLayout';
 import Breadcrumbs from '../components/common/Breadcrumbs';
 import ErrorLoading from '../components/common/ErrorLoading';
@@ -81,7 +84,8 @@ export default function Screen({ slug }: IProps) {
 
   if (error || !data) {
     return <ErrorLoading error={error} />;
-  } else if (!data.getListTypeBySlug) {
+  }
+  if (!data.getListTypeBySlug) {
     return <NotFound />;
   }
 
@@ -90,7 +94,7 @@ export default function Screen({ slug }: IProps) {
       <div className="px-3">
         <div className="d-flex justify-content-between align-content-center align-items-center">
           <Breadcrumbs>
-            <Link href="/types">Types</Link>
+            <Link href="/types">Template</Link>
             <Typography color="textPrimary">
               {data.getListTypeBySlug.title.includes('-n-e-w')
                 ? 'Title'
@@ -106,7 +110,8 @@ export default function Screen({ slug }: IProps) {
                     color="primary"
                     size="small"
                     className="mr-2"
-                    onClick={() => setState({ ...state, view: buttonLabel })}>
+                    onClick={() => setState({ ...state, view: buttonLabel })}
+                  >
                     {buttonLabel}
                   </Button>
                 ),

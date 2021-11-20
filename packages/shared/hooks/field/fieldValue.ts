@@ -10,14 +10,13 @@ import {
   DELETE_FIELD_VALUE,
 } from '../../graphql/mutation/field';
 import { fileUpload } from '../../utils/fileUpload';
-// import { client as apolloClient } from '../../graphql';
 import { ADDED_FIELD_VALUE } from '../../graphql/subscription/field';
 import { omitTypename } from '../../utils/omitTypename';
 
 const defaultQueryVariables = { limit: 1000, page: 1 };
 
 export function useCreateFieldValue() {
-  const [createFieldValueMutation, { loading: createLoading }] = useMutation(CREATE_FIELD_VALUE);
+  const [createFieldValueMutation] = useMutation(CREATE_FIELD_VALUE);
   const handleCreateField = async (payload) => {
     return await createFieldValueMutation({
       variables: payload,
@@ -62,21 +61,30 @@ export function useGetFieldValuesByItem({ parentId, field }: any) {
         if (!subscriptionData.data) return prev;
         const newFieldValue = subscriptionData.data.addedFieldValue;
         if (field === newFieldValue.field) {
+          let isNew = true;
+          let newData = prev?.getFieldValuesByItem?.data?.map((t) => {
+            if (t._id === newFieldValue._id) {
+              isNew = false;
+              return newFieldValue;
+            }
+            return t;
+          });
+          if (isNew) {
+            newData = [...prev?.getFieldValuesByItem?.data, newFieldValue];
+          }
           return {
             ...prev,
             getFieldValuesByItem: {
               ...prev.getFieldValuesByItem,
-              data: [newFieldValue, ...prev.getFieldValuesByItem.data],
+              data: newData,
             },
           };
-        } else {
-          return prev;
         }
+        return prev;
       },
     });
   }, []);
 
-  // console.log('data, error, loading', data, error, loading);
   return { data, error, loading };
 }
 
