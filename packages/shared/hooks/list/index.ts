@@ -9,6 +9,7 @@ export {
   useCRUDListItems,
   useGetListItemsByType,
   useGetListItemBySlug,
+  useGetListItemWithFieldBySlug,
   useDeleteListItem,
   useCreateListItem,
 } from './listItems';

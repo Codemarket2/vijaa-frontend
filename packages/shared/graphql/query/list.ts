@@ -82,3 +82,62 @@ export const GET_LIST_ITEM_BY_SLUG = gql`
     }
   }
 `;
+
+export const GET_LIST_ITEM_WITH_FIELD_BY_SLUG = gql`
+  query MyQuery($slug: String!) {
+    getListItemWithFieldsBySlug(slug: $slug) {
+      listItem {
+        _id
+        title
+        slug
+        types {
+          _id
+          slug
+          title
+        }
+        active
+        authenticateUser
+        description
+        media {
+          caption
+          url
+        }
+      }
+      fields {
+        _id
+        position
+        label
+        fieldType
+        multipleValues
+        oneUserMultipleValues
+        typeId {
+          _id
+          title
+          slug
+        }
+        fieldValues {
+          _id
+          parentId
+          field
+          value
+          valueDate
+          valueNumber
+          valueBoolean
+          media {
+            caption
+            url
+          }
+          itemId {
+            _id
+            title
+            slug
+          }
+          createdAt
+          createdBy {
+            _id
+          }
+        }
+      }
+    }
+  }
+`;

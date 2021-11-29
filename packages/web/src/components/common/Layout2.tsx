@@ -1,10 +1,64 @@
 import { ReactNode } from 'react';
-import { useGetListItemBySlug } from '@frontend/shared/hooks/list';
+import { useGetListItemBySlug, useGetListItemWithFieldBySlug } from '@frontend/shared/hooks/list';
 import Skeleton from '@material-ui/lab/Skeleton';
 import FieldValues from '../field/FieldValues';
+import FieldValues2 from '../field/FieldValues2';
 import ErrorLoading from './ErrorLoading';
 import NotFound from './NotFound';
 import AuthRequired from './AuthRequired';
+
+// interface ISectionProps {
+//   slug: string;
+//   checkAuth?: boolean;
+// }
+
+// export function Section({ slug, checkAuth = true }: ISectionProps) {
+//   const { data, error } = useGetListItemBySlug({ slug });
+
+//   if (error || !data) {
+//     return (
+//       <ErrorLoading>
+//         <Skeleton variant="text" height={100} />
+//       </ErrorLoading>
+//     );
+//   }
+
+//   if (!data?.getListItemBySlug && checkAuth) {
+//     return <NotFound />;
+//   }
+//   if (!data?.getListItemBySlug) {
+//     return null;
+//   }
+
+//   const FV = (
+//     <FieldValues
+//       parentId={data?.getListItemBySlug?._id}
+//       typeId={data?.getListItemBySlug?.types[0]?._id}
+//       previewMode
+//       layouts={JSON.parse(data?.getListItemBySlug?.layouts) || {}}
+//     />
+//   );
+
+//   return checkAuth && data?.getListItemBySlug?.authenticateUser ? (
+//     <AuthRequired>{FV}</AuthRequired>
+//   ) : (
+//     FV
+//   );
+// }
+
+// interface IProps {
+//   children: ReactNode;
+// }
+
+// export default function Layout2({ children }: IProps) {
+//   return (
+//     <div>
+//       <Section slug="menu" checkAuth={false} />
+//       <div className="container">{children}</div>
+//       <Section slug="footer" checkAuth={false} />
+//     </div>
+//   );
+// }
 
 interface ISectionProps {
   slug: string;
@@ -12,7 +66,7 @@ interface ISectionProps {
 }
 
 export function Section({ slug, checkAuth = true }: ISectionProps) {
-  const { data, error } = useGetListItemBySlug({ slug });
+  const { data, error } = useGetListItemWithFieldBySlug({ slug });
 
   if (error || !data) {
     return (
@@ -22,23 +76,24 @@ export function Section({ slug, checkAuth = true }: ISectionProps) {
     );
   }
 
-  if (!data?.getListItemBySlug && checkAuth) {
+  if (!data?.getListItemWithFieldsBySlug?.listItem && checkAuth) {
     return <NotFound />;
   }
-  if (!data?.getListItemBySlug) {
+  if (!data?.getListItemWithFieldsBySlug?.listItem) {
     return null;
   }
 
   const FV = (
-    <FieldValues
-      parentId={data?.getListItemBySlug?._id}
-      typeId={data?.getListItemBySlug?.types[0]?._id}
+    <FieldValues2
+      parentId={data?.getListItemWithFieldsBySlug?.listItem?._id}
+      typeId={data?.getListItemWithFieldsBySlug?.listItem?.types[0]?._id}
+      payload={data?.getListItemWithFieldsBySlug?.fields}
       previewMode
-      layouts={JSON.parse(data?.getListItemBySlug?.layouts) || {}}
+      layouts={JSON.parse(data?.getListItemWithFieldsBySlug?.listItem?.layouts) || {}}
     />
   );
 
-  return checkAuth && data?.getListItemBySlug?.authenticateUser ? (
+  return checkAuth && data?.getListItemWithFieldsBySlug?.listItem?.authenticateUser ? (
     <AuthRequired>{FV}</AuthRequired>
   ) : (
     FV
