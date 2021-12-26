@@ -1,6 +1,6 @@
 import { useUpdateForm } from '@frontend/shared/hooks/form';
 import { useGetResponses } from '@frontend/shared/hooks/response';
-import { Button, Modal, Typography } from '@material-ui/core';
+import { Backdrop, Button, Fade, Modal, Typography } from '@material-ui/core';
 import { useState } from 'react';
 import { onAlert } from '../../utils/alert';
 import ErrorLoading from '../common/ErrorLoading';
@@ -34,12 +34,19 @@ export default function ResponseCount({ formId }: IProps): any {
       {state && !error && (
         <>
           <Modal
+            aria-labelledby="transition-modal-title"
+            aria-describedby="transition-modal-description"
             open={open}
             onClose={handleClose}
-            aria-labelledby="modal-modal-title"
-            aria-describedby="modal-modal-description"
+            closeAfterTransition
+            BackdropComponent={Backdrop}
+            BackdropProps={{
+              timeout: 700,
+            }}
           >
-            <ResponseList form={state} />
+            <Fade in={open}>
+              <ResponseList form={state} />
+            </Fade>
           </Modal>
         </>
       )}
