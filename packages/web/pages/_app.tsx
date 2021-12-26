@@ -69,8 +69,6 @@ function App({ Component, pageProps }: AppProps) {
   });
 
   useEffect(() => {
-    
-
     const jssStyles = document.querySelector('#jss-server-side');
     if (jssStyles && jssStyles.parentNode) {
       jssStyles.parentNode.removeChild(jssStyles);
@@ -94,7 +92,7 @@ function App({ Component, pageProps }: AppProps) {
     });
   }, []);
 
-  useOneSignal();
+  // useOneSignal();
 
   return (
     <ApolloProvider client={authenticated ? client : guestClient}>
