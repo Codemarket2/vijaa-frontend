@@ -20,7 +20,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 import '../src/assets/css/ckeditor.css';
 import '../src/assets/css/common.css';
-import OneSignal from 'react-onesignal';
+
+import { useOneSignal } from '../src/components/notification/onesignal';
 
 const customsSignInUrl =
   process.env.NODE_ENV === 'development' ? 'http://localhost:3000/' : 'https://www.vijaa.com/';
@@ -44,6 +45,7 @@ function App({ Component, pageProps }: AppProps) {
   const { darkMode, authenticated } = useSelector(({ auth }: any) => auth);
 
   useLogoHook();
+
   const theme = createMuiTheme({
     palette: darkMode ? dark : light,
     typography: {
@@ -67,9 +69,7 @@ function App({ Component, pageProps }: AppProps) {
   });
 
   useEffect(() => {
-    OneSignal.init({
-      appId: '4df61c29-3a8e-4f98-911d-f07d6c28cfa1',
-    });
+    
 
     const jssStyles = document.querySelector('#jss-server-side');
     if (jssStyles && jssStyles.parentNode) {
@@ -93,6 +93,8 @@ function App({ Component, pageProps }: AppProps) {
       }
     });
   }, []);
+
+  useOneSignal();
 
   return (
     <ApolloProvider client={authenticated ? client : guestClient}>
