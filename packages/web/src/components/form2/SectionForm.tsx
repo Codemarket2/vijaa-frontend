@@ -19,6 +19,7 @@ import Backdrop from '../common/Backdrop';
 import EditFormDrawer from './EditFormDrawer';
 import FieldViewWrapper from './FieldViewWrapper';
 import { onAlert } from '../../utils/alert';
+import SelectFormDrawer from './SelectFormDrawer';
 
 interface IProps {
   field: any;
@@ -29,12 +30,15 @@ interface IProps {
 const initialState = {
   show: null,
   fieldId: null,
+  edit: false,
+  select: false,
   backdrop: false,
 };
 
 export default function FormC({ field, parentId, previewMode = false }: IProps): any {
   const [state, setState] = useState(initialState);
   const { data, error } = useGetFieldValuesByItem({ parentId, field: field._id });
+  console.log(data)
   const { handleCreateField } = useCreateFieldValue();
   const { handleUpdateField } = useUpdateFieldValue();
   const { handleCreateForm } = useCreateForm({ onAlert });
@@ -64,8 +68,20 @@ export default function FormC({ field, parentId, previewMode = false }: IProps):
         const response = await handleCreateField(payload);
         fieldId = response?.data?.createFieldValue?.value;
       }
-      setState({ ...initialState, fieldId });
+      setState({ ...initialState, edit: true, fieldId });
     } catch (err) {
+      alert(`Error ${err.message}`);
+      setState({ ...state, backdrop: false });
+    }
+  };
+
+  const handleSelectForm = async () => {
+    try {
+      setState({ ...initialState, backdrop: true });
+      const fieldId = data?.getFieldValuesByItem?.data[0]?.value
+      setState({ ...initialState, select: true, fieldId });
+    }
+    catch (err) {
       alert(`Error ${err.message}`);
       setState({ ...state, backdrop: false });
     }
@@ -76,6 +92,7 @@ export default function FormC({ field, parentId, previewMode = false }: IProps):
   }
   return (
     <div>
+
       {!previewMode && (
         <>
           <Divider />
@@ -100,13 +117,18 @@ export default function FormC({ field, parentId, previewMode = false }: IProps):
           </ListItemIcon>
           <ListItemText primary="Edit Form" />
         </MenuItem>
+        <MenuItem onClick={handleSelectForm}>
+          <ListItemIcon className="mr-n4">
+            <TuneIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText primary="Select Form" />
+        </MenuItem>
       </Menu>
       {data?.getFieldValuesByItem?.data[0]?.value && (
         <FieldViewWrapper _id={data?.getFieldValuesByItem?.data[0]?.value} />
       )}
-      {state.fieldId && (
-        <EditFormDrawer formId={state.fieldId} open onClose={() => setState(initialState)} />
-      )}
+      {state.fieldId && state.edit && (<EditFormDrawer formId={state.fieldId} open onClose={() => setState(initialState)} />)}
+      {state.select && (<SelectFormDrawer formData={data} field={field._id} parentId={parentId} open onClose={() => setState(initialState)} />)}
       {state.backdrop && <Backdrop open={state.backdrop} />}
     </div>
   );
