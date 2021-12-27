@@ -44,6 +44,7 @@ function App({ Component, pageProps }: AppProps) {
   const { getUser } = useCurrentAuthenticatedUser();
   const { darkMode, authenticated } = useSelector(({ auth }: any) => auth);
 
+  useOneSignal();
   useLogoHook();
 
   const theme = createMuiTheme({
@@ -91,8 +92,6 @@ function App({ Component, pageProps }: AppProps) {
       }
     });
   }, []);
-
-  // useOneSignal();
 
   return (
     <ApolloProvider client={authenticated ? client : guestClient}>

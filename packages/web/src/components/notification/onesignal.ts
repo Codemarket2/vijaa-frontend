@@ -6,8 +6,7 @@ export const useOneSignal = () => {
   const { authenticated, attributes } = useSelector(({ auth }: any) => auth);
   useEffect(() => {
     OneSignal.init({
-      appId: '4df61c29-3a8e-4f98-911d-f07d6c28cfa1', //deployed
-      // appId: 'fef9838f-e7e4-4ab6-9ffc-d39416678a02', // Localhost
+      appId: 'd7a822b5-a821-460f-a60a-86d08d19e8f0', //deployed api key will be replaced by env
     });
   }, []);
   useEffect(() => {
