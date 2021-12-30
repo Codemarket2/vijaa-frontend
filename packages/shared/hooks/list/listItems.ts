@@ -17,6 +17,7 @@ import { fileUpload } from '../../utils/fileUpload';
 import { omitTypename } from '../../utils/omitTypename';
 import { ADDED_LIST_ITEM, UPDATED_LIST_ITEM } from '../../graphql/subscription/list';
 import { updateLikeInCache } from '../like/createLike';
+import { parseListType } from './listTypes';
 
 const defaultGetListItems = { limit: 100, page: 1 };
 
@@ -25,6 +26,7 @@ export function useGetListItemsByType({ types = [] }: any) {
     search: '',
     showSearch: false,
   });
+  const [subscribed, setSubscribed] = useState(false);
   const { data, error, loading, subscribeToMore } = useQuery(GET_LIST_ITEMS_BY_TYPE, {
     variables: { ...defaultGetListItems, types, search: state.search },
     fetchPolicy: 'cache-and-network',
@@ -33,34 +35,37 @@ export function useGetListItemsByType({ types = [] }: any) {
   // console.log('data, loading, error', data, loading, error);
 
   useEffect(() => {
-    subscribeToMore({
-      document: ADDED_LIST_ITEM,
-      updateQuery: (prev, { subscriptionData }) => {
-        if (!subscriptionData.data) return prev;
-        const newListItem = subscriptionData.data.addedListItem;
-        if (types[0] === newListItem.addedListItem?.types[0]?._id) {
-          updateLikeInCache(newListItem._id, 1);
-          let isNew = true;
-          let newData = prev?.getListItems?.data?.map((t) => {
-            if (t._id === newListItem._id) {
-              isNew = false;
-              return newListItem;
+    if (!subscribed) {
+      setSubscribed(true);
+      subscribeToMore({
+        document: ADDED_LIST_ITEM,
+        updateQuery: (prev, { subscriptionData }) => {
+          if (!subscriptionData.data) return prev;
+          const newListItem = subscriptionData.data.addedListItem;
+          if (types[0] === newListItem.addedListItem?.types[0]?._id) {
+            updateLikeInCache(newListItem._id, 1);
+            let isNew = true;
+            let newData = prev?.getListItems?.data?.map((t) => {
+              if (t._id === newListItem._id) {
+                isNew = false;
+                return newListItem;
+              }
+              return t;
+            });
+            if (isNew) {
+              newData = [...prev?.getListTypes?.data, newListItem];
             }
-            return t;
-          });
-          if (isNew) {
-            newData = [...prev?.getListTypes?.data, newListItem];
+            return {
+              ...prev,
+              getListItems: {
+                ...prev.getListItems,
+                data: newData,
+              },
+            };
           }
-          return {
-            ...prev,
-            getListItems: {
-              ...prev.getListItems,
-              data: newData,
-            },
-          };
-        }
-      },
-    });
+        },
+      });
+    }
   }, []);
 
   return { data, error, loading, state, setState };
@@ -69,15 +74,24 @@ export function useGetListItemsByType({ types = [] }: any) {
 export function useGetListItemBySlug({ slug }: any) {
   const { data, error, loading, subscribeToMore } = useQuery(GET_LIST_ITEM_BY_SLUG, {
     variables: { slug },
-    fetchPolicy: 'cache-and-network',
+    // fetchPolicy: 'cache-only',
   });
   const [subscribed, setSubscribed] = useState(false);
+  const [lisItem, setListItem] = useState(null);
+
+  useEffect(() => {
+    if (data && data?.getListItemBySlug) {
+      setListItem(parseListType(data.getListItemBySlug));
+    }
+  }, [data]);
+
   useEffect(() => {
     if (data && data.getListItemBySlug && !subscribed) {
+      setSubscribed(true);
       subscribeToMore({
         document: UPDATED_LIST_ITEM,
         variables: {
-          _id: data.getListItemBySlug._id,
+          _id: data.getListItemBySlug?._id,
         },
         updateQuery: (prev, { subscriptionData }) => {
           if (!subscriptionData.data) return prev;
@@ -91,11 +105,10 @@ export function useGetListItemBySlug({ slug }: any) {
           };
         },
       });
-      setSubscribed(true);
     }
   }, [data]);
 
-  return { data, error, loading };
+  return { data: lisItem ? { getListItemBySlug: lisItem } : null, error, loading };
 }
 
 const listItemsValidationSchema = yup.object({

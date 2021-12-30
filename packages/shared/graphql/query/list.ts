@@ -56,6 +56,17 @@ export const GET_LIST_TYPE_BY_SLUG = gql`
       }
       inUse
       active
+      fields {
+        _id
+        label
+        fieldType
+        options
+        typeId {
+          _id
+          title
+          slug
+        }
+      }
     }
   }
 `;
@@ -80,6 +91,17 @@ export const GET_LIST_ITEM_BY_SLUG = gql`
         slug
       }
       createdBy
+      fields {
+        _id
+        label
+        fieldType
+        options
+        typeId {
+          _id
+          title
+          slug
+        }
+      }
     }
   }
 `;
