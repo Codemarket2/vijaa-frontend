@@ -16,10 +16,8 @@ import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import OutlinedInput from '@material-ui/core/OutlinedInput';
 import InputAdornment from '@material-ui/core/InputAdornment';
-import Input from '@material-ui/core/Input';
-import TextField from '@material-ui/core/TextField';
 import InputGroup from '../common/InputGroup';
-import { fieldTypes } from './AddField';
+import { fieldTypes, sectionFieldTypes } from './AddField';
 import TypesAutocomplete from './TypesAutocomplete';
 import InlineInput from '../common/InlineInput';
 
@@ -27,9 +25,15 @@ type TProps = {
   field: any;
   onFieldChange: (newValue: any) => void;
   onClose: () => void;
+  isSection?: boolean;
 };
 
-export default function FormFields({ onFieldChange, field, onClose }: TProps): any {
+export default function FormFields({
+  onFieldChange,
+  field,
+  onClose,
+  isSection = false,
+}: TProps): any {
   const onOptionChange = (updatedOption) => {
     onFieldChange({ ...field, options: { ...field.options, ...updatedOption } });
   };
@@ -63,11 +67,13 @@ export default function FormFields({ onFieldChange, field, onClose }: TProps): a
               onChange={(e) => onFieldChange({ ...field, fieldType: e.target.value })}
               label="Field Type"
             >
-              {fieldTypes?.map((option, index) => (
-                <MenuItem value={option.value} key={index}>
-                  {option.label}
-                </MenuItem>
-              ))}
+              {(isSection ? [...fieldTypes, ...sectionFieldTypes] : fieldTypes)?.map(
+                (option, index) => (
+                  <MenuItem value={option.value} key={index}>
+                    {option.label}
+                  </MenuItem>
+                ),
+              )}
             </Select>
           </FormControl>
         </InputGroup>
@@ -118,6 +124,19 @@ export default function FormFields({ onFieldChange, field, onClose }: TProps): a
               />
             }
             label="Half Width"
+          />
+        </InputGroup>
+        <InputGroup>
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={field?.options?.showCommentBox}
+                onChange={({ target }) => onOptionChange({ showCommentBox: target.checked })}
+                name="showCommentBox"
+                color="primary"
+              />
+            }
+            label="Show CommentBox"
           />
         </InputGroup>
         {field.fieldType === 'select' && (

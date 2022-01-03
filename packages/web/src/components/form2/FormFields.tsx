@@ -13,6 +13,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import MenuItem from '@material-ui/core/MenuItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
+import GridIcon from '@material-ui/icons/GridOn';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
 import { generateObjectId } from '@frontend/shared/utils/objectId';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
@@ -20,6 +21,7 @@ import { useState } from 'react';
 import CRUDMenu from '../common/CRUDMenu';
 import AddField from './AddField';
 import EditField from './EditField';
+import EditFieldGrid from './EditFieldGrid';
 
 const reorder = (list, startIndex, endIndex) => {
   const result = Array.from(list);
@@ -32,15 +34,22 @@ const initialValues = {
   showMenu: null,
   field: null,
   showForm: false,
+  editGrid: false,
 };
 
 type IProps = {
   fields: any[];
   setFields: (newFields: any[]) => void;
   title?: string;
+  isSection?: boolean;
 };
 
-export default function FormFields({ fields = [], setFields, title = 'Fields' }: IProps): any {
+export default function FormFields({
+  fields = [],
+  setFields,
+  title = 'Fields',
+  isSection = false,
+}: IProps): any {
   const [values, setValues] = useState(initialValues);
 
   function onDragEnd(result) {
@@ -82,7 +91,17 @@ export default function FormFields({ fields = [], setFields, title = 'Fields' }:
 
   return (
     <Paper variant="outlined">
-      {values.showForm && values.field ? (
+      {values.editGrid ? (
+        <EditFieldGrid
+          field={fields.filter((f) => f._id === values.field._id)[0]}
+          onFieldChange={(updatedField) => {
+            setFields(
+              fields?.map((field) => (field._id === updatedField._id ? updatedField : field)),
+            );
+          }}
+          onClose={() => setValues(initialValues)}
+        />
+      ) : values.showForm && values.field ? (
         <EditField
           field={fields.filter((f) => f._id === values.field._id)[0]}
           onFieldChange={(updatedField) => {
@@ -91,6 +110,7 @@ export default function FormFields({ fields = [], setFields, title = 'Fields' }:
             );
           }}
           onClose={() => setValues(initialValues)}
+          isSection
         />
       ) : (
         <>
@@ -111,9 +131,10 @@ export default function FormFields({ fields = [], setFields, title = 'Fields' }:
               field={values.field}
               onSave={onSave}
               onCancel={() => setValues(initialValues)}
+              isSection={isSection}
             />
           )}
-          <List>
+          <List dense>
             <DragDropContext onDragEnd={onDragEnd}>
               <Droppable droppableId="list">
                 {(provided, snapshot) => (
@@ -177,6 +198,12 @@ export default function FormFields({ fields = [], setFields, title = 'Fields' }:
                 <FileCopyIcon fontSize="small" />
               </ListItemIcon>
               <ListItemText primary="Duplicate" />
+            </MenuItem>
+            <MenuItem onClick={() => setValues({ ...values, editGrid: true })}>
+              <ListItemIcon className="mr-n4">
+                <GridIcon fontSize="small" />
+              </ListItemIcon>
+              <ListItemText primary="Grid" />
             </MenuItem>
           </CRUDMenu>
         </>
