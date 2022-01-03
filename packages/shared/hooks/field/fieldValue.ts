@@ -167,6 +167,7 @@ interface ICRUDProps extends IHooksProps {
   parentId: string;
   field: string;
   fieldType: string;
+  relationId: string;
   createCallback: () => void;
 }
 
@@ -174,6 +175,7 @@ export function useCRUDFieldValue({
   onAlert,
   parentId,
   field,
+  relationId,
   fieldType,
   createCallback,
 }: ICRUDProps) {
@@ -230,6 +232,17 @@ export function useCRUDFieldValue({
         data: newData,
       });
     };
+
+    if (relationId && payload.itemId) {
+      const relationPayload = {
+        parentId: payload.itemId,
+        field: relationId,
+        itemId: payload.parentId,
+      };
+      const response = await createFieldValueMutation({
+        variables: relationPayload,
+      });
+    }
     return await createFieldValueMutation({
       variables: payload,
       update: updateCache,

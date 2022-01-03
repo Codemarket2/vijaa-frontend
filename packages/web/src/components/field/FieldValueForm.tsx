@@ -28,6 +28,7 @@ interface IProps {
   onCancel: () => void;
   parentId: any;
   field: any;
+  relationId: string;
   fieldValue?: any;
   label: string;
   fieldType: string;
@@ -40,6 +41,7 @@ export default function ItemFieldForm({
   onCancel,
   parentId = null,
   field = null,
+  relationId = null,
   fieldValue = null,
   fieldType,
   label = 'Value',
@@ -58,6 +60,7 @@ export default function ItemFieldForm({
     onAlert,
     parentId,
     field,
+    relationId,
     createCallback: onCancel,
     fieldType,
   });

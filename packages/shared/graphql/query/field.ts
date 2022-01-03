@@ -7,6 +7,7 @@ export const GET_FIELDS_BY_TYPE = gql`
       data {
         _id
         position
+        relationId
         label
         fieldType
         multipleValues

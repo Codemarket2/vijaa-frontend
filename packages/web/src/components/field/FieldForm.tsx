@@ -11,7 +11,9 @@ import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 import { useCRUDFields } from '@frontend/shared/hooks/field';
+
 import { useGetListTypes } from '@frontend/shared/hooks/list';
+
 import InputGroup from '../common/InputGroup';
 import LoadingButton from '../common/LoadingButton';
 import ErrorLoading from '../common/ErrorLoading';
@@ -106,35 +108,51 @@ export default function FieldForm({
         </FormControl>
       </InputGroup>
       {formik.values.fieldType === 'type' && (
-        <InputGroup>
-          {error ? (
-            <ErrorLoading error={error} />
-          ) : (
-            <Autocomplete
+        <>
+          <InputGroup>
+            {error ? (
+              <ErrorLoading error={error} />
+            ) : (
+              <Autocomplete
+                disabled={formik.isSubmitting}
+                value={formik.values.typeId}
+                onChange={(event: any, newValue) => {
+                  formik.setFieldValue('typeId', newValue);
+                }}
+                getOptionLabel={(option) => option.title}
+                inputValue={state.search}
+                onInputChange={(event, newInputValue) => {
+                  setState({ ...state, search: newInputValue });
+                }}
+                options={data && data.getListTypes ? data.getListTypes.data : []}
+                renderInput={(params) => (
+                  <TextField
+                    fullWidth
+                    {...params}
+                    label="Select Type"
+                    variant="outlined"
+                    error={formik.touched.typeId && Boolean(formik.errors.typeId)}
+                    helperText={formik.touched.typeId && formik.errors.typeId}
+                  />
+                )}
+              />
+            )}
+          </InputGroup>
+          <InputGroup>
+            <TextField
+              fullWidth
+              label="Field Label"
+              variant="outlined"
+              name="fieldLabel"
+              size="small"
               disabled={formik.isSubmitting}
-              value={formik.values.typeId}
-              onChange={(event: any, newValue) => {
-                formik.setFieldValue('typeId', newValue);
-              }}
-              getOptionLabel={(option) => option.title}
-              inputValue={state.search}
-              onInputChange={(event, newInputValue) => {
-                setState({ ...state, search: newInputValue });
-              }}
-              options={data && data.getListTypes ? data.getListTypes.data : []}
-              renderInput={(params) => (
-                <TextField
-                  fullWidth
-                  {...params}
-                  label="Select Type"
-                  variant="outlined"
-                  error={formik.touched.typeId && Boolean(formik.errors.typeId)}
-                  helperText={formik.touched.typeId && formik.errors.typeId}
-                />
-              )}
+              value={formik.values.fieldLabel}
+              onChange={formik.handleChange}
+              error={formik.touched.fieldLabel && Boolean(formik.errors.fieldLabel)}
+              helperText={formik.touched.fieldLabel && formik.errors.fieldLabel}
             />
-          )}
-        </InputGroup>
+          </InputGroup>
+        </>
       )}
       {!(formik.values.fieldType === 'form') && (
         <>

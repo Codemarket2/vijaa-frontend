@@ -3,22 +3,27 @@ import { gql } from '@apollo/client';
 export const CREATE_FIELD = gql`
   mutation MyMutation(
     $parentId: ID!
+    $_id: ID
     $label: String!
     $fieldType: String!
     $typeId: ID
     $multipleValues: Boolean
     $oneUserMultipleValues: Boolean
+    $relationId: ID
   ) {
     createField(
+      _id: $_id
       parentId: $parentId
       label: $label
       fieldType: $fieldType
       typeId: $typeId
       multipleValues: $multipleValues
       oneUserMultipleValues: $oneUserMultipleValues
+      relationId: $relationId
     ) {
       _id
       parentId
+      relationId
       position
       label
       fieldType
@@ -36,6 +41,7 @@ export const CREATE_FIELD = gql`
 export const UPDATE_FIELD = gql`
   mutation MyMutation(
     $_id: ID!
+    $relationId: ID
     $label: String
     $fieldType: String
     $typeId: ID
@@ -44,6 +50,7 @@ export const UPDATE_FIELD = gql`
   ) {
     updateField(
       _id: $_id
+      relationId: $relationId
       label: $label
       fieldType: $fieldType
       typeId: $typeId
@@ -51,6 +58,43 @@ export const UPDATE_FIELD = gql`
       oneUserMultipleValues: $oneUserMultipleValues
     ) {
       _id
+      relationId
+      parentId
+      position
+      label
+      fieldType
+      typeId {
+        _id
+        title
+        slug
+      }
+      multipleValues
+      oneUserMultipleValues
+    }
+  }
+`;
+
+export const UPDATE_FIELD_BY_RELATION_ID = gql`
+  mutation MyMutation(
+    $parentId: ID!
+    $relationId: ID!
+    $label: String
+    $fieldType: String
+    $multipleValues: Boolean
+    $oneUserMultipleValues: Boolean
+    $typeId: ID
+  ) {
+    updateFieldByRelationId(
+      parentId: $parentId
+      relationId: $relationId
+      label: $label
+      fieldType: $fieldType
+      typeId: $typeId
+      multipleValues: $multipleValues
+      oneUserMultipleValues: $oneUserMultipleValues
+    ) {
+      _id
+      relationId
       parentId
       position
       label

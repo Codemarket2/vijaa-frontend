@@ -66,6 +66,7 @@ function ItemOneFields({
 
   const formProps = {
     field: field._id,
+    relationId: field.relationId,
     parentId,
     typeId: field.typeId ? field.typeId._id : null,
     typeSlug: field.typeId ? field.typeId.slug : null,

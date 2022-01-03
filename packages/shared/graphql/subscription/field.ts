@@ -5,6 +5,7 @@ export const ADDED_FIELD = gql`
     addedField(parentId: $parentId) {
       _id
       parentId
+      relationId
       position
       label
       fieldType

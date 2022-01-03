@@ -7,11 +7,13 @@ import { client as apolloClient } from '../../graphql';
 import {
   CREATE_FIELD,
   UPDATE_FIELD,
+  UPDATE_FIELD_BY_RELATION_ID,
   DELETE_FIELD,
   UPDATE_FIELD_POSITION,
 } from '../../graphql/mutation/field';
 import { IHooksProps } from '../../types/common';
 import { ADDED_FIELD } from '../../graphql/subscription/field';
+import { generateObjectId } from '@frontend/shared/utils/objectId';
 
 const defaultQueryVariables = { limit: 1000, page: 1 };
 
@@ -67,6 +69,11 @@ const validationSchema = yup.object({
     then: yup.object().nullable(true).required('Type is required'),
     otherwise: yup.object().nullable(true),
   }),
+  fieldLabel: yup.string().when('fieldType', {
+    is: (value) => value === 'type',
+    then: yup.string().required('Required'),
+    otherwise: yup.string().nullable(true),
+  }),
 });
 
 interface IFormValues {
@@ -78,6 +85,8 @@ interface IFormValues {
   typeId: any;
   multipleValues: boolean;
   oneUserMultipleValues: boolean;
+  fieldLabel: string;
+  relationId?: string;
 }
 
 const defaultFormValues = {
@@ -89,6 +98,7 @@ const defaultFormValues = {
   typeId: null,
   multipleValues: false,
   oneUserMultipleValues: false,
+  fieldLabel: '',
 };
 
 interface ICRUDProps extends IHooksProps {
@@ -99,6 +109,9 @@ interface ICRUDProps extends IHooksProps {
 export function useCRUDFields({ onAlert, parentId, createCallback }: ICRUDProps) {
   const [createFieldMutation, { loading: createLoading }] = useMutation(CREATE_FIELD);
   const [updateFieldMutation, { loading: updateLoading }] = useMutation(UPDATE_FIELD);
+  const [updateFieldByRelationId, { loading: updateFieldLoading }] = useMutation(
+    UPDATE_FIELD_BY_RELATION_ID,
+  );
 
   const formik = useFormik({
     initialValues: { ...defaultFormValues, parentId },
@@ -141,8 +154,26 @@ export function useCRUDFields({ onAlert, parentId, createCallback }: ICRUDProps)
         data: newData,
       });
     };
+    let newPayload = { ...payload };
+    newPayload._id = generateObjectId();
+    if (newPayload.fieldType === 'type') {
+      const relationPayload: any = {
+        parentId: newPayload.typeId,
+        label: newPayload.fieldLabel,
+        fieldType: newPayload.fieldType,
+        typeId: newPayload.parentId,
+        relationId: newPayload._id,
+      };
+      relationPayload._id = generateObjectId();
+      newPayload.relationId = relationPayload._id;
+
+      const response = await createFieldMutation({
+        variables: relationPayload,
+      });
+      console.log('response', response);
+    }
     return await createFieldMutation({
-      variables: payload,
+      variables: newPayload,
       update: updateCache,
     });
   };
@@ -167,8 +198,27 @@ export function useCRUDFields({ onAlert, parentId, createCallback }: ICRUDProps)
         data: newData,
       });
     };
+    let newPayload = { ...payload };
+    console.log('payload', payload);
+    if (newPayload.fieldType === 'type') {
+      const relationPayload: any = {
+        parentId: newPayload.typeId,
+        relationId: newPayload._id,
+        label: newPayload.fieldLabel,
+        fieldType: newPayload.fieldType,
+        typeId: newPayload.parentId,
+      };
+      if (payload.relationId) {
+        relationPayload._id = payload.relationId;
+      }
+      const response = await updateFieldByRelationId({
+        variables: relationPayload,
+      });
+      newPayload.relationId = response?.data?.updateField?._id;
+    }
+
     return await updateFieldMutation({
-      variables: payload,
+      variables: newPayload,
       update: updateInCache,
     });
   };
