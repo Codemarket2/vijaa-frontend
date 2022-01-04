@@ -5,6 +5,7 @@ export const CREATE_FIELD = gql`
     $parentId: ID!
     $_id: ID
     $label: String!
+    $fieldLabel: String
     $fieldType: String!
     $typeId: ID
     $multipleValues: Boolean
@@ -15,6 +16,7 @@ export const CREATE_FIELD = gql`
       _id: $_id
       parentId: $parentId
       label: $label
+      fieldLabel: $fieldLabel
       fieldType: $fieldType
       typeId: $typeId
       multipleValues: $multipleValues
@@ -26,6 +28,7 @@ export const CREATE_FIELD = gql`
       relationId
       position
       label
+      fieldLabel
       fieldType
       typeId {
         _id
@@ -43,6 +46,7 @@ export const UPDATE_FIELD = gql`
     $_id: ID!
     $relationId: ID
     $label: String
+    $fieldLabel: String
     $fieldType: String
     $typeId: ID
     $multipleValues: Boolean
@@ -52,6 +56,7 @@ export const UPDATE_FIELD = gql`
       _id: $_id
       relationId: $relationId
       label: $label
+      fieldLabel: $fieldLabel
       fieldType: $fieldType
       typeId: $typeId
       multipleValues: $multipleValues
@@ -62,6 +67,7 @@ export const UPDATE_FIELD = gql`
       parentId
       position
       label
+      fieldLabel
       fieldType
       typeId {
         _id
@@ -79,6 +85,7 @@ export const UPDATE_FIELD_BY_RELATION_ID = gql`
     $parentId: ID!
     $relationId: ID!
     $label: String
+    # $fieldLabel: fieldLabel
     $fieldType: String
     $multipleValues: Boolean
     $oneUserMultipleValues: Boolean
@@ -98,6 +105,7 @@ export const UPDATE_FIELD_BY_RELATION_ID = gql`
       parentId
       position
       label
+      fieldLabel
       fieldType
       typeId {
         _id
@@ -131,6 +139,12 @@ export const UPDATE_FIELD_POSITION = gql`
 export const DELETE_FIELD = gql`
   mutation MyMutation($_id: ID!) {
     deleteField(_id: $_id)
+  }
+`;
+
+export const DELETE_FIELD_BY_RELATION_ID = gql`
+  mutation MyMutation($relationId: ID!) {
+    deleteFieldByRelationId(relationId: $relationId)
   }
 `;
 
