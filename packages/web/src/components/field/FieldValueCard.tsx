@@ -8,7 +8,9 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import EditIcon from '@material-ui/icons/Edit';
 import moment from 'moment';
 import Link from 'next/link';
+import { onAlert } from '../../utils/alert';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
+import StyleDrawer from '../style/StyleDrawer';
 import { useRouter } from 'next/router';
 import ItemScreen from '../list/ItemScreen';
 import ImageList from '../post/ImageList';
@@ -17,6 +19,7 @@ import SingleComment from '../comment/SingleComment';
 import { convertToSlug } from './LeftNavigation';
 import DisplayRichText from '../common/DisplayRichText';
 import Overlay from '../common/Overlay';
+import { useUpdateListItemSettings } from '@frontend/shared/hooks/list';
 
 interface IProps {
   fieldValue: any;
@@ -24,23 +27,60 @@ interface IProps {
   onSelect?: (arg1: any, arg2: any) => void;
   index?: any;
   previewMode?: boolean;
+  drawer?: boolean;
 }
+
+const initialState = {
+  drawer: false,
+  expandedItem: false,
+  itemId: '',
+};
 
 export default function FieldValueCard({
   fieldValue,
   field,
   index,
   onSelect,
+  drawer,
   previewMode = false,
 }: IProps): any {
   const [state, setState] = useState({
-    expandedItem: false,
-    itemId: '',
+    ...initialState,
   });
   const { query } = useRouter();
+  // console.log(query);
   const [showHideComments, setShowHideComments] = useState(false);
   const auth = useSelector(({ auth }: any) => auth);
+  const listItem = { ...field, slug: query.itemSlug };
+  // console.log(listItem);
+  const { onSettingsChange } = useUpdateListItemSettings({ listItem, onAlert });
+  const handleRemoveStyle = (field: any, styleKey: string) => {
+    if (field?.options?.style) {
+      const { [styleKey]: removedStyle, ...restStyles } = field?.options?.style;
+      handleEditStyle(field._id, restStyles);
+    }
+  };
+  const handleSubmit = (fieldId: string, values: any) => {
+    onSettingsChange(
+      listItem?.fields.map((field) =>
+        field._id === fieldId ? { ...field, options: { ...field?.options, values } } : field,
+      ),
+    );
+    setState(initialState);
+  };
 
+  const handleEditStyle = (fieldId: string, style: any) => {
+    onSettingsChange([
+      {
+        ...field,
+        settings: {
+          ...field?.settings,
+          styles: { [fieldId]: style },
+        },
+      },
+    ]);
+  };
+  // console.log(field);
   return (
     <div>
       {!previewMode && (auth.admin || auth.attributes['custom:_id'] === fieldValue.createdBy._id) && (
@@ -50,6 +90,24 @@ export default function FieldValueCard({
           </IconButton>
         </div>
       )}
+      {/* {drawer && ( */}
+      <StyleDrawer
+        onClose={() => setState(initialState)}
+        open={true}
+        styles={field?.options?.style || {}}
+        handleResetStyle={() => handleEditStyle(field._id, {})}
+        onStyleChange={(value) =>
+          handleEditStyle(
+            field._id,
+            field?.settings?.styles?.field._id
+              ? { ...field?.settings?.styles?.field._id, ...value }
+              : value,
+          )
+        }
+        removeStyle={(styleKey) => handleRemoveStyle(field, styleKey)}
+      />
+      {/* )} */}
+      {/* {console.log(field.settings)} */}
       <div>
         {field.fieldType === 'date' ? (
           moment(fieldValue.valueDate).format('L')

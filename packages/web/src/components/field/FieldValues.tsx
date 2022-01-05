@@ -13,6 +13,7 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
+import EditIcon from '@material-ui/icons/Edit';
 import {
   useGetFieldValuesByItem,
   useGetFieldsByType,
@@ -38,6 +39,7 @@ const initialState = {
   expandId: '',
   showAddMenu: false,
   addTarget: null,
+  drawer: false,
 };
 
 function ItemOneFields({
@@ -56,8 +58,9 @@ function ItemOneFields({
   const deleteCallback = () => {
     setState({ ...state, showMenu: null, selectedFieldValue: null, edit: false });
   };
-
+  console.log(field);
   const { data, error } = useGetFieldValuesByItem({ parentId, field: field._id });
+  console.log(data);
   const { handleDelete, deleteLoading } = useDeleteFieldValue({
     onAlert,
     parentId,
@@ -183,13 +186,25 @@ function ItemOneFields({
         previewMode={previewMode}
         field={field}
         formProps={formProps}
+        drawer={state.drawer}
       />
       <CRUDMenu
         show={state.showMenu}
         onClose={() => setState(initialState)}
         onDelete={() => handleDelete(state.selectedFieldValue._id, deleteCallback)}
         onEdit={() => onClickAdd(true)}
-      />
+      >
+        <MenuItem
+          onClick={() => {
+            setState({ ...state, drawer: true });
+          }}
+        >
+          <ListItemIcon className="mr-n4">
+            <EditIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText primary="Edit Style" />
+        </MenuItem>
+      </CRUDMenu>
       <Backdrop open={deleteLoading} />
     </div>
   );
@@ -202,6 +217,7 @@ type Props3 = {
   field: any;
   formProps: any;
   previewMode: boolean;
+  drawer: boolean;
 };
 
 const FieldValueMap = ({
@@ -210,6 +226,7 @@ const FieldValueMap = ({
   onSelect,
   field,
   previewMode,
+  drawer,
   formProps = {},
 }: Props3) => {
   const FMap = values.map((fieldValue, index) => (
@@ -223,6 +240,7 @@ const FieldValueMap = ({
           field={field}
           previewMode={previewMode}
           onSelect={onSelect}
+          drawer={drawer}
         />
       )}
       {/* <p className="text-center w-100">
@@ -298,7 +316,7 @@ export default function FieldValues({
   previewMode,
 }: IProps): any {
   const { data, error } = useGetFieldsByType({ parentId: typeId });
-
+  console.log(111111111111111, data);
   useEffect(() => {
     if (data && data.getFieldsByType) {
       setFields(data.getFieldsByType.data);

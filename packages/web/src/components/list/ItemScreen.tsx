@@ -62,6 +62,7 @@ export default function ItemScreen({
   const [fieldValueCount, setFieldValueCount] = useState({});
   const [previewMode, setPreviewMode] = useState(noTogglePreviewMode);
   const { data, error } = useGetListItemBySlug({ slug });
+  console.log(data);
 
   const deleteCallBack = () => {
     router.push(

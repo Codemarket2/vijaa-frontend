@@ -41,7 +41,7 @@ const initialState = {
 export default function ListItemsFieldsValue({ listItem, previewMode = false }: IProps) {
   const { onFieldsChange } = useUpdateListItemFields({ listItem, onAlert });
   const [state, setState] = useState(initialState);
-
+  console.log(listItem);
   const handleRemoveStyle = (field: any, styleKey: string) => {
     if (field?.options?.style) {
       const { [styleKey]: removedStyle, ...restStyles } = field?.options?.style;

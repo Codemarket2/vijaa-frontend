@@ -240,6 +240,39 @@ export const UPDATE_LIST_ITEM_LAYOUTS = gql`
   }
 `;
 
+export const UPDATE_LIST_ITEM_SETTINGS = gql`
+  mutation MyMutation($_id: ID!, $settings: AWSJSON) {
+    updateListItem(_id: $_id, settings: $settings) {
+      _id
+      title
+      slug
+      description
+      types {
+        _id
+        title
+        slug
+      }
+      media {
+        url
+        caption
+      }
+      layouts
+      settings
+      fields {
+        _id
+        label
+        fieldType
+        options
+        typeId {
+          _id
+          title
+          slug
+        }
+      }
+    }
+  }
+`;
+
 export const UPDATE_PUBLISH = gql`
   mutation MyMutation($_id: ID!, $publish: Boolean!) {
     updatePublish(_id: $_id, publish: $publish) {

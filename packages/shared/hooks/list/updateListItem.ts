@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useMutation } from '@apollo/client';
-import { UPDATE_LIST_ITEM_FIELDS } from '../../graphql/mutation/list';
+import { UPDATE_LIST_ITEM_FIELDS, UPDATE_LIST_ITEM_SETTINGS } from '../../graphql/mutation/list';
 import { GET_LIST_ITEM_BY_SLUG } from '../../graphql/query/list';
 import { client as apolloClient } from '../../graphql';
 import { IHooksProps } from '../../types/common';
@@ -42,7 +42,10 @@ export const useUpdateListItemFields = ({ listItem, onAlert }: IProps) => {
   }, [listItem]);
 
   const onFieldsChange = (fields) => {
+    console.log(fields);
     const payload = stringifyListType({ fields });
+    console.log(payload);
+    console.log(listItem);
     updateCache(listItem.slug, payload);
     setSaveToServer(true);
   };
@@ -60,6 +63,40 @@ export const useUpdateListItemFields = ({ listItem, onAlert }: IProps) => {
   };
 
   return { onFieldsChange };
+};
+
+export const useUpdateListItemSettings = ({ listItem, onAlert }: IProps) => {
+  const [updateMutation] = useMutation(UPDATE_LIST_ITEM_SETTINGS);
+  const [saveToServer, setSaveToServer] = useState(false);
+
+  useEffect(() => {
+    let timeOutId;
+    if (saveToServer && listItem) {
+      setSaveToServer(false);
+      timeOutId = setTimeout(() => handleUpdate(), 1500);
+    }
+    return () => clearTimeout(timeOutId);
+  }, [listItem]);
+
+  const onSettingsChange = (settings) => {
+    console.log(settings);
+    updateCache(listItem.slug, settings);
+    setSaveToServer(true);
+  };
+
+  const handleUpdate = async () => {
+    try {
+      const payload = stringifyListType(listItem, true);
+      await updateMutation({
+        variables: payload,
+      });
+    } catch (error) {
+      console.log(error);
+      onAlert('Error while auto saving', error.message);
+    }
+  };
+
+  return { onSettingsChange };
 };
 
 export const stringifyListType = (lisType: any, removeTypeId: boolean = false) => {
