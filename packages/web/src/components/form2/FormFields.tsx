@@ -13,13 +13,18 @@ import ListItemText from '@material-ui/core/ListItemText';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import MenuItem from '@material-ui/core/MenuItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
+import GridIcon from '@material-ui/icons/GridOn';
+import ShareIcon from '@material-ui/icons/Share';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
 import { generateObjectId } from '@frontend/shared/utils/objectId';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { useState } from 'react';
+import { useRouter } from 'next/router';
 import CRUDMenu from '../common/CRUDMenu';
 import AddField from './AddField';
 import EditField from './EditField';
+import EditFieldGrid from './EditFieldGrid';
+import { convertToSlug } from '../field/LeftNavigation';
 
 const reorder = (list, startIndex, endIndex) => {
   const result = Array.from(list);
@@ -32,16 +37,26 @@ const initialValues = {
   showMenu: null,
   field: null,
   showForm: false,
+  editGrid: false,
 };
 
 type IProps = {
   fields: any[];
   setFields: (newFields: any[]) => void;
   title?: string;
+  isSection?: boolean;
+  previewMode?: boolean;
 };
 
-export default function FormFields({ fields = [], setFields, title = 'Fields' }: IProps): any {
+export default function FormFields({
+  fields = [],
+  setFields,
+  title = 'Fields',
+  isSection = false,
+  previewMode = false,
+}: IProps): any {
   const [values, setValues] = useState(initialValues);
+  const router = useRouter();
 
   function onDragEnd(result) {
     if (!result.destination) {
@@ -80,10 +95,36 @@ export default function FormFields({ fields = [], setFields, title = 'Fields' }:
     setValues(initialValues);
   };
 
+  const handleNavigate = (fieldLabel) => {
+    if (isSection) {
+      // console.log(window.location);
+      const url = `${window.location.origin}${window.location.pathname}#${convertToSlug(
+        fieldLabel,
+      )}`;
+      // console.log(url);
+      router.push(url);
+    }
+  };
+
+  const handleShareSection = (fieldLabel) => {
+    if (isSection && fieldLabel) {
+      const url = `${window.location.origin}/page/${router.query?.itemSlug}#${convertToSlug(
+        fieldLabel,
+      )}`;
+      if ('clipboard' in navigator) {
+        navigator.clipboard.writeText(url);
+      } else {
+        document?.execCommand('copy', true, url);
+      }
+      // console.log(url);
+      setValues(initialValues);
+    }
+  };
+
   return (
     <Paper variant="outlined">
-      {values.showForm && values.field ? (
-        <EditField
+      {values.editGrid ? (
+        <EditFieldGrid
           field={fields.filter((f) => f._id === values.field._id)[0]}
           onFieldChange={(updatedField) => {
             setFields(
@@ -92,28 +133,44 @@ export default function FormFields({ fields = [], setFields, title = 'Fields' }:
           }}
           onClose={() => setValues(initialValues)}
         />
+      ) : values.showForm && values.field ? (
+        <EditField
+          field={fields.filter((f) => f._id === values.field._id)[0]}
+          onFieldChange={(updatedField) => {
+            setFields(
+              fields?.map((field) => (field._id === updatedField._id ? updatedField : field)),
+            );
+          }}
+          onClose={() => setValues(initialValues)}
+          isSection={isSection}
+        />
       ) : (
         <>
-          <Typography variant="h5" className="d-flex align-items-center pl-2">
-            {title}
-            <Tooltip title="Add New Field">
-              <IconButton
-                color="primary"
-                onClick={() => setValues({ ...initialValues, showForm: true })}
-              >
-                <AddCircleIcon />
-              </IconButton>
-            </Tooltip>
-          </Typography>
-          <Divider />
+          {!previewMode && (
+            <>
+              <Typography variant="h5" className="d-flex align-items-center pl-2">
+                {title}
+                <Tooltip title="Add New Field">
+                  <IconButton
+                    color="primary"
+                    onClick={() => setValues({ ...initialValues, showForm: true })}
+                  >
+                    <AddCircleIcon />
+                  </IconButton>
+                </Tooltip>
+              </Typography>
+              <Divider />
+            </>
+          )}
           {values.showForm && (
             <AddField
               field={values.field}
               onSave={onSave}
               onCancel={() => setValues(initialValues)}
+              isSection={isSection}
             />
           )}
-          <List>
+          <List dense>
             <DragDropContext onDragEnd={onDragEnd}>
               <Droppable droppableId="list">
                 {(provided, snapshot) => (
@@ -123,7 +180,7 @@ export default function FormFields({ fields = [], setFields, title = 'Fields' }:
                         {(draggableProvided, draggableSnapshot) => (
                           <ListItem
                             button
-                            onClick={() => setValues({ ...initialValues, field, showForm: true })}
+                            onClick={() => handleNavigate(field.label)}
                             selected={
                               draggableSnapshot.isDragging || field?._id === values?.field?._id
                             }
@@ -131,8 +188,11 @@ export default function FormFields({ fields = [], setFields, title = 'Fields' }:
                             {...draggableProvided.draggableProps}
                             {...draggableProvided.dragHandleProps}
                           >
-                            <ListItemText primary={field.label} secondary={field.fieldType} />
-                            {!snapshot.isDraggingOver && (
+                            <ListItemText
+                              primary={field.label}
+                              secondary={!previewMode && field.fieldType}
+                            />
+                            {!(previewMode || snapshot.isDraggingOver) && (
                               <ListItemSecondaryAction>
                                 <IconButton
                                   edge="end"
@@ -178,6 +238,20 @@ export default function FormFields({ fields = [], setFields, title = 'Fields' }:
               </ListItemIcon>
               <ListItemText primary="Duplicate" />
             </MenuItem>
+            <MenuItem onClick={() => setValues({ ...values, editGrid: true })}>
+              <ListItemIcon className="mr-n4">
+                <GridIcon fontSize="small" />
+              </ListItemIcon>
+              <ListItemText primary="Grid" />
+            </MenuItem>
+            {isSection && (
+              <MenuItem onClick={() => handleShareSection(values?.field?.label)}>
+                <ListItemIcon className="mr-n4">
+                  <ShareIcon fontSize="small" />
+                </ListItemIcon>
+                <ListItemText primary="Share" />
+              </MenuItem>
+            )}
           </CRUDMenu>
         </>
       )}
