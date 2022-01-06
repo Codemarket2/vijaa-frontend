@@ -44,6 +44,7 @@ interface IProps {
   onSlugUpdate?: (arg: string) => void;
   pushToAnchor?: () => void;
   noTogglePreviewMode?: boolean;
+  hideleft?: boolean;
 }
 
 export default function ItemScreen({
@@ -53,6 +54,7 @@ export default function ItemScreen({
   onSlugUpdate,
   pushToAnchor,
   noTogglePreviewMode = false,
+  hideleft = false,
 }: IProps): any {
   const router = useRouter();
   const theme = useTheme();
@@ -121,16 +123,20 @@ export default function ItemScreen({
   }
 
   const leftNavigationProps = {
-    parentId: data.getListItemBySlug.types[0]._id,
-    slug: `/types/${data.getListItemBySlug.types[0].slug}/${data.getListItemBySlug.slug}`,
+    parentId: data.getListItemBySlug?.types[0]?._id,
+    slug: previewMode
+      ? `/page/${data?.getListItemBySlug?.slug}`
+      : `/types/${data?.getListItemBySlug?.types[0]?.slug}/${data?.getListItemBySlug?.slug}`,
     fields: state.fields,
     fieldValueCount,
     layouts: JSON.parse(data.getListItemBySlug?.layouts) || {},
     itemSlug: data.getListItemBySlug.slug,
     _id: data.getListItemBySlug._id,
+    previewMode,
   };
 
-  const hideleft = hideBreadcrumbs || state.hideLeftNavigation || previewMode;
+  // const hideleft = false;
+  // const hideleft = hideBreadcrumbs || state.hideLeftNavigation || previewMode;
 
   return (
     <div className={previewMode && 'mt-2'}>
@@ -208,7 +214,7 @@ export default function ItemScreen({
                 onClick={handleHideBottomSheet}
                 {...leftNavigationProps}
               >
-                <ListItemsFields listItem={data.getListItemBySlug} />
+                <ListItemsFields listItem={data.getListItemBySlug} previewMode={previewMode} />
               </LeftNavigation>
             </SwipeableDrawer>
           </Hidden>
@@ -227,7 +233,7 @@ export default function ItemScreen({
             }}
             {...leftNavigationProps}
           >
-            <ListItemsFields listItem={data.getListItemBySlug} />
+            <ListItemsFields listItem={data.getListItemBySlug} previewMode={previewMode} />
           </LeftNavigation>
         </Hidden>
       )}
@@ -238,7 +244,7 @@ export default function ItemScreen({
           className="p-2 pb-5"
         >
           {previewMode ? (
-            <Typography variant="h3" align="center" variantMapping={{ h3: 'h1' }}>
+            <Typography variant="h3" align="center" variantMapping={{ h3: 'h1' }} id="title">
               {data.getListItemBySlug.title.includes('-n-e-w')
                 ? 'Title'
                 : data.getListItemBySlug.title}
