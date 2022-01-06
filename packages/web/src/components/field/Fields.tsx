@@ -140,6 +140,7 @@ export default function Fields({
 
   const formBuilderProps = {
     parentId,
+    edit: state.edit,
     formBuilder,
     onCancel: () => setState(initialState),
     field: state.selectedField,

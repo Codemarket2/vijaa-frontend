@@ -80,44 +80,6 @@ export const UPDATE_FIELD = gql`
   }
 `;
 
-export const UPDATE_FIELD_BY_RELATION_ID = gql`
-  mutation MyMutation(
-    $parentId: ID!
-    $relationId: ID!
-    $label: String
-    # $fieldLabel: fieldLabel
-    $fieldType: String
-    $multipleValues: Boolean
-    $oneUserMultipleValues: Boolean
-    $typeId: ID
-  ) {
-    updateFieldByRelationId(
-      parentId: $parentId
-      relationId: $relationId
-      label: $label
-      fieldType: $fieldType
-      typeId: $typeId
-      multipleValues: $multipleValues
-      oneUserMultipleValues: $oneUserMultipleValues
-    ) {
-      _id
-      relationId
-      parentId
-      position
-      label
-      fieldLabel
-      fieldType
-      typeId {
-        _id
-        title
-        slug
-      }
-      multipleValues
-      oneUserMultipleValues
-    }
-  }
-`;
-
 export const UPDATE_FIELD_POSITION = gql`
   mutation MyMutation($_id: ID!, $position: Float!) {
     updateFieldPosition(_id: $_id, position: $position) {

@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-wrap-multilines */
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
@@ -11,13 +11,14 @@ import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 import { useCRUDFields } from '@frontend/shared/hooks/field';
-
 import { useGetListTypes } from '@frontend/shared/hooks/list';
+import { useGetFieldByRelationId } from '@frontend/shared/hooks/field';
 
 import InputGroup from '../common/InputGroup';
 import LoadingButton from '../common/LoadingButton';
 import ErrorLoading from '../common/ErrorLoading';
 import { onAlert } from '../../utils/alert';
+import FieldsSkeleton from './FieldsSkeleton';
 
 export const fieldTypes = [
   { label: 'Form', value: 'form' },
@@ -41,16 +42,48 @@ interface IProps {
   parentId: string;
   field: any;
   formBuilder: boolean;
+  edit?: boolean;
+}
+
+function UpdateFieldInput({ formik }) {
+  const { data: data2, error: error2 } = useGetFieldByRelationId(formik.values._id);
+  if (!error2 && (!data2 || !data2.getFieldByRelationId)) {
+    return <FieldsSkeleton />;
+  }
+  if (error2) {
+    return <ErrorLoading error={error2} />;
+  }
+
+  return (
+    <InputGroup>
+      <TextField
+        fullWidth
+        label="Field Label"
+        variant="outlined"
+        name="fieldLabel"
+        size="small"
+        disabled={formik.isSubmitting}
+        value={
+          formik.values.relationId
+            ? data2.getFieldByRelationId.label
+            : data2.getFieldByRelationId.fieldLabel
+        }
+        onChange={formik.handleChange}
+        error={formik.touched.fieldLabel && Boolean(formik.errors.fieldLabel)}
+        helperText={formik.touched.fieldLabel && formik.errors.fieldLabel}
+      />
+    </InputGroup>
+  );
 }
 
 export default function FieldForm({
   onCancel,
   parentId,
   field = null,
+  edit = false,
   formBuilder = false,
 }: IProps): any {
   const { data, error, state, setState } = useGetListTypes({ limit: 10 });
-
   const { formik, formLoading, setFormValues } = useCRUDFields({
     onAlert,
     parentId,
@@ -138,20 +171,24 @@ export default function FieldForm({
               />
             )}
           </InputGroup>
-          <InputGroup>
-            <TextField
-              fullWidth
-              label="Field Label"
-              variant="outlined"
-              name="fieldLabel"
-              size="small"
-              disabled={formik.isSubmitting}
-              value={formik.values.fieldLabel}
-              onChange={formik.handleChange}
-              error={formik.touched.fieldLabel && Boolean(formik.errors.fieldLabel)}
-              helperText={formik.touched.fieldLabel && formik.errors.fieldLabel}
-            />
-          </InputGroup>
+          {edit ? (
+            <UpdateFieldInput formik={formik} />
+          ) : (
+            <InputGroup>
+              <TextField
+                fullWidth
+                label="Field Label"
+                variant="outlined"
+                name="fieldLabel"
+                size="small"
+                disabled={formik.isSubmitting}
+                value={formik.values.fieldLabel}
+                onChange={formik.handleChange}
+                error={formik.touched.fieldLabel && Boolean(formik.errors.fieldLabel)}
+                helperText={formik.touched.fieldLabel && formik.errors.fieldLabel}
+              />
+            </InputGroup>
+          )}
         </>
       )}
       {!(formik.values.fieldType === 'form') && (

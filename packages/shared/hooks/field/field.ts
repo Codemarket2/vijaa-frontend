@@ -2,12 +2,11 @@ import { useEffect, useState } from 'react';
 import { useQuery, useMutation } from '@apollo/client';
 import * as yup from 'yup';
 import { useFormik } from 'formik';
-import { GET_FIELDS_BY_TYPE } from '../../graphql/query/field';
+import { GET_FIELDS_BY_TYPE, GET_FIELD_BY_RELATION_ID } from '../../graphql/query/field';
 import { client as apolloClient } from '../../graphql';
 import {
   CREATE_FIELD,
   UPDATE_FIELD,
-  UPDATE_FIELD_BY_RELATION_ID,
   DELETE_FIELD,
   DELETE_FIELD_BY_RELATION_ID,
   UPDATE_FIELD_POSITION,
@@ -72,14 +71,9 @@ const validationSchema = yup.object({
   }),
   fieldLabel: yup.string().when('fieldType', {
     is: (value) => value === 'type',
-    then: yup.string(),
+    then: yup.string().required('Required'),
     otherwise: yup.string().nullable(true),
   }),
-  // fieldLabel: yup.string().when('fieldType', {
-  //   is: (value) => value === 'type',
-  //   then: yup.string().required('Required'),
-  //   otherwise: yup.string().nullable(true),
-  // }),
 });
 
 interface IFormValues {
@@ -91,7 +85,7 @@ interface IFormValues {
   typeId: any;
   multipleValues: boolean;
   oneUserMultipleValues: boolean;
-  fieldLabel?: string;
+  fieldLabel: string;
   relationId?: string;
 }
 
@@ -105,6 +99,7 @@ const defaultFormValues = {
   multipleValues: false,
   oneUserMultipleValues: false,
   fieldLabel: '',
+  relationId: '',
 };
 
 interface ICRUDProps extends IHooksProps {
@@ -112,13 +107,21 @@ interface ICRUDProps extends IHooksProps {
   createCallback: () => void;
 }
 
+export function useGetFieldByRelationId(relationId) {
+  const { data, error, loading } = useQuery(GET_FIELD_BY_RELATION_ID, {
+    variables: {
+      relationId,
+    },
+  });
+  return {
+    data,
+    error,
+    loading,
+  };
+}
 export function useCRUDFields({ onAlert, parentId, createCallback }: ICRUDProps) {
   const [createFieldMutation, { loading: createLoading }] = useMutation(CREATE_FIELD);
   const [updateFieldMutation, { loading: updateLoading }] = useMutation(UPDATE_FIELD);
-  const [updateFieldByRelationId, { loading: updateFieldLoading }] = useMutation(
-    UPDATE_FIELD_BY_RELATION_ID,
-  );
-
   const formik = useFormik({
     initialValues: { ...defaultFormValues, parentId },
     validationSchema,
@@ -169,13 +172,14 @@ export function useCRUDFields({ onAlert, parentId, createCallback }: ICRUDProps)
         fieldType: newPayload.fieldType,
         typeId: newPayload.parentId,
         relationId: newPayload._id,
+        fieldLabel: newPayload.label,
       };
       relationPayload._id = generateObjectId();
       newPayload.relationId = relationPayload._id;
-
       const response = await createFieldMutation({
         variables: relationPayload,
       });
+      console.log('response', response);
     }
     return await createFieldMutation({
       variables: newPayload,
@@ -204,20 +208,23 @@ export function useCRUDFields({ onAlert, parentId, createCallback }: ICRUDProps)
       });
     };
     let newPayload = { ...payload };
+    console.log('payload', payload);
     if (newPayload.fieldType === 'type') {
       const relationPayload: any = {
-        parentId: newPayload.typeId,
-        relationId: newPayload._id,
+        _id: newPayload.relationId,
         label: newPayload.fieldLabel,
         fieldType: newPayload.fieldType,
         typeId: newPayload.parentId,
+        fieldLabel: newPayload.label,
       };
       if (payload.relationId) {
         relationPayload._id = payload.relationId;
       }
-      const response = await updateFieldByRelationId({
+      console.log('relationPayload', relationPayload);
+      const response = await updateFieldMutation({
         variables: relationPayload,
       });
+      console.log('response', response);
       newPayload.relationId = response?.data?.updateField?._id;
     }
 
@@ -236,6 +243,7 @@ export function useCRUDFields({ onAlert, parentId, createCallback }: ICRUDProps)
     formik.setFieldValue('oneUserMultipleValues', field.oneUserMultipleValues, false);
     formik.setFieldValue('typeId', field.typeId, false);
     formik.setFieldValue('_id', field._id, false);
+    formik.setFieldValue('relationId', field.relationId, false);
   };
 
   const formLoading = createLoading || updateLoading || formik.isSubmitting;
@@ -287,7 +295,6 @@ export function useDeleteField({ onAlert, parentId }: IDeleteProps) {
   const [deleteFieldByRelationId, { loading: deleteLoading2 }] = useMutation(
     DELETE_FIELD_BY_RELATION_ID,
   );
-
   const handleDelete = async (_id: any, deleteCallBack: any) => {
     try {
       const deleteInCache = (client) => {
