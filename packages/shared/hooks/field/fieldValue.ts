@@ -47,6 +47,7 @@ export function useGetFieldValue(_id) {
 
 export function useGetFieldValuesByItem({ parentId, field }: any) {
   const [subscribed, setSubscribed] = useState(false);
+  console.log(parentId, field);
   const { data, error, loading, subscribeToMore } = useQuery(GET_FIELD_VALUES_BY_FIELD, {
     variables: { ...defaultQueryVariables, parentId, field },
     fetchPolicy: 'cache-and-network',

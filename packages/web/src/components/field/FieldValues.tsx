@@ -185,6 +185,7 @@ function ItemOneFields({
         }
         previewMode={previewMode}
         field={field}
+        parentId={parentId}
         formProps={formProps}
         drawer={state.drawer}
       />
@@ -215,6 +216,7 @@ type Props3 = {
   selectedValue: string;
   onSelect: (arg1: any, arg2: any) => void;
   field: any;
+  parentId: string;
   formProps: any;
   previewMode: boolean;
   drawer: boolean;
@@ -225,6 +227,7 @@ const FieldValueMap = ({
   selectedValue = '',
   onSelect,
   field,
+  parentId,
   previewMode,
   drawer,
   formProps = {},
@@ -238,6 +241,7 @@ const FieldValueMap = ({
           index={index}
           fieldValue={fieldValue}
           field={field}
+          parentId={parentId}
           previewMode={previewMode}
           onSelect={onSelect}
           drawer={drawer}
@@ -316,7 +320,7 @@ export default function FieldValues({
   previewMode,
 }: IProps): any {
   const { data, error } = useGetFieldsByType({ parentId: typeId });
-  console.log(111111111111111, data);
+  console.log(data);
   useEffect(() => {
     if (data && data.getFieldsByType) {
       setFields(data.getFieldsByType.data);

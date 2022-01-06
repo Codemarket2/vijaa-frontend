@@ -5,6 +5,7 @@ import { GET_LIST_ITEM_BY_SLUG } from '../../graphql/query/list';
 import { client as apolloClient } from '../../graphql';
 import { IHooksProps } from '../../types/common';
 import { omitTypename } from '../../utils/omitTypename';
+import { GET_FIELD_VALUE } from '../../graphql/query/field';
 
 interface IProps extends IHooksProps {
   listItem: any;
@@ -28,6 +29,24 @@ export const updateCache = (slug, newListItem) => {
   }
 };
 
+export const updateSettingsCache = (fieldId, newListItem) => {
+  const oldData = apolloClient.readQuery({
+    query: GET_FIELD_VALUE,
+    variables: { _id: fieldId },
+  });
+  console.log(oldData);
+  if (oldData?.getFieldValuesByItem) {
+    const newData = {
+      ...oldData,
+      getFieldValuesByItem: { ...oldData?.getFieldValuesByItem, ...newListItem },
+    };
+    apolloClient.writeQuery({
+      query: GET_FIELD_VALUE,
+      variables: { fieldId },
+      data: newData,
+    });
+  }
+};
 export const useUpdateListItemFields = ({ listItem, onAlert }: IProps) => {
   const [updateMutation] = useMutation(UPDATE_LIST_ITEM_FIELDS);
   const [saveToServer, setSaveToServer] = useState(false);
@@ -79,14 +98,15 @@ export const useUpdateListItemSettings = ({ listItem, onAlert }: IProps) => {
   }, [listItem]);
 
   const onSettingsChange = (settings) => {
-    console.log(settings);
-    updateCache(listItem.slug, settings);
+    const payload = stringifyForm({ settings });
+    console.log(listItem);
+    updateSettingsCache(listItem._id, payload);
     setSaveToServer(true);
   };
 
   const handleUpdate = async () => {
     try {
-      const payload = stringifyListType(listItem, true);
+      const payload = stringifyForm(listItem, true);
       await updateMutation({
         variables: payload,
       });
@@ -101,6 +121,7 @@ export const useUpdateListItemSettings = ({ listItem, onAlert }: IProps) => {
 
 export const stringifyListType = (lisType: any, removeTypeId: boolean = false) => {
   let payload = { ...lisType };
+  console.log('stringify', payload);
   payload = {
     ...payload,
     fields: payload.fields.map((m) => JSON.parse(JSON.stringify(m), omitTypename)),
@@ -108,6 +129,27 @@ export const stringifyListType = (lisType: any, removeTypeId: boolean = false) =
   payload = {
     ...payload,
     fields: payload.fields.map((m) => {
+      const field = { ...m };
+      if (removeTypeId && field.fieldType === 'type') {
+        field.typeId = field.typeId ? field.typeId._id : null;
+      }
+      field.options = JSON.stringify(field.options);
+      return field;
+    }),
+  };
+  return payload;
+};
+
+export const stringifyForm = (form: any, removeTypeId: boolean = false) => {
+  let payload = { ...form };
+  console.log(payload);
+  payload = {
+    ...payload,
+    settings: payload.settings.map((m) => JSON.parse(JSON.stringify(m), omitTypename)),
+  };
+  payload = {
+    ...payload,
+    settings: payload.settings.map((m) => {
       const field = { ...m };
       if (removeTypeId && field.fieldType === 'type') {
         field.typeId = field.typeId ? field.typeId._id : null;

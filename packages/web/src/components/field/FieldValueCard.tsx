@@ -24,6 +24,7 @@ import { useUpdateListItemSettings } from '@frontend/shared/hooks/list';
 interface IProps {
   fieldValue: any;
   field: any;
+  parentId: string;
   onSelect?: (arg1: any, arg2: any) => void;
   index?: any;
   previewMode?: boolean;
@@ -39,6 +40,7 @@ const initialState = {
 export default function FieldValueCard({
   fieldValue,
   field,
+  parentId,
   index,
   onSelect,
   drawer,
@@ -51,7 +53,7 @@ export default function FieldValueCard({
   // console.log(query);
   const [showHideComments, setShowHideComments] = useState(false);
   const auth = useSelector(({ auth }: any) => auth);
-  const listItem = { ...field, slug: query.itemSlug };
+  const listItem = { ...field, slug: query.itemSlug, parentId, fieldId: field._id };
   // console.log(listItem);
   const { onSettingsChange } = useUpdateListItemSettings({ listItem, onAlert });
   const handleRemoveStyle = (field: any, styleKey: string) => {
@@ -107,7 +109,7 @@ export default function FieldValueCard({
         removeStyle={(styleKey) => handleRemoveStyle(field, styleKey)}
       />
       {/* )} */}
-      {/* {console.log(field.settings)} */}
+      {console.log(field)}
       <div>
         {field.fieldType === 'date' ? (
           moment(fieldValue.valueDate).format('L')
