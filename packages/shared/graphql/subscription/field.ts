@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client';
 
 export const ADDED_FIELD = gql`
-  subscription MySubscription($parentId: ID!) {
-    addedField(parentId: $parentId) {
+  subscription MySubscription {
+    addedField {
       _id
       parentId
       relationId

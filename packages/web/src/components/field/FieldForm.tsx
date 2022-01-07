@@ -53,7 +53,11 @@ function UpdateFieldInput({ formik }) {
   if (error2) {
     return <ErrorLoading error={error2} />;
   }
-
+  // useEffect(() => {
+  //   if (data2?.getFieldByRelationId?.Label) {
+  //     formik.setFieldValue('fieldLabel', data2?.getFieldByRelationId?.label, false);
+  //   }
+  // }, [data2]);
   return (
     <InputGroup>
       <TextField
@@ -64,9 +68,10 @@ function UpdateFieldInput({ formik }) {
         size="small"
         disabled={formik.isSubmitting}
         value={
-          formik.values.relationId
-            ? data2.getFieldByRelationId.label
-            : data2.getFieldByRelationId.fieldLabel
+          // formik.values.relationId
+          //   ? data2.getFieldByRelationId.label
+          //   : data2.getFieldByRelationId.fieldLabel
+          formik.values.fieldLabel
         }
         onChange={formik.handleChange}
         error={formik.touched.fieldLabel && Boolean(formik.errors.fieldLabel)}

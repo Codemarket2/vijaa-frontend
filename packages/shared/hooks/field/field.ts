@@ -29,11 +29,12 @@ export function useGetFieldsByType({ parentId }: any) {
       setSubscribed(true);
       subscribeToMore({
         document: ADDED_FIELD,
-        variables: {
-          parentId,
-        },
+        // variables: {
+        //   parentId,
+        // },
         updateQuery: (prev, { subscriptionData }) => {
           if (!subscriptionData.data) return prev;
+          console.log('subscriptionData.data', subscriptionData.data);
           const newField = subscriptionData.data.addedField;
           let isNew = true;
           let newData = prev?.getFieldsByType?.data?.map((t) => {
@@ -46,6 +47,7 @@ export function useGetFieldsByType({ parentId }: any) {
           if (isNew) {
             newData = [...prev?.getFieldsByType?.data, newField];
           }
+          newData = newData.filter((d) => d.parentId !== parentId);
           return {
             ...prev,
             getFieldsByType: {
