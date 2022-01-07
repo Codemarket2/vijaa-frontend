@@ -349,7 +349,10 @@ export default function ItemScreen({
             layouts={JSON.parse(data?.getListItemBySlug?.layouts) || {}}
             isPublish={data?.getListItemBySlug?.active}
             previewMode={previewMode}
+            listItem={data?.getListItemBySlug}
           />
+          {JSON.stringify(data?.getListItemBySlug)}
+          {console.log(data?.getListItemBySlug)}
           <ListItemsFieldsValue listItem={data?.getListItemBySlug} previewMode={previewMode} />
         </Paper>
       </div>

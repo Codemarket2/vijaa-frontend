@@ -49,6 +49,7 @@ function ItemOneFields({
   setFieldValueCount,
   toggleLeftNavigation,
   previewMode,
+  listItem,
 }: any) {
   const [state, setState] = useState(initialState);
   const { attributes, admin } = useSelector(({ auth }: any) => auth);
@@ -183,6 +184,8 @@ function ItemOneFields({
             selectedFieldValue: sfieldValue,
           })
         }
+        onEdit={(val) => setState({ ...state, drawer: val, showMenu: val })}
+        listItem={listItem}
         previewMode={previewMode}
         field={field}
         parentId={parentId}
@@ -215,9 +218,11 @@ type Props3 = {
   values: any[];
   selectedValue: string;
   onSelect: (arg1: any, arg2: any) => void;
+  onEdit: (arg1: any) => void;
   field: any;
   parentId: string;
   formProps: any;
+  listItem: any;
   previewMode: boolean;
   drawer: boolean;
 };
@@ -226,14 +231,20 @@ const FieldValueMap = ({
   values = [],
   selectedValue = '',
   onSelect,
+  onEdit,
   field,
   parentId,
+  listItem,
   previewMode,
   drawer,
   formProps = {},
 }: Props3) => {
   const FMap = values.map((fieldValue, index) => (
-    <div key={fieldValue._id}>
+    <div
+      style={listItem?.settings?.styles ? listItem?.settings?.styles[field._id] : {}}
+      key={fieldValue._id}
+    >
+      {console.log(JSON.stringify(listItem))}
       {selectedValue === fieldValue._id ? (
         <FieldValueForm edit {...formProps} fieldValue={fieldValue} />
       ) : (
@@ -244,6 +255,8 @@ const FieldValueMap = ({
           parentId={parentId}
           previewMode={previewMode}
           onSelect={onSelect}
+          onEdit={onEdit}
+          listItem={listItem}
           drawer={drawer}
         />
       )}
@@ -304,6 +317,7 @@ interface IProps {
   setFieldValueCount?: (arg: any, arg2: any) => void;
   pushToAnchor?: () => void;
   toggleLeftNavigation?: (value: boolean) => void;
+  listItem: any;
   layouts: any;
   previewMode?: boolean;
 }
@@ -311,6 +325,7 @@ interface IProps {
 export default function FieldValues({
   parentId,
   typeId,
+  listItem,
   guest = false,
   setFields = (arg: any) => {},
   setFieldValueCount = (index: number, value: number) => {},
@@ -338,6 +353,7 @@ export default function FieldValues({
 
   return (
     <Grid container>
+      {console.log(listItem)}
       {data.getFieldsByType.data.map((field, index) => {
         let gridProps: any = { xs: 12 };
         if (layouts && layouts[field._id]) {
@@ -350,22 +366,28 @@ export default function FieldValues({
         }
         return (
           <Grid key={field._id} {...gridProps} item>
-            {field.fieldType === 'form' ? (
-              <SectionForm field={field} parentId={parentId} previewMode={previewMode} />
-            ) : (
-              <ItemOneFields
-                toggleLeftNavigation={(value) => {
-                  if (toggleLeftNavigation) {
-                    toggleLeftNavigation(value);
-                  }
-                }}
-                parentId={parentId}
-                field={field}
-                previewMode={previewMode}
-                guest={guest}
-                setFieldValueCount={(value) => setFieldValueCount(index, value)}
-              />
-            )}
+            <div style={listItem?.settings?.styles ? listItem?.settings?.styles[field._id] : {}}>
+              {field.fieldType === 'form' ? (
+                <SectionForm field={field} parentId={parentId} previewMode={previewMode} />
+              ) : (
+                <ItemOneFields
+                  toggleLeftNavigation={(value) => {
+                    if (toggleLeftNavigation) {
+                      toggleLeftNavigation(value);
+                    }
+                  }}
+                  parentId={parentId}
+                  field={field}
+                  previewMode={previewMode}
+                  guest={guest}
+                  setFieldValueCount={(value) => setFieldValueCount(index, value)}
+                  listItem={listItem}
+                />
+              )}
+              {JSON.stringify(
+                listItem?.settings?.styles ? listItem?.settings?.styles[field._id] : {},
+              )}
+            </div>
           </Grid>
         );
       })}

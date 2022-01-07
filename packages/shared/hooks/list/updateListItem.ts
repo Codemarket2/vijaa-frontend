@@ -12,15 +12,19 @@ interface IProps extends IHooksProps {
 }
 
 export const updateCache = (slug, newListItem) => {
+  console.log({ newListItem });
   const oldData = apolloClient.readQuery({
     query: GET_LIST_ITEM_BY_SLUG,
     variables: { slug },
   });
+  console.log({ oldData });
+  console.log({ newListItem });
   if (oldData?.getListItemBySlug) {
     const newData = {
       ...oldData,
       getListItemBySlug: { ...oldData?.getListItemBySlug, ...newListItem },
     };
+    console.log({ newData });
     apolloClient.writeQuery({
       query: GET_LIST_ITEM_BY_SLUG,
       variables: { slug },
@@ -29,24 +33,6 @@ export const updateCache = (slug, newListItem) => {
   }
 };
 
-export const updateSettingsCache = (fieldId, newListItem) => {
-  const oldData = apolloClient.readQuery({
-    query: GET_FIELD_VALUE,
-    variables: { _id: fieldId },
-  });
-  console.log(oldData);
-  if (oldData?.getFieldValuesByItem) {
-    const newData = {
-      ...oldData,
-      getFieldValuesByItem: { ...oldData?.getFieldValuesByItem, ...newListItem },
-    };
-    apolloClient.writeQuery({
-      query: GET_FIELD_VALUE,
-      variables: { fieldId },
-      data: newData,
-    });
-  }
-};
 export const useUpdateListItemFields = ({ listItem, onAlert }: IProps) => {
   const [updateMutation] = useMutation(UPDATE_LIST_ITEM_FIELDS);
   const [saveToServer, setSaveToServer] = useState(false);
@@ -98,18 +84,21 @@ export const useUpdateListItemSettings = ({ listItem, onAlert }: IProps) => {
   }, [listItem]);
 
   const onSettingsChange = (settings) => {
+    console.log(1111, settings);
     const payload = stringifyForm({ settings });
-    console.log(listItem);
-    updateSettingsCache(listItem._id, payload);
+    console.log({ payload });
+    // console.log(listItem);
+    updateCache(listItem.slug, payload);
     setSaveToServer(true);
   };
 
   const handleUpdate = async () => {
     try {
       const payload = stringifyForm(listItem, true);
-      await updateMutation({
+      const res = await updateMutation({
         variables: payload,
       });
+      console.log(res);
     } catch (error) {
       console.log(error);
       onAlert('Error while auto saving', error.message);
@@ -142,21 +131,10 @@ export const stringifyListType = (lisType: any, removeTypeId: boolean = false) =
 
 export const stringifyForm = (form: any, removeTypeId: boolean = false) => {
   let payload = { ...form };
-  console.log(payload);
+  // console.log(payload);
   payload = {
     ...payload,
-    settings: payload.settings.map((m) => JSON.parse(JSON.stringify(m), omitTypename)),
-  };
-  payload = {
-    ...payload,
-    settings: payload.settings.map((m) => {
-      const field = { ...m };
-      if (removeTypeId && field.fieldType === 'type') {
-        field.typeId = field.typeId ? field.typeId._id : null;
-      }
-      field.options = JSON.stringify(field.options);
-      return field;
-    }),
+    settings: JSON.stringify(payload.settings),
   };
   return payload;
 };

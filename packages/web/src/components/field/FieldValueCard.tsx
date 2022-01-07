@@ -26,7 +26,9 @@ interface IProps {
   field: any;
   parentId: string;
   onSelect?: (arg1: any, arg2: any) => void;
+  onEdit?: (arg1: any) => void;
   index?: any;
+  listItem: any;
   previewMode?: boolean;
   drawer?: boolean;
 }
@@ -43,7 +45,9 @@ export default function FieldValueCard({
   parentId,
   index,
   onSelect,
+  onEdit,
   drawer,
+  listItem,
   previewMode = false,
 }: IProps): any {
   const [state, setState] = useState({
@@ -53,7 +57,9 @@ export default function FieldValueCard({
   // console.log(query);
   const [showHideComments, setShowHideComments] = useState(false);
   const auth = useSelector(({ auth }: any) => auth);
-  const listItem = { ...field, slug: query.itemSlug, parentId, fieldId: field._id };
+  // listItem = { ...listItem, slug: query.itemSlug };
+  console.log(listItem);
+  // const listItem = { ...field, slug: query.itemSlug, parentId, fieldId: field._id };
   // console.log(listItem);
   const { onSettingsChange } = useUpdateListItemSettings({ listItem, onAlert });
   const handleRemoveStyle = (field: any, styleKey: string) => {
@@ -72,17 +78,25 @@ export default function FieldValueCard({
   };
 
   const handleEditStyle = (fieldId: string, style: any) => {
-    onSettingsChange([
-      {
-        ...field,
-        settings: {
-          ...field?.settings,
-          styles: { [fieldId]: style },
-        },
-      },
-    ]);
+    let oldSettings = {};
+    let oldStyles = {};
+    let oldFieldStyles = {};
+    if (listItem?.settings) {
+      oldSettings = listItem.settings;
+    }
+    if (listItem?.settings?.styles) {
+      oldStyles = listItem.settings.styles;
+    }
+    if (listItem?.settings?.styles && listItem?.settings?.styles[fieldId]) {
+      oldFieldStyles = listItem.settings.styles[fieldId];
+    }
+
+    onSettingsChange({
+      ...oldSettings,
+      styles: { ...oldStyles, [fieldId]: style },
+    });
   };
-  // console.log(field);
+
   return (
     <div>
       {!previewMode && (auth.admin || auth.attributes['custom:_id'] === fieldValue.createdBy._id) && (
@@ -92,25 +106,26 @@ export default function FieldValueCard({
           </IconButton>
         </div>
       )}
-      {/* {drawer && ( */}
-      <StyleDrawer
-        onClose={() => setState(initialState)}
-        open={true}
-        styles={field?.options?.style || {}}
-        handleResetStyle={() => handleEditStyle(field._id, {})}
-        onStyleChange={(value) =>
-          handleEditStyle(
-            field._id,
-            field?.settings?.styles?.field._id
-              ? { ...field?.settings?.styles?.field._id, ...value }
-              : value,
-          )
-        }
-        removeStyle={(styleKey) => handleRemoveStyle(field, styleKey)}
-      />
-      {/* )} */}
-      {console.log(field)}
-      <div>
+      {drawer && (
+        <>
+          <StyleDrawer
+            onClose={() => onEdit(false)}
+            open={drawer}
+            styles={listItem?.settings?.styles ? listItem?.settings?.styles[field._id] : {}}
+            handleResetStyle={() => handleEditStyle(field._id, {})}
+            onStyleChange={(value) =>
+              handleEditStyle(
+                field._id,
+                listItem?.settings?.styles
+                  ? { ...listItem?.settings?.styles[field._id], ...value }
+                  : value,
+              )
+            }
+            removeStyle={(styleKey) => handleRemoveStyle(field, styleKey)}
+          />
+        </>
+      )}
+      <div style={listItem?.settings?.styles ? listItem?.settings?.styles[field._id] : {}}>
         {field.fieldType === 'date' ? (
           moment(fieldValue.valueDate).format('L')
         ) : field.fieldType === 'number' ? (
@@ -159,7 +174,12 @@ export default function FieldValueCard({
         ) : field.fieldType === 'textarea' || field.fieldType === 'contentBox' ? (
           <DisplayRichText value={fieldValue.value} />
         ) : (
-          <Typography variant="body2" color="textSecondary" component="p">
+          <Typography
+            style={listItem?.settings?.styles ? listItem?.settings?.styles[field._id] : {}}
+            variant="body2"
+            color="textSecondary"
+            component="p"
+          >
             {fieldValue.value}
           </Typography>
         )}

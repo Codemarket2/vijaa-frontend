@@ -18,6 +18,7 @@ import { omitTypename } from '../../utils/omitTypename';
 import { ADDED_LIST_ITEM, UPDATED_LIST_ITEM } from '../../graphql/subscription/list';
 import { updateLikeInCache } from '../like/createLike';
 import { parseListType } from './listTypes';
+import { parseForm } from '../form/getForm';
 
 const defaultGetListItems = { limit: 100, page: 1 };
 
@@ -81,7 +82,7 @@ export function useGetListItemBySlug({ slug }: any) {
 
   useEffect(() => {
     if (data && data?.getListItemBySlug) {
-      setListItem(parseListType(data.getListItemBySlug));
+      setListItem(parseForm(data.getListItemBySlug));
     }
   }, [data]);
 

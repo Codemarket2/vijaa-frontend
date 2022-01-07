@@ -90,6 +90,7 @@ export const GET_LIST_ITEM_BY_SLUG = gql`
         title
         slug
       }
+      settings
       createdBy
       fields {
         _id
