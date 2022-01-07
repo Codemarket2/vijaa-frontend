@@ -5,7 +5,10 @@ export const GET_RESPONSE = gql`
     getResponse(_id: $_id) {
       _id
       formId
-      parentId
+      parentId {
+        _id
+        title
+      }
       values {
         _id
         field
@@ -82,7 +85,10 @@ export const GET_MY_RESPONSES = gql`
           _id
           name
         }
-        parentId
+        parentId {
+          _id
+          title
+        }
         values {
           _id
           field
