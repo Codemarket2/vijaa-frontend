@@ -41,7 +41,10 @@ export const UPDATE_RESPONSE = gql`
     updateResponse(_id: $_id, values: $values) {
       _id
       formId
-      parentId
+      parentId {
+        _id
+        title
+      }
       values {
         _id
         field
