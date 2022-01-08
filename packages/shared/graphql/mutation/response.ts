@@ -40,11 +40,6 @@ export const UPDATE_RESPONSE = gql`
   mutation MyMutation($_id: ID!, $values: [FieldValue2Input]) {
     updateResponse(_id: $_id, values: $values) {
       _id
-      formId
-      parentId {
-        _id
-        title
-      }
       values {
         _id
         field
@@ -62,12 +57,6 @@ export const UPDATE_RESPONSE = gql`
           caption
         }
       }
-      createdBy {
-        _id
-        picture
-        name
-      }
-      createdAt
     }
   }
 `;
