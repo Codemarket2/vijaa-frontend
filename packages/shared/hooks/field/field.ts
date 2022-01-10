@@ -214,6 +214,7 @@ export function useCRUDFields({ onAlert, parentId, createCallback }: ICRUDProps)
     if (newPayload.fieldType === 'type') {
       const relationPayload: any = {
         _id: newPayload.relationId,
+        parentId: newPayload.typeId,
         label: newPayload.fieldLabel,
         fieldType: newPayload.fieldType,
         typeId: newPayload.parentId,
@@ -297,6 +298,7 @@ export function useDeleteField({ onAlert, parentId }: IDeleteProps) {
   const [deleteFieldByRelationId, { loading: deleteLoading2 }] = useMutation(
     DELETE_FIELD_BY_RELATION_ID,
   );
+
   const handleDelete = async (_id: any, deleteCallBack: any) => {
     try {
       const deleteInCache = (client) => {

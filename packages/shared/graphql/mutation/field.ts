@@ -47,6 +47,7 @@ export const UPDATE_FIELD = gql`
     $relationId: ID
     $label: String
     $fieldLabel: String
+    $parentId: ID
     $fieldType: String
     $typeId: ID
     $multipleValues: Boolean
@@ -55,6 +56,7 @@ export const UPDATE_FIELD = gql`
     updateField(
       _id: $_id
       relationId: $relationId
+      parentId: $parentId
       label: $label
       fieldLabel: $fieldLabel
       fieldType: $fieldType

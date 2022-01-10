@@ -46,18 +46,20 @@ interface IProps {
 }
 
 function UpdateFieldInput({ formik }) {
-  const { data: data2, error: error2 } = useGetFieldByRelationId(formik.values._id);
-  if (!error2 && (!data2 || !data2.getFieldByRelationId)) {
-    return <FieldsSkeleton />;
-  }
-  if (error2) {
-    return <ErrorLoading error={error2} />;
-  }
+  // const { data: data2, error: error2 } = useGetFieldByRelationId(formik.values._id);
+  // if (!error2 && (!data2 || !data2.getFieldByRelationId)) {
+  //   return <FieldsSkeleton />;
+  // }
+  // if (error2) {
+  //   return <ErrorLoading error={error2} />;
+  // }
+
   // useEffect(() => {
   //   if (data2?.getFieldByRelationId?.Label) {
   //     formik.setFieldValue('fieldLabel', data2?.getFieldByRelationId?.label, false);
   //   }
   // }, [data2]);
+
   return (
     <InputGroup>
       <TextField
