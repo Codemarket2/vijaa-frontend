@@ -6,7 +6,7 @@ import FormLabel from '@material-ui/core/FormLabel';
 import IconButton from '@material-ui/core/IconButton';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import DeleteIcon from '@material-ui/icons/Delete';
-import { useCreateResponse } from '@frontend/shared/hooks/response';
+import { useCreateUpdateResponse } from '@frontend/shared/hooks/response';
 import InputGroup from '../common/InputGroup';
 import LoadingButton from '../common/LoadingButton';
 import Field from './Field';
@@ -16,6 +16,7 @@ import DisplayRichText from '../common/DisplayRichText';
 
 interface IProps {
   form: any;
+  parentId?: string;
 }
 
 export const defualtValue = {
@@ -28,13 +29,19 @@ export const defualtValue = {
   media: [],
 };
 
-export default function FormViewWrapper({ form: { _id, name, fields, settings } }: IProps): any {
-  const { handleCreateResponse, createLoading } = useCreateResponse({ onAlert });
+export default function FormViewWrapper({
+  form: { _id, name, fields, settings },
+  parentId,
+}: IProps): any {
+  const { handleCreateUpdateResponse, createLoading } = useCreateUpdateResponse(
+    { onAlert },
+    parentId,
+  );
   const [showMessage, setShowMessage] = useState(false);
 
   const handleSubmit = async (values) => {
     const payload = { formId: _id, values };
-    await handleCreateResponse(payload, fields);
+    await handleCreateUpdateResponse(payload, fields);
     setShowMessage(true);
   };
   return (
@@ -190,7 +197,7 @@ export function FormView({
             xl={field?.options?.grid?.xl}
             key={field._id}
           >
-            <InputGroup key={field._id} className="">
+            <InputGroup key={field._id}>
               <>
                 <FormLabel>
                   {field?.options?.required ? `${field?.label}*` : field?.label}
@@ -235,7 +242,7 @@ export function FormView({
         ))}
         {fields?.length > 0 && (
           <Grid item xs={12}>
-            <InputGroup className="px-2">
+            <InputGroup>
               <LoadingButton
                 loading={submitState.loading || loading}
                 onClick={onSubmit}

@@ -17,13 +17,13 @@ import { generateObjectId } from '@frontend/shared/utils/objectId';
 const defaultQueryVariables = { limit: 1000, page: 1 };
 
 export function useCreateFieldValue() {
-  const [createFieldValueMutation] = useMutation(CREATE_FIELD_VALUE);
+  const [createFieldValueMutation, { loading: createLoading }] = useMutation(CREATE_FIELD_VALUE);
   const handleCreateField = async (payload) => {
     return await createFieldValueMutation({
       variables: payload,
     });
   };
-  return { handleCreateField };
+  return { handleCreateField, createLoading };
 }
 
 export function useUpdateFieldValue() {

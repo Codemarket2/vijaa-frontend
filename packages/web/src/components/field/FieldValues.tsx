@@ -7,8 +7,6 @@ import AddCircle from '@material-ui/icons/AddCircle';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import Carousel from 'react-material-ui-carousel';
-import { useTheme } from '@material-ui/core/styles';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
@@ -27,7 +25,9 @@ import Backdrop from '../common/Backdrop';
 import { onAlert } from '../../utils/alert';
 import FieldValueCard from './FieldValueCard';
 import Share from '../share/Share';
-import SectionForm from '../form2/SectionForm';
+import FormSection from './FormSection';
+import FieldViewWrapper from '../form2/FieldViewWrapper';
+import ResponseCount from '../form2/ResponseCount';
 
 const initialState = {
   showForm: false,
@@ -51,8 +51,6 @@ function ItemOneFields({
   const [state, setState] = useState(initialState);
   const { attributes, admin } = useSelector(({ auth }: any) => auth);
   const currentUserId = attributes['custom:_id'];
-  const theme = useTheme();
-  const matches = useMediaQuery(theme.breakpoints.down('xs'));
   const deleteCallback = () => {
     setState({ ...state, showMenu: null, selectedFieldValue: null, edit: false });
   };
@@ -147,12 +145,7 @@ function ItemOneFields({
           </Menu>
           <Divider />
           <div className="d-flex justify-content-between align-items-center align-content-center">
-            <Typography
-              style={matches ? { paddingTop: 50 } : {}}
-              variant="h5"
-              className="d-flex align-items-center link-anchor"
-              id={convertToSlug(field.label)}
-            >
+            <Typography variant="h5" id={convertToSlug(field.label)}>
               {field.label}
             </Typography>
             {showAddButton && (
@@ -329,8 +322,16 @@ export default function FieldValues({
         }
         return (
           <Grid key={field._id} {...gridProps} item>
-            {field.fieldType === 'form' ? (
-              <SectionForm field={field} parentId={parentId} previewMode={previewMode} />
+            {field.fieldType === 'form2' ? (
+              <>
+                <Typography variant="h5" id={convertToSlug(field.label)}>
+                  {field.label}
+                </Typography>
+                <ResponseCount formId={JSON.parse(field?.options)?.formId} parentId={parentId} />
+                <FieldViewWrapper _id={JSON.parse(field?.options)?.formId} parentId={parentId} />
+              </>
+            ) : field.fieldType === 'form' ? (
+              <FormSection field={field} parentId={parentId} previewMode={previewMode} />
             ) : (
               <ItemOneFields
                 toggleLeftNavigation={(value) => {

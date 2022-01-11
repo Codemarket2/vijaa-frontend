@@ -44,6 +44,7 @@ export const GET_FIELDS_BY_TYPE = gql`
         createdBy {
           _id
         }
+        options
       }
     }
   }
