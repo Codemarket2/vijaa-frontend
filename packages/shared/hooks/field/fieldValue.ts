@@ -12,6 +12,7 @@ import {
 import { fileUpload } from '../../utils/fileUpload';
 import { ADDED_FIELD_VALUE } from '../../graphql/subscription/field';
 import { omitTypename } from '../../utils/omitTypename';
+import { generateObjectId } from '@frontend/shared/utils/objectId';
 
 const defaultQueryVariables = { limit: 1000, page: 1 };
 
@@ -75,6 +76,7 @@ export function useGetFieldValuesByItem({ parentId, field }: any) {
             if (isNew) {
               newData = [...prev?.getFieldValuesByItem?.data, newFieldValue];
             }
+            newData = newData.filter((d) => d.parentId !== parentId);
             return {
               ...prev,
               getFieldValuesByItem: {
@@ -145,6 +147,7 @@ interface IFormValues {
   tempMedia: any;
   tempMediaFiles: any;
   itemId: any;
+  relationId?: string;
 }
 
 const defaultFormValues = {
@@ -161,6 +164,7 @@ const defaultFormValues = {
   tempMedia: [],
   tempMediaFiles: [],
   itemId: null,
+  relationId: '',
 };
 
 interface ICRUDProps extends IHooksProps {
@@ -175,7 +179,7 @@ export function useCRUDFieldValue({
   onAlert,
   parentId,
   field,
-  relationId,
+  relationId: fieldId,
   fieldType,
   createCallback,
 }: ICRUDProps) {
@@ -233,18 +237,26 @@ export function useCRUDFieldValue({
       });
     };
 
-    if (relationId && payload.itemId) {
-      const relationPayload = {
+    let newPayload = { ...payload };
+    newPayload._id = generateObjectId();
+    if (fieldId && newPayload.itemId) {
+      const relationPayload: any = {
         parentId: payload.itemId,
-        field: relationId,
+        field: fieldId,
+        relationId: newPayload._id,
         itemId: payload.parentId,
       };
-      const response = await createFieldValueMutation({
+
+      relationPayload._id = generateObjectId();
+
+      newPayload.relationId = relationPayload._id;
+
+      await createFieldValueMutation({
         variables: relationPayload,
       });
     }
     return await createFieldValueMutation({
-      variables: payload,
+      variables: newPayload,
       update: updateCache,
     });
   };
@@ -271,8 +283,24 @@ export function useCRUDFieldValue({
         data: newData,
       });
     };
+    let newPayload = { ...payload };
+    if (fieldId && newPayload.itemId) {
+      const relationPayload: any = {
+        _id: newPayload.relationId,
+        parentId: payload.itemId,
+        field: fieldId,
+        itemId: payload.parentId,
+      };
+      if (payload.relationId) {
+        relationPayload._id = payload.relationId;
+      }
+      const response = await updateFieldValueMutation({
+        variables: relationPayload,
+      });
+      newPayload.relationId = response?.data?.updateFieldValue?._id;
+    }
     return await updateFieldValueMutation({
-      variables: payload,
+      variables: newPayload,
       update: updateInCache,
     });
   };
@@ -285,6 +313,7 @@ export function useCRUDFieldValue({
     formik.setFieldValue('field', fieldValue.field, false);
     formik.setFieldValue('media', fieldValue.media, false);
     formik.setFieldValue('itemId', fieldValue.itemId, false);
+    formik.setFieldValue('relationId', fieldValue.relationId, false);
   };
 
   const setMediaState = (state) => {

@@ -55,6 +55,7 @@ export const GET_FIELD_VALUES_BY_FIELD = gql`
       count
       data {
         _id
+        relationId
         parentId
         field
         value
@@ -85,6 +86,7 @@ export const GET_FIELD_VALUE = gql`
   query MyQuery($_id: ID!) {
     getFieldValue(_id: $_id) {
       _id
+      relationId
       parentId
       field
       value

@@ -29,12 +29,8 @@ export function useGetFieldsByType({ parentId }: any) {
       setSubscribed(true);
       subscribeToMore({
         document: ADDED_FIELD,
-        // variables: {
-        //   parentId,
-        // },
         updateQuery: (prev, { subscriptionData }) => {
           if (!subscriptionData.data) return prev;
-          console.log('subscriptionData.data', subscriptionData.data);
           const newField = subscriptionData.data.addedField;
           let isNew = true;
           let newData = prev?.getFieldsByType?.data?.map((t) => {
@@ -181,7 +177,6 @@ export function useCRUDFields({ onAlert, parentId, createCallback }: ICRUDProps)
       const response = await createFieldMutation({
         variables: relationPayload,
       });
-      console.log('response', response);
     }
     return await createFieldMutation({
       variables: newPayload,
@@ -210,7 +205,7 @@ export function useCRUDFields({ onAlert, parentId, createCallback }: ICRUDProps)
       });
     };
     let newPayload = { ...payload };
-    console.log('payload', payload);
+
     if (newPayload.fieldType === 'type') {
       const relationPayload: any = {
         _id: newPayload.relationId,
@@ -223,11 +218,9 @@ export function useCRUDFields({ onAlert, parentId, createCallback }: ICRUDProps)
       if (payload.relationId) {
         relationPayload._id = payload.relationId;
       }
-      console.log('relationPayload', relationPayload);
       const response = await updateFieldMutation({
         variables: relationPayload,
       });
-      console.log('response', response);
       newPayload.relationId = response?.data?.updateField?._id;
     }
 
