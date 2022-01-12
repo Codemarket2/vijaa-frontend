@@ -181,7 +181,13 @@ function ItemOneFields({
       <CRUDMenu
         show={state.showMenu}
         onClose={() => setState(initialState)}
-        onDelete={() => handleDelete(state.selectedFieldValue._id, deleteCallback)}
+        onDelete={() =>
+          handleDelete(
+            state.selectedFieldValue._id,
+            state.selectedFieldValue.relationId,
+            deleteCallback,
+          )
+        }
         onEdit={() => onClickAdd(true)}
       />
       <Backdrop open={deleteLoading} />

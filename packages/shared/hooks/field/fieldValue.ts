@@ -336,12 +336,13 @@ export function useCRUDFieldValue({
 interface IDeleteProps extends IHooksProps {
   parentId: string;
   field: string;
+  state?: any;
 }
 
 export function useDeleteFieldValue({ onAlert, parentId, field }: IDeleteProps) {
   const [deleteFieldMutation, { loading: deleteLoading }] = useMutation(DELETE_FIELD_VALUE);
   const queryVariables = { ...defaultQueryVariables, parentId, field };
-  const handleDelete = async (_id: any, deleteCallBack: any) => {
+  const handleDelete = async (_id: any, relationId: any, deleteCallBack: any) => {
     try {
       const deleteInCache = (client) => {
         const { getFieldValuesByItem } = client.readQuery({
@@ -360,6 +361,10 @@ export function useDeleteFieldValue({ onAlert, parentId, field }: IDeleteProps) 
           data: newData,
         });
       };
+      await deleteFieldMutation({
+        variables: { _id: relationId },
+        update: deleteInCache,
+      });
       await deleteFieldMutation({
         variables: { _id },
         update: deleteInCache,

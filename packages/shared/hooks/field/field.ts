@@ -8,7 +8,6 @@ import {
   CREATE_FIELD,
   UPDATE_FIELD,
   DELETE_FIELD,
-  DELETE_FIELD_BY_RELATION_ID,
   UPDATE_FIELD_POSITION,
 } from '../../graphql/mutation/field';
 import { IHooksProps } from '../../types/common';
@@ -290,11 +289,7 @@ export function useUpdateFieldPosition({ onAlert, parentId }: IDeleteProps) {
 
 export function useDeleteField({ onAlert, parentId }: IDeleteProps) {
   const [deleteFieldMutation, { loading: deleteLoading }] = useMutation(DELETE_FIELD);
-  const [deleteFieldByRelationId, { loading: deleteLoading2 }] = useMutation(
-    DELETE_FIELD_BY_RELATION_ID,
-  );
-
-  const handleDelete = async (_id: any, deleteCallBack: any) => {
+  const handleDelete = async (_id: any, relationId: any, deleteCallBack: any) => {
     try {
       const deleteInCache = (client) => {
         const { getFieldsByType } = client.readQuery({
@@ -313,8 +308,9 @@ export function useDeleteField({ onAlert, parentId }: IDeleteProps) {
           data: newData,
         });
       };
-      await deleteFieldByRelationId({
-        variables: { relationId: _id },
+      await deleteFieldMutation({
+        variables: { _id: relationId },
+        update: deleteInCache,
       });
       await deleteFieldMutation({
         variables: { _id },
