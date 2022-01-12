@@ -117,12 +117,6 @@ export const DELETE_FIELD = gql`
   }
 `;
 
-export const DELETE_FIELD_BY_RELATION_ID = gql`
-  mutation MyMutation($relationId: ID!) {
-    deleteFieldByRelationId(relationId: $relationId)
-  }
-`;
-
 export const CREATE_FIELD_VALUE = gql`
   mutation MyMutation(
     $_id: ID!
