@@ -351,7 +351,7 @@ export default function ItemScreen({
             previewMode={previewMode}
             listItem={data?.getListItemBySlug}
           />
-          {JSON.stringify(data?.getListItemBySlug)}
+          {/* {JSON.stringify(data?.getListItemBySlug)} */}
           {console.log(data?.getListItemBySlug)}
           <ListItemsFieldsValue listItem={data?.getListItemBySlug} previewMode={previewMode} />
         </Paper>

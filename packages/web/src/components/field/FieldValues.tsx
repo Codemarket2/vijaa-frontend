@@ -353,7 +353,6 @@ export default function FieldValues({
 
   return (
     <Grid container>
-      {console.log(listItem)}
       {data.getFieldsByType.data.map((field, index) => {
         let gridProps: any = { xs: 12 };
         if (layouts && layouts[field._id]) {
@@ -384,9 +383,9 @@ export default function FieldValues({
                   listItem={listItem}
                 />
               )}
-              {JSON.stringify(
+              {/* {JSON.stringify(
                 listItem?.settings?.styles ? listItem?.settings?.styles[field._id] : {},
-              )}
+              )} */}
             </div>
           </Grid>
         );

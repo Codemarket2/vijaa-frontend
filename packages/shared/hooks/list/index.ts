@@ -10,6 +10,7 @@ export {
   useGetListItemsByType,
   useGetListItemBySlug,
   useDeleteListItem,
+  useGetListItem,
   useCreateListItem,
 } from './listItems';
 export { useMentionList } from './mentionList';

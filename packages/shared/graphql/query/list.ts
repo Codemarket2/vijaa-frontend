@@ -21,8 +21,8 @@ export const GET_LIST_TYPES = gql`
 `;
 
 export const GET_LIST_ITEMS_BY_TYPE = gql`
-  query MyQuery($limit: Int, $page: Int, $types: [ID], $search: String) {
-    getListItems(limit: $limit, page: $page, types: $types, search: $search) {
+  query MyQuery($search: String) {
+    getListItems(search: $search) {
       count
       data {
         _id
@@ -102,6 +102,19 @@ export const GET_LIST_ITEM_BY_SLUG = gql`
           title
           slug
         }
+      }
+    }
+  }
+`;
+
+export const GET_LIST_ITEM = gql`
+  query MyQuery($limit: Int) {
+    getListItems(limit: $limit) {
+      # ListItems {
+      title
+      types {
+        title
+        # }
       }
     }
   }

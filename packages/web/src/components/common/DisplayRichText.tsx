@@ -1,6 +1,7 @@
+import { replace } from 'cypress/types/lodash';
 import parse from 'html-react-parser';
 import styled from 'styled-components';
-
+import Link from 'next/link';
 type IProps = {
   value: string;
 };
@@ -22,7 +23,27 @@ const StyledDiv = styled.div`
 `;
 
 export default function DisplayRichText({ value = 'dd' }: IProps) {
-  return <StyledDiv className="ck-content">{parse(transform(value))}</StyledDiv>;
+  return (
+    <StyledDiv className="ck-content">
+      {parse(
+        transform(value),
+        // , {
+        //   replace: (domNode: any) => {
+        //     console.log(domNode?.prev?.attribs?.class == 'mention');
+        //     if (domNode?.prev?.attribs?.class == 'mention') {
+        //       return (
+        //         <span>
+        //           <Link href="">
+        //             <a>{domNode.prev.children[0].data}</a>
+        //           </Link>
+        //         </span>
+        //       );
+        //     }
+        //   },
+        // }
+      )}
+    </StyledDiv>
+  );
 }
 
 const transform = (htmlContent: any) => {

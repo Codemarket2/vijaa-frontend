@@ -11,7 +11,11 @@ import {
   UPDATE_PUBLISH,
   UPDATE_AUTHENTICATION,
 } from '../../graphql/mutation/list';
-import { GET_LIST_ITEMS_BY_TYPE, GET_LIST_ITEM_BY_SLUG } from '../../graphql/query/list';
+import {
+  GET_LIST_ITEM,
+  GET_LIST_ITEMS_BY_TYPE,
+  GET_LIST_ITEM_BY_SLUG,
+} from '../../graphql/query/list';
 import { IHooksProps } from '../../types/common';
 import { fileUpload } from '../../utils/fileUpload';
 import { omitTypename } from '../../utils/omitTypename';
@@ -71,7 +75,13 @@ export function useGetListItemsByType({ types = [] }: any) {
 
   return { data, error, loading, state, setState };
 }
+export function useGetListItem({ limit }: any) {
+  const { data } = useQuery(GET_LIST_ITEM, {
+    variables: { limit },
+  });
 
+  return { data: data };
+}
 export function useGetListItemBySlug({ slug }: any) {
   const { data, error, loading, subscribeToMore } = useQuery(GET_LIST_ITEM_BY_SLUG, {
     variables: { slug },
