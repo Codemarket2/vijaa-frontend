@@ -3,24 +3,32 @@ import { gql } from '@apollo/client';
 export const CREATE_FIELD = gql`
   mutation MyMutation(
     $parentId: ID!
+    $_id: ID
     $label: String!
+    $fieldLabel: String
     $fieldType: String!
     $typeId: ID
     $multipleValues: Boolean
     $oneUserMultipleValues: Boolean
+    $relationId: ID
   ) {
     createField(
+      _id: $_id
       parentId: $parentId
       label: $label
+      fieldLabel: $fieldLabel
       fieldType: $fieldType
       typeId: $typeId
       multipleValues: $multipleValues
       oneUserMultipleValues: $oneUserMultipleValues
+      relationId: $relationId
     ) {
       _id
       parentId
+      relationId
       position
       label
+      fieldLabel
       fieldType
       typeId {
         _id
@@ -37,7 +45,10 @@ export const CREATE_FIELD = gql`
 export const UPDATE_FIELD = gql`
   mutation MyMutation(
     $_id: ID!
+    $relationId: ID
     $label: String
+    $fieldLabel: String
+    $parentId: ID
     $fieldType: String
     $typeId: ID
     $multipleValues: Boolean
@@ -45,16 +56,21 @@ export const UPDATE_FIELD = gql`
   ) {
     updateField(
       _id: $_id
+      relationId: $relationId
+      parentId: $parentId
       label: $label
+      fieldLabel: $fieldLabel
       fieldType: $fieldType
       typeId: $typeId
       multipleValues: $multipleValues
       oneUserMultipleValues: $oneUserMultipleValues
     ) {
       _id
+      relationId
       parentId
       position
       label
+      fieldLabel
       fieldType
       typeId {
         _id
@@ -101,10 +117,18 @@ export const DELETE_FIELD = gql`
   }
 `;
 
+export const DELETE_FIELD_BY_RELATION_ID = gql`
+  mutation MyMutation($relationId: ID!) {
+    deleteFieldByRelationId(relationId: $relationId)
+  }
+`;
+
 export const CREATE_FIELD_VALUE = gql`
   mutation MyMutation(
+    $_id: ID!
     $parentId: ID!
     $field: ID!
+    $relationId: ID!
     $value: String
     $valueDate: AWSDateTime
     $valueNumber: Int
@@ -113,8 +137,10 @@ export const CREATE_FIELD_VALUE = gql`
     $media: [MediaInput]
   ) {
     createFieldValue(
+      _id: $_id
       parentId: $parentId
       field: $field
+      relationId: $relationId
       value: $value
       valueNumber: $valueNumber
       valueBoolean: $valueBoolean
@@ -125,6 +151,7 @@ export const CREATE_FIELD_VALUE = gql`
       _id
       parentId
       field
+      relationId
       value
       valueDate
       valueNumber
@@ -151,6 +178,9 @@ export const CREATE_FIELD_VALUE = gql`
 export const UPDATE_FIELD_VALUE = gql`
   mutation MyMutation(
     $_id: ID!
+    $parentId: ID
+    $field: ID
+    $relationId: ID
     $value: String
     $valueDate: AWSDateTime
     $valueNumber: Int
@@ -160,6 +190,9 @@ export const UPDATE_FIELD_VALUE = gql`
   ) {
     updateFieldValue(
       _id: $_id
+      parentId: $parentId
+      field: $field
+      relationId: $relationId
       value: $value
       valueNumber: $valueNumber
       valueBoolean: $valueBoolean
@@ -169,6 +202,7 @@ export const UPDATE_FIELD_VALUE = gql`
     ) {
       _id
       parentId
+      relationId
       field
       value
       valueDate
