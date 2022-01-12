@@ -33,7 +33,6 @@ export default function BulkUploadAction({ form, onChange }: IProps) {
 
   const [selectedFile, setSelectedFile] = useState([]);
   const [isFilePicked, setIsFilePicked] = useState(false);
-  state?.fileData?.map((e) => console.log(e));
   const changeHandler = (event) => {
     handleFileUpload(event);
     const { files } = event.target;
