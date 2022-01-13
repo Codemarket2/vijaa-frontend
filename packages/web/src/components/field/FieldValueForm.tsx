@@ -218,11 +218,12 @@ export default function ItemFieldForm({
           )}
         </InputGroup>
         <InputGroup>
-          <LoadingButton type="submit" loading={formLoading} size="small">
+          <LoadingButton type="submit" loading={formLoading} data-testid="save-button" size="small">
             Save
           </LoadingButton>
           <Button
             className="ml-2"
+            data-testid="cancel-button"
             disabled={formLoading}
             variant="outlined"
             size="small"

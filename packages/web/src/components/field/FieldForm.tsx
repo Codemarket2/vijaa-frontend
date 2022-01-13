@@ -240,11 +240,12 @@ export default function FieldForm({
         </InputGroup>
       )}
       <InputGroup>
-        <LoadingButton type="submit" loading={formLoading} size="small">
+        <LoadingButton type="submit" data-testid="save-button" loading={formLoading} size="small">
           Save
         </LoadingButton>
         <Button
           className="ml-2"
+          data-testid="cancel-button"
           disabled={formLoading}
           variant="outlined"
           size="small"
