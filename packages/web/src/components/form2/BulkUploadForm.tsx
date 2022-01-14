@@ -11,15 +11,14 @@ import { Button } from '@material-ui/core';
 interface IProps {
   fields: any[];
   fileData: any[];
+  handleSubmit: any;
+  map: {};
+  setMap: any;
 }
 
-export default function BulkUploadForm({ fields, fileData }: IProps) {
-  const [selected, setSelected] = useState({});
+export default function BulkUploadForm({ fields, fileData, handleSubmit, map, setMap }: IProps) {
   const options = Object.keys(fileData[0]);
-  const handleSubmit = () => {
-    console.log('Maped Data ');
-    console.log(selected);
-  };
+
   return (
     <form className="px-2 my-2">
       <InputGroup>
@@ -44,9 +43,9 @@ export default function BulkUploadForm({ fields, fileData }: IProps) {
                 labelId="variablefield-simple-select-outlined-label"
                 id="variablefield-simple-select-outlined"
                 name="value"
-                value={selected[field.lable]}
+                value={map[field.lable]}
                 onChange={({ target }) => {
-                  setSelected({ ...selected, [field.label]: target.value });
+                  setMap({ ...map, [field._id]: target.value });
                 }}
                 label="Field"
               >

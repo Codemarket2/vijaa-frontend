@@ -1,41 +1,37 @@
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
+import { useState } from 'react';
 import Typography from '@material-ui/core/Typography';
 import Tooltip from '@material-ui/core/Tooltip';
 import IconButton from '@material-ui/core/IconButton';
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
-import { useState } from 'react';
-import CRUDMenu from '../common/CRUDMenu';
 import { Button } from '@material-ui/core';
 
 import * as XLSX from 'xlsx';
 import BulkUploadForm from './BulkUploadForm';
+import { fileUpload } from '../../../../shared/utils/fileUpload';
+import { useCreateBulkResponse } from '@frontend/shared/hooks/response';
 
 interface IProps {
   form: any;
-  onChange: any;
 }
 
 const initialState = {
   showForm: false,
-  selectedIndex: null,
-  selectedItem: null,
-  showMenu: null,
+  fileUrl: null,
   fileData: [],
 };
 
-export default function BulkUploadAction({ form, onChange }: IProps) {
+export default function BulkUploadAction({ form }: IProps) {
   const [state, setState] = useState(initialState);
   const [files, setFiles] = useState([]);
+  const [map, setMap] = useState({});
 
   const [selectedFile, setSelectedFile] = useState([]);
   const [isFilePicked, setIsFilePicked] = useState(false);
+
+  const { createBulkResponseHandler, createLoading } = useCreateBulkResponse();
   const changeHandler = (event) => {
-    handleFileUpload(event);
     const { files } = event.target;
+    files && handleFileUpload(event);
     let allFiles = [];
     for (let i = 0; i < files.length; i++) {
       allFiles.push(files[i]);
@@ -90,25 +86,34 @@ export default function BulkUploadAction({ form, onChange }: IProps) {
     reader.readAsBinaryString(file);
   };
 
-  const handleSubmit = () => {
+  const mapDataToField = () => {
     if (selectedFile) {
       setState({ ...state, fileData: files });
       // setSelectedFile([]);
       // setIsFilePicked(false);
     } else setState(initialState);
   };
+  const handleSubmit = async () => {
+    try {
+      // const url = await fileUpload(selectedFile, '/csvDataFile');
+      const url =
+        'https://vijaa-content-bucket202938-dev.s3.us-east-1.amazonaws.com/public/media/csvDataFile/text-5e770856-3272-4043-8fc9-9c42f11237881642092564326.csv';
 
-  const onSave = (payload, operation) => {
-    let newActions = form?.settings?.actions || [];
-    if (operation === 'update') {
-      // Update
-      newActions = newActions?.map((a, i) => (i === state.selectedIndex ? payload : a));
-    } else {
-      // Create
-      newActions = [...newActions, payload];
+      if (url) {
+        setState({ ...state, fileUrl: url });
+        const payload = {
+          fileUrl: url,
+          map: JSON.stringify(map),
+          formId: form._id,
+          fileData: JSON.stringify(state.fileData),
+          parentId: form.parentId ? form.parentId : null,
+        };
+        await createBulkResponseHandler(payload);
+        console.log('payload', payload);
+      }
+    } catch (error) {
+      console.log(error.message);
     }
-    onChange(newActions);
-    setState(initialState);
   };
 
   return (
@@ -152,14 +157,20 @@ export default function BulkUploadAction({ form, onChange }: IProps) {
             <p>Select a file to show details</p>
           )}
           {isFilePicked && selectedFile && (
-            <Button variant="contained" color="primary" component="span" onClick={handleSubmit}>
-              {selectedFile.length > 1 ? 'Upload Files' : 'Upload File'}
+            <Button variant="contained" color="primary" component="span" onClick={mapDataToField}>
+              {selectedFile.length > 1 ? 'Upload Files' : 'Map Fields'}
             </Button>
           )}
         </div>
       )}
       {state?.fileData?.length > 0 && (
-        <BulkUploadForm fields={form?.fields} fileData={state.fileData} />
+        <BulkUploadForm
+          fields={form?.fields}
+          fileData={state.fileData}
+          handleSubmit={handleSubmit}
+          map={map}
+          setMap={setMap}
+        />
       )}
     </>
   );

@@ -112,7 +112,7 @@ export default function Actions({ form, onChange }: IProps) {
           />
         </List>
       )}
-      <BulkUploadAction form={form} onChange={onChange} />
+      <BulkUploadAction form={form} />
     </Paper>
   );
 }
