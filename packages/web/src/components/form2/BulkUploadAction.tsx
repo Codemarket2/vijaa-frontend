@@ -95,21 +95,18 @@ export default function BulkUploadAction({ form }: IProps) {
   };
   const handleSubmit = async () => {
     try {
-      // const url = await fileUpload(selectedFile, '/csvDataFile');
-      const url =
-        'https://vijaa-content-bucket202938-dev.s3.us-east-1.amazonaws.com/public/media/csvDataFile/text-5e770856-3272-4043-8fc9-9c42f11237881642092564326.csv';
+      const url = await fileUpload(selectedFile, '/csvDataFile');
 
       if (url) {
         setState({ ...state, fileUrl: url });
+
         const payload = {
-          fileUrl: url,
+          fileUrl: url[0],
           map: JSON.stringify(map),
           formId: form._id,
-          fileData: JSON.stringify(state.fileData),
           parentId: form.parentId ? form.parentId : null,
         };
         await createBulkResponseHandler(payload);
-        console.log('payload', payload);
       }
     } catch (error) {
       console.log(error.message);
