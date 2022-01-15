@@ -7,6 +7,7 @@ import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import InputGroup from '../common/InputGroup';
 import { Button } from '@material-ui/core';
+import LoadingButton from '../common/LoadingButton';
 
 interface IProps {
   fields: any[];
@@ -14,10 +15,18 @@ interface IProps {
   handleSubmit: any;
   map: {};
   setMap: any;
+  createLoading: boolean;
 }
 
-export default function BulkUploadForm({ fields, fileData, handleSubmit, map, setMap }: IProps) {
-  const options = Object.keys(fileData[0]);
+export default function BulkUploadForm({
+  fields,
+  fileData,
+  handleSubmit,
+  map,
+  setMap,
+  createLoading,
+}: IProps) {
+  const options = fileData;
 
   return (
     <form className="px-2 my-2">
@@ -59,9 +68,21 @@ export default function BulkUploadForm({ fields, fileData, handleSubmit, map, se
           </div>
         ))}
       </InputGroup>
-      <Button variant="contained" color="primary" component="span" onClick={handleSubmit}>
-        Review And Submit
-      </Button>
+      {/* <Button variant="contained" color="primary" component="span" onClick={handleSubmit}>
+        {!createLoading ? `Review And Submit` : ''}
+      </Button> */}
+      <InputGroup>
+        <LoadingButton
+          loading={createLoading}
+          onClick={handleSubmit}
+          type="button"
+          variant="contained"
+          color="primary"
+          fullWidth
+        >
+          Review And Submit
+        </LoadingButton>
+      </InputGroup>
     </form>
   );
 }
