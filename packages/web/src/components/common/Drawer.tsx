@@ -8,6 +8,7 @@ import { useState, useEffect } from 'react';
 import GroupIcon from '@material-ui/icons/Group';
 import ListIcon from '@material-ui/icons/List';
 import TuneIcon from '@material-ui/icons/Tune';
+import EmailIcon from '@material-ui/icons/Email';
 import { useRouter } from 'next/router';
 import ListSubheader from '@material-ui/core/ListSubheader';
 import ListItem from '@material-ui/core/ListItem';
@@ -75,6 +76,14 @@ export default function DrawerContent({ showDrawer, toggleDrawer, admin }: IProp
               <TuneIcon />
             </ListItemIcon>
             <ListItemText primary="Forms" />
+          </ListItem>
+        </Link>
+        <Link href="/emails">
+          <ListItem button selected={checkActiveRoute(activeRoute, '/emails')}>
+            <ListItemIcon>
+              <EmailIcon />
+            </ListItemIcon>
+            <ListItemText primary="Emails" />
           </ListItem>
         </Link>
         <Link href="/log">
