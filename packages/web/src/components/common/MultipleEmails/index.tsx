@@ -6,35 +6,37 @@ import InputGroup from '../InputGroup';
 
 interface IProps {
   formik: any;
+  state: any;
+  setState: any;
 }
-export default function index({ formik }: IProps) {
-  const [state, setState] = useState({
-    value: '',
-    emails: [],
-    error: null,
-  });
-
+export default function index({ formik, state, setState }: IProps) {
   useEffect(() => {
-    formik.setFieldValue('emails', state.emails, false);
-  }, [state.emails]);
+    if (state.resetEmails) {
+      formik.setFieldValue('receiverEmail', state.receiverEmail, false);
+    }
+  }, [state.receiverEmail]);
 
   const handleChange = (e) => {
     setState({
       ...state,
       value: e.target.value,
       error: null,
+      resetEmails: true,
     });
   };
 
   const handleDelete = (toBeRemoved) => {
-    setState({ ...state, emails: state.emails.filter((email) => email !== toBeRemoved) });
+    setState({
+      ...state,
+      receiverEmail: state.receiverEmail.filter((email) => email !== toBeRemoved),
+    });
   };
   function isEmail(email) {
     return /[\w\d\.-]+@[\w\d\.-]+\.[\w\d\.-]+/.test(email);
   }
 
   function isInList(email) {
-    return state.emails.find((e) => e === email);
+    return state.receiverEmail.find((e) => e === email);
   }
 
   function isValid(email) {
@@ -61,7 +63,12 @@ export default function index({ formik }: IProps) {
       e.preventDefault();
       let email = state.value.trim();
       if (email && isValid(email)) {
-        setState({ ...state, emails: [...state.emails, email], value: '', error: null });
+        setState({
+          ...state,
+          receiverEmail: [...state.receiverEmail, email],
+          value: '',
+          error: null,
+        });
       }
     }
   };
@@ -75,7 +82,7 @@ export default function index({ formik }: IProps) {
     if (emails) {
       var toBeAdded = emails.filter((email) => !isInList(email));
 
-      setState({ ...state, emails: [...state.emails, ...toBeAdded] });
+      setState({ ...state, receiverEmail: [...state.receiverEmail, ...toBeAdded] });
     }
   };
   return (
@@ -85,7 +92,7 @@ export default function index({ formik }: IProps) {
           fullWidth
           label="To"
           variant="outlined"
-          name="emails"
+          name="receiverEmail"
           size="small"
           type="email"
           placeholder="Type or paste email addresses and press `Enter`"
@@ -95,12 +102,12 @@ export default function index({ formik }: IProps) {
           onChange={handleChange}
           error={
             (state.error && Boolean(state.error)) ||
-            (formik.touched.emails && Boolean(formik.errors.emails))
+            (formik.touched.receiverEmail && Boolean(formik.errors.receiverEmail))
           }
-          helperText={state.error || (formik.touched.emails && formik.errors.emails)}
+          helperText={state.error || (formik.touched.receiverEmail && formik.errors.receiverEmail)}
         />
       </InputGroup>
-      {state.emails.map((email) => (
+      {state.receiverEmail.map((email) => (
         <React.Fragment key={email}>
           <Chip label={email} onDelete={() => handleDelete(email)} />
         </React.Fragment>

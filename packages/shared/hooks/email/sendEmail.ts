@@ -1,10 +1,11 @@
 import * as yup from 'yup';
 import { useFormik } from 'formik';
-import { IHooksProps } from '../../types/common';
-import { generateObjectId } from '../../utils/objectId';
+import { CREATE_SEND_EMAIL } from '../../graphql/mutation/email';
+import { useMutation } from '@apollo/client';
 
 const validationSchema = yup.object({
-  emails: yup
+  senderEmail: yup.string().email('Invalid email').required('Email is required'),
+  receiverEmail: yup
     .array()
     .transform(function (value, originalValue) {
       if (this.isType(value) && value !== null) {
@@ -12,51 +13,61 @@ const validationSchema = yup.object({
       }
       return originalValue ? originalValue.split(/[\s,]+/) : [];
     })
-    .of(yup.string().email(({ value }) => `${value} is not a valid email`)),
+    .of(yup.string().email(({ value }) => `${value} is not a valid email`))
+    .required('Email is required'),
   subject: yup.string().required('Subject is required'),
   body: yup.string().required('Body cannot be empty'),
 });
 
 interface IFormValues {
-  emails: any;
+  receiverEmail: any;
+  senderEmail: string;
   subject: string;
   body: string;
 }
 
 const defaultFormValues = {
-  emails: [],
+  receiverEmail: [],
+  senderEmail: '',
   subject: '',
   body: '',
 };
 
-const onSave = (payload) => {
-  console.log('payload', payload);
-};
-
 export function useSendEmail(): any {
+  const [createSendEmail, { loading, data, error }] = useMutation(CREATE_SEND_EMAIL);
   const formik = useFormik({
     initialValues: defaultFormValues,
     validationSchema,
     onSubmit: async (payload: IFormValues) => {
       try {
         const newPayload = {
-          emails: payload.emails,
+          receiverEmail: payload.receiverEmail,
+          senderEmail: payload.senderEmail,
           subject: payload.subject,
           body: payload.body,
         };
+        await createSendEmail({ variables: newPayload });
+        // await onSend(newPayload);
         formik.handleReset('');
-        onSave(newPayload);
       } catch (error) {
-        console.log('error', error);
+        alert(error.message);
       }
     },
   });
 
+  const onSend = async (payload) => {
+    console.log('payload', payload);
+    // const res = await createSendEmail({
+    //   variables: payload,
+    // });
+  };
+
   const setFormValues = (form) => {
     formik.setFieldValue('subject', form.subject, false);
     formik.setFieldValue('body', form.body, false);
-    formik.setFieldValue('emails', form.emails, false);
+    formik.setFieldValue('receiverEmail', form.receiverEmail, false);
+    formik.setFieldValue('senderEmail', form.senderEmail, false);
   };
-  const formLoading = formik.isSubmitting;
+  const formLoading = loading || formik.isSubmitting;
   return { formik, formLoading, setFormValues };
 }

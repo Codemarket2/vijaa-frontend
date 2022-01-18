@@ -16,11 +16,41 @@ const StyledPaper = styled(Paper)`
 
 export default function EmailForm() {
   const { formik, formLoading } = useSendEmail();
-
+  const [state, setState] = useState({
+    value: '',
+    receiverEmail: [],
+    error: null,
+    resetEmails: true,
+  });
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    formik.handleSubmit();
+    setState({
+      value: '',
+      receiverEmail: [],
+      error: null,
+      resetEmails: false,
+    });
+  };
   return (
     <StyledPaper variant="outlined">
-      <form className="px-2" onSubmit={formik.handleSubmit}>
-        <MultipleEmails formik={formik} />
+      <form className="px-2" onSubmit={handleSubmit}>
+        <InputGroup>
+          <TextField
+            fullWidth
+            label="From"
+            variant="outlined"
+            name="senderEmail"
+            size="small"
+            type="email"
+            placeholder="Enter your Email Address"
+            value={formik.values.senderEmail}
+            onChange={formik.handleChange}
+            error={formik.touched.senderEmail && Boolean(formik.errors.senderEmail)}
+            helperText={formik.touched.senderEmail && formik.errors.senderEmail}
+          />
+        </InputGroup>
+        <MultipleEmails formik={formik} state={state} setState={setState} />
         <InputGroup>
           <TextField
             fullWidth
