@@ -1,10 +1,10 @@
 import UserLayout from '../../src/components/common/UserLayout';
-import EmailForm from '../../src/components/email/EmailForm';
+import EmailList from '../../src/components/email/EmailList';
 
 export default function Form(): any {
   return (
     <UserLayout authRequired>
-      <EmailForm />
+      <EmailList />
     </UserLayout>
   );
 }

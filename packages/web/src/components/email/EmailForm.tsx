@@ -33,51 +33,51 @@ export default function EmailForm() {
     });
   };
   return (
-    <StyledPaper variant="outlined">
-      <form className="px-2" onSubmit={handleSubmit}>
-        <InputGroup>
-          <TextField
-            fullWidth
-            label="From"
-            variant="outlined"
-            name="senderEmail"
-            size="small"
-            type="email"
-            placeholder="Enter your Email Address"
-            value={formik.values.senderEmail}
-            onChange={formik.handleChange}
-            error={formik.touched.senderEmail && Boolean(formik.errors.senderEmail)}
-            helperText={formik.touched.senderEmail && formik.errors.senderEmail}
-          />
-        </InputGroup>
-        <MultipleEmails formik={formik} state={state} setState={setState} />
-        <InputGroup>
-          <TextField
-            fullWidth
-            label="Subject"
-            variant="outlined"
-            name="subject"
-            size="small"
-            disabled={formik.isSubmitting}
-            value={formik.values.subject}
-            onChange={formik.handleChange}
-            error={formik.touched.subject && Boolean(formik.errors.subject)}
-            helperText={formik.touched.subject && formik.errors.subject}
-          />
-        </InputGroup>
-        <InputGroup>
-          <InputLabel>Email Body</InputLabel>
-          <RichTextarea
-            value={formik.values.body}
-            onChange={(newValue) => formik.setFieldValue('body', newValue)}
-          />
-        </InputGroup>
-        <InputGroup>
-          <LoadingButton type="submit" size="small" loading={formLoading}>
-            Send
-          </LoadingButton>
-        </InputGroup>
-      </form>
-    </StyledPaper>
+    // <StyledPaper variant="outlined">
+    <form className="px-2" onSubmit={handleSubmit}>
+      <InputGroup>
+        <TextField
+          fullWidth
+          label="From"
+          variant="outlined"
+          name="senderEmail"
+          size="small"
+          type="email"
+          placeholder="Enter your Email Address"
+          value={formik.values.senderEmail}
+          onChange={formik.handleChange}
+          error={formik.touched.senderEmail && Boolean(formik.errors.senderEmail)}
+          helperText={formik.touched.senderEmail && formik.errors.senderEmail}
+        />
+      </InputGroup>
+      <MultipleEmails formik={formik} state={state} setState={setState} />
+      <InputGroup>
+        <TextField
+          fullWidth
+          label="Subject"
+          variant="outlined"
+          name="subject"
+          size="small"
+          disabled={formik.isSubmitting}
+          value={formik.values.subject}
+          onChange={formik.handleChange}
+          error={formik.touched.subject && Boolean(formik.errors.subject)}
+          helperText={formik.touched.subject && formik.errors.subject}
+        />
+      </InputGroup>
+      <InputGroup>
+        <InputLabel>Email Body</InputLabel>
+        <RichTextarea
+          value={formik.values.body}
+          onChange={(newValue) => formik.setFieldValue('body', newValue)}
+        />
+      </InputGroup>
+      <InputGroup>
+        <LoadingButton type="submit" size="small" loading={formLoading}>
+          Send
+        </LoadingButton>
+      </InputGroup>
+    </form>
+    // </StyledPaper>
   );
 }
