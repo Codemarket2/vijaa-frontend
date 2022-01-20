@@ -12,6 +12,7 @@ import NotificationsIcon from '@material-ui/icons/Notifications';
 import {
   useGetMyNotifications,
   useGetNotificationList,
+  useIsNotificationClicked,
   useNotificationSub,
 } from '@frontend/shared/hooks/notification';
 import { useEffect, useState } from 'react';
@@ -130,8 +131,9 @@ const NotificationListItem = ({ list, store, setStore, state }) => {
 
 const NotificationItem = ({ notification, onClose }: any) => {
   const [variant, setVariant] = useState(notification.isClicked);
+  const { handleNotificationClicked } = useIsNotificationClicked();
   const handleClick = () => {
-    console.log('Notification Id', notification._id);
+    handleNotificationClicked(notification._id);
     setVariant(true);
   };
   return (
@@ -141,12 +143,13 @@ const NotificationItem = ({ notification, onClose }: any) => {
       icon={<NotificationsIcon fontSize="inherit" />}
       severity="success"
       onClose={onClose}
-      onClick={handleClick}
     >
       <AlertTitle>
         {notification.link ? (
           <Link href={notification.link}>
-            <div style={{ cursor: 'pointer' }}>{notification.title || 'New Notification'}</div>
+            <div style={{ cursor: 'pointer' }} onClick={handleClick}>
+              {notification.title || 'New Notification'}
+            </div>
           </Link>
         ) : (
           notification.title || 'New Notification'
