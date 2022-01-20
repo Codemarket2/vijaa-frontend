@@ -21,10 +21,15 @@ import { ExpandMore } from '@material-ui/icons';
 export default function Notification() {
   const { state, setState } = useNotificationSub();
   const [List, setList] = useState([]);
+  const [store, setStore] = useState({});
   const { notificationList } = useGetNotificationList();
   useEffect(() => {
     setList(notificationList);
   }, [notificationList]);
+
+  useEffect(() => {
+    setState({ ...state, notifications: store });
+  }, [store]);
 
   return (
     <>
@@ -65,7 +70,15 @@ export default function Notification() {
           </Typography>
 
           {List?.length ? (
-            <NotificationList List={List} />
+            List?.map((list) => (
+              <NotificationListItem
+                key={list._id}
+                list={list}
+                store={store}
+                setStore={setStore}
+                state={state}
+              />
+            ))
           ) : (
             <Typography>You don&apos;t have any notifications</Typography>
           )}
@@ -86,20 +99,7 @@ export default function Notification() {
   );
 }
 
-const NotificationList = ({ List }) => {
-  const [store, setStore] = useState({});
-
-  return (
-    <>
-      {List?.length &&
-        List?.map((list) => (
-          <NotificationListItem key={list._id} list={list} store={store} setStore={setStore} />
-        ))}
-    </>
-  );
-};
-
-const NotificationListItem = ({ list, store, setStore }) => {
+const NotificationListItem = ({ list, store, setStore, state }) => {
   const { notifications } = useGetMyNotifications({ formId: list._id });
 
   useEffect(() => {
@@ -118,7 +118,7 @@ const NotificationListItem = ({ list, store, setStore }) => {
         </Badge>
       </AccordionSummary>
       <AccordionDetails style={{ display: 'block' }}>
-        {store[list._id]?.map((notification) => (
+        {state.notifications[list._id]?.map((notification) => (
           <div key={notification._id}>
             <NotificationItem notification={notification} onClose={() => {}} />
           </div>
@@ -129,13 +129,19 @@ const NotificationListItem = ({ list, store, setStore }) => {
 };
 
 const NotificationItem = ({ notification, onClose }: any) => {
+  const [variant, setVariant] = useState(notification.isClicked);
+  const handleClick = () => {
+    console.log('Notification Id', notification._id);
+    setVariant(true);
+  };
   return (
     <Alert
-      variant="filled"
+      variant={variant ? 'outlined' : 'filled'}
       className="mt-1"
       icon={<NotificationsIcon fontSize="inherit" />}
       severity="success"
       onClose={onClose}
+      onClick={handleClick}
     >
       <AlertTitle>
         {notification.link ? (
