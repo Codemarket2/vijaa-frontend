@@ -176,7 +176,13 @@ export default function ListItemsFieldsValue({ listItem, previewMode = false }: 
                             _id={value?.value}
                             parentId={listItem?._id}
                             customSettings={
-                              field?.options?.customSettings ? field?.options?.settings : null
+                              field?.options?.customSettings
+                                ? {
+                                    ...field?.options?.settings,
+                                    widgetType: 'button',
+                                    widgetLabel: field?.label,
+                                  }
+                                : null
                             }
                           />
                         </>

@@ -29,6 +29,7 @@ export default function CustomFormSettings({
         />
         <Typography>Use custom form settings</Typography>
       </div>
+
       {state.customSettings && (
         <FormSetting
           settings={state.settings}

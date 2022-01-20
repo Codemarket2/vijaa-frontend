@@ -45,6 +45,7 @@ export default function ResponseCount({ formId, parentId, settings }: IProps): a
       </Box>
     );
   }
+
   if (error || !data || loading || !formData?.getForm) {
     return <ErrorLoading error={error || errorData} />;
   }
