@@ -26,6 +26,7 @@ import Notification from '../notification/Notification';
 import Drawer from './Drawer';
 import { routes } from '../../utils/routes';
 import { useDarkMode } from './DarkModeToggle';
+import SearchComponent from './Search';
 
 const setActiveRouteColor = (activeRoute, linkRoute) => {
   return activeRoute === linkRoute ? 'primary' : 'default';
@@ -164,6 +165,7 @@ export default function AppBarComponent() {
                     <ListItemText primary="Profile" />
                   </MenuItem>
                 </Link>
+
                 <Link href="/create-post" passHref>
                   <MenuItem>
                     <ListItemIcon className="mr-n4">
@@ -186,6 +188,7 @@ export default function AppBarComponent() {
             <Button color="inherit">SignIn</Button>
           </Link>
         )}
+        <SearchComponent />
       </Toolbar>
     </AppBar>
   );
