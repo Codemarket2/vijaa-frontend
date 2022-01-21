@@ -2,17 +2,12 @@ import React, { useEffect, useState } from 'react';
 import TextField from '@material-ui/core/TextField';
 import Paper from '@material-ui/core/Paper';
 import InputLabel from '@material-ui/core/InputLabel';
-import styled from 'styled-components';
 
 import { useSendEmail } from '@frontend/shared/hooks/email/sendEmail';
 import InputGroup from '../common/InputGroup';
 import RichTextarea from '../common/RichTextarea2';
 import LoadingButton from '../common/LoadingButton';
 import MultipleEmails from '../common/MultipleEmails';
-
-const StyledPaper = styled(Paper)`
-  margin-top: 20px !important;
-`;
 
 export default function EmailForm() {
   const { formik, formLoading } = useSendEmail();
@@ -33,7 +28,6 @@ export default function EmailForm() {
     });
   };
   return (
-    // <StyledPaper variant="outlined">
     <form className="px-2" onSubmit={handleSubmit}>
       <InputGroup>
         <TextField
@@ -78,6 +72,5 @@ export default function EmailForm() {
         </LoadingButton>
       </InputGroup>
     </form>
-    // </StyledPaper>
   );
 }

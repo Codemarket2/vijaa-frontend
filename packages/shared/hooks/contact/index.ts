@@ -1,7 +1,8 @@
 import * as yup from 'yup';
 import { useFormik } from 'formik';
 import { CREATE_CONTACT } from '../../graphql/mutation/contact';
-import { useMutation } from '@apollo/client';
+import { GET_ALL_CONTACTS } from '../../graphql/query/contact';
+import { useMutation, useQuery } from '@apollo/client';
 
 const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
 
@@ -75,3 +76,14 @@ export function useContactForm(): any {
   const formLoading = loading || formik.isSubmitting;
   return { formik, formLoading, setFormValues };
 }
+
+export const useGetAllContact = () => {
+  const { data, error, loading } = useQuery(GET_ALL_CONTACTS, {
+    fetchPolicy: 'cache-and-network',
+  });
+  return {
+    data,
+    error,
+    loading,
+  };
+};

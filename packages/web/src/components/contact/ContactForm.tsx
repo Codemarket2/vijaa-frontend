@@ -12,14 +12,17 @@ import { useContactForm } from '@frontend/shared/hooks/contact';
 import LoadingButton from '../common/LoadingButton';
 import InputGroup from '../common/InputGroup';
 
-const StyledPaper = styled(Paper)`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  margin-top: 1% !important;
-  padding-top: 1%;
-  padding-bottom: 1%;
+// const StyledPaper = styled(Paper)`
+//   display: flex;
+//   justify-content: center;
+//   align-items: center;
+//   flex-direction: column;
+//   margin-top: 1% !important;
+//   padding-top: 1%;
+//   padding-bottom: 1%;
+// `;
+const StyledPaper = styled.div`
+  padding: 1%;
 `;
 
 export default function ContactForm() {
@@ -46,7 +49,7 @@ export default function ContactForm() {
 
   return (
     <StyledPaper>
-      <Typography>Contact Form</Typography>
+      {/* <Typography>Contact Form</Typography> */}
 
       <div>
         <Grid container spacing={1}>
