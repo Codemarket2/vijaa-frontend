@@ -4,10 +4,8 @@ export const CREATE_CONTACT = gql`
   mutation MyMutation(
     $businessName: String
     $email: String!
-    $fieldName: String
-    $fieldValue: String
-    $lastName: String
     $firstName: String
+    $lastName: String
     $mailingListName: String!
     $phone: String
     $title: String
@@ -16,12 +14,12 @@ export const CREATE_CONTACT = gql`
     createContact(
       email: $email
       mailingListName: $mailingListName
+      firstName: $firstName
       lastName: $lastName
       title: $title
       businessName: $businessName
-      phone: $phone
       extraField: $extraField
-      firstName: $firstName
+      phone: $phone
     ) {
       businessName
       email
@@ -29,12 +27,12 @@ export const CREATE_CONTACT = gql`
       firstName
       title
       mailingListName
+      phone
+      _id
       extraField {
         fieldName
         fieldValue
       }
-      phone
-      _id
     }
   }
 `;

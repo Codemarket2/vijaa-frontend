@@ -45,14 +45,16 @@ const defaultFormValues = {
 
 export function useContactForm(): any {
   const [createContact, { data, loading, error }] = useMutation(CREATE_CONTACT);
-  console.log('data', data);
+
   const formik = useFormik({
     initialValues: defaultFormValues,
     validationSchema,
     onSubmit: async (payload: IFormValues) => {
       try {
         console.log('payload', payload);
-        await createContact({ variables: payload });
+        await createContact({
+          variables: payload,
+        });
         formik.handleReset('');
       } catch (error) {
         alert(error.message);
