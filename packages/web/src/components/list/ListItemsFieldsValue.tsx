@@ -171,9 +171,10 @@ export default function ListItemsFieldsValue({ listItem, previewMode = false }: 
                           <FieldViewWrapper
                             _id={value?.value}
                             parentId={listItem?._id}
-                            customSettings={
-                              field?.options?.customSettings ? field?.options?.settings : null
-                            }
+                            customSettings={{
+                              ...field?.options?.settings,
+                              customSettings: field?.options?.customSettings,
+                            }}
                           />
                         </>
                       ) : (

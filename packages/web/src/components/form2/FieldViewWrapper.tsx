@@ -27,7 +27,14 @@ export default function FieldViewWrapper({
 
   return (
     <FormView
-      form={{ ...data.getForm, settings: customSettings ? customSettings : data.getForm.settings }}
+      form={{
+        ...data.getForm,
+        settings: customSettings?.customSettings ?? {
+          ...data.getForm.settings,
+          widgetType: customSettings?.widgetType,
+          buttonLabel: customSettings?.buttonLabel,
+        },
+      }}
       parentId={parentId}
       createCallback={createCallback}
     />
