@@ -15,7 +15,7 @@ import Paper from '@material-ui/core/Paper';
 import Divider from '@material-ui/core/Divider';
 import Typography from '@material-ui/core/Typography';
 import {
-  useGetFieldsByType,
+  useGetFields,
   useDeleteField,
   useUpdateFieldPosition,
   useUpdateFieldOptions,
@@ -38,9 +38,14 @@ const reorder = (list, startIndex, endIndex) => {
   return result;
 };
 
-const QuoteList = memo(function QuoteList({ fields, onClick, hideMore }: any) {
+const QuoteList = memo(function QuoteList({ fields, onClick, hideMore, isDragDisabled }: any) {
   return fields?.map((field: any, index: number) => (
-    <Draggable draggableId={field._id} index={index} key={field._id}>
+    <Draggable
+      draggableId={field._id}
+      index={index}
+      key={field._id}
+      isDragDisabled={isDragDisabled}
+    >
       {(provided, draggableSnapshot) => (
         <ListItem
           button
@@ -49,6 +54,7 @@ const QuoteList = memo(function QuoteList({ fields, onClick, hideMore }: any) {
           {...provided.draggableProps}
           {...provided.dragHandleProps}
         >
+          {/* <ListItemText primary={field._id} secondary={field.relationId} /> */}
           <ListItemText primary={field.label} secondary={field.fieldType} />
           {!hideMore && (
             <ListItemSecondaryAction>
@@ -68,6 +74,7 @@ interface IProps {
   parentId: any;
   setFields?: (args: any) => void;
   formBuilder?: boolean;
+  guestMode?: boolean;
 }
 
 const initialState = {
@@ -85,13 +92,14 @@ export default function Fields({
   setFields,
   title = 'Fields',
   formBuilder = false,
+  guestMode = false,
 }: IProps): any {
   const [state, setState] = useState(initialState);
 
   const deleteCallback = () => {
     setState({ ...state, showMenu: null, selectedField: null, edit: false });
   };
-  const { data, error } = useGetFieldsByType({ parentId });
+  const { data, error } = useGetFields(parentId);
 
   const { handleDelete, deleteLoading } = useDeleteField({ onAlert, parentId });
   const { handleUpdateFieldOptions, updateOptionsLoading } = useUpdateFieldOptions({
@@ -122,7 +130,7 @@ export default function Fields({
       return;
     }
 
-    let fields = [...data.getFieldsByType.data];
+    const fields = [...data.getFields];
 
     let position = 1010;
 
@@ -145,7 +153,7 @@ export default function Fields({
       position = (endPosition - startPosition) / 2 + startPosition;
     }
     // console.log('new position', position);
-    let updateId = fields[result.source.index]._id;
+    const updateId = fields[result.source.index]._id;
 
     let tempField = fields.map((f, i) => (i === result.source.index ? { ...f, position } : f));
 
@@ -156,8 +164,8 @@ export default function Fields({
   }
 
   useEffect(() => {
-    if (data && data.getFieldsByType && setFields) {
-      setFields(data.getFieldsByType.data);
+    if (data && data.getFields && setFields) {
+      setFields(data.getFields);
     }
   }, [data]);
 
@@ -169,7 +177,7 @@ export default function Fields({
     field: state.selectedField,
   };
 
-  if (!error && (!data || !data.getFieldsByType)) {
+  if (!error && (!data || !data.getFields)) {
     return <FieldsSkeleton />;
   }
   if (error) {
@@ -180,7 +188,7 @@ export default function Fields({
     <Paper variant="outlined" className="mb-2">
       <Typography variant="h5" className="d-flex align-items-center pl-2">
         {title}
-        {!state.showForm && (
+        {!guestMode && !state.showForm && (
           <Tooltip title="Add New Field">
             <IconButton
               disabled={updateLoading}
@@ -197,17 +205,18 @@ export default function Fields({
       {(state.showForm || (state.selectedField && state.edit)) && (
         <FieldForm {...formBuilderProps} />
       )}
-      <List>
+      <List dense>
         <DragDropContext onDragEnd={onDragEnd}>
           <Droppable droppableId="list">
             {(provided, snapshot) => (
               <div ref={provided.innerRef} {...provided.droppableProps}>
                 <QuoteList
-                  hideMore={snapshot.isDraggingOver}
-                  fields={data.getFieldsByType.data}
+                  hideMore={snapshot.isDraggingOver || guestMode}
+                  fields={data.getFields}
                   onClick={(currentTarget, field) =>
                     setState({ ...state, showMenu: currentTarget, selectedField: field })
                   }
+                  isDragDisabled={guestMode}
                 />
                 {provided.placeholder}
               </div>
@@ -220,7 +229,7 @@ export default function Fields({
         onClose={() => setState(initialState)}
         onDelete={() => {
           setState({ ...state, showMenu: null });
-          handleDelete(state.selectedField._id, state.selectedField.relationId, deleteCallback);
+          handleDelete(state.selectedField._id, state.selectedField?.relationId, deleteCallback);
         }}
         onEdit={() => setState({ ...state, edit: true, showMenu: null })}
       >
