@@ -52,6 +52,7 @@ function App({ Component, pageProps }: AppProps) {
     typography: {
       fontFamily: [
         '-apple-system',
+        'system-ui',
         'BlinkMacSystemFont',
         '"Segoe UI"',
         'Roboto',
@@ -62,6 +63,8 @@ function App({ Component, pageProps }: AppProps) {
         '"Segoe UI Emoji"',
         '"Segoe UI Symbol"',
       ].join(','),
+      fontSize: 16,
+      fontWeightMedium: 400,
     },
     zIndex: {
       appBar: 1200,
