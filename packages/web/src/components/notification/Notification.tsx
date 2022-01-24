@@ -136,12 +136,15 @@ const NotificationItem = ({ notification, onClose }: any) => {
     handleNotificationClicked(notification._id);
     setVariant(true);
   };
+  const background = {
+    backgroundColor: variant ? '#fff' : '#e2f0fe',
+  };
   return (
     <Alert
-      variant={variant ? 'outlined' : 'filled'}
+      variant="outlined"
       className="mt-1"
+      style={background}
       icon={<NotificationsIcon fontSize="inherit" />}
-      severity="success"
       onClose={onClose}
     >
       <AlertTitle>
