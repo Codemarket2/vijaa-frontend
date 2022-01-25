@@ -42,7 +42,7 @@ export default function ContactCard() {
                 alert('clicked');
               }}
             >
-              <Typography>{contact.mailingListName}</Typography>
+              <Typography>{contact.firstName ? contact.firstName : 'add name'}</Typography>
             </StyledCard>
           </div>
         ))}

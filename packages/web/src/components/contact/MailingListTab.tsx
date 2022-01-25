@@ -4,21 +4,21 @@ import Tab from '@material-ui/core/Tab';
 import Paper from '@material-ui/core/Paper';
 import styled from 'styled-components';
 
-import MailingListTab from './MailingListTab';
-import ContactList from './ContactList';
+import ContactCard from './ContactCard';
+import BulkInput from './BulkInput';
 
 const StyledPaper = styled(Paper)`
   margin-top: 20px !important;
 `;
 
-export default function ContactTab() {
+export default function MailingListTab() {
   const [options, setOptions] = useState({
-    currentTab: 'contact',
+    currentTab: 'mailingList',
   });
 
   return (
     <div>
-      <StyledPaper variant="outlined">
+      <Paper variant="outlined">
         <Tabs
           variant="scrollable"
           value={options.currentTab}
@@ -26,16 +26,16 @@ export default function ContactTab() {
           textColor="primary"
           onChange={(event, newValue) => setOptions({ ...options, currentTab: newValue })}
         >
-          <Tab label="Contacts" value="contact" />
-          <Tab label="Mailing List" value="mailingList" />
+          <Tab label="Add Mailing" value="addMailingList" />
+          <Tab label="List of Mails" value="mailingList" />
         </Tabs>
-      </StyledPaper>
-      {options.currentTab === 'contact' && (
+      </Paper>
+      {options.currentTab === 'addMailingList' && (
         <Paper variant="outlined" className="px-2">
-          <ContactList />
+          <BulkInput />
         </Paper>
       )}
-      {options.currentTab === 'mailingList' && <MailingListTab />}
+      {options.currentTab === 'mailingList' && <ContactCard />}
     </div>
   );
 }

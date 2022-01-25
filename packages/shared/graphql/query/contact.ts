@@ -10,7 +10,6 @@ export const GET_ALL_CONTACTS = gql`
         firstName
         title
         phone
-        mailingListName
         lastName
         email
         extraField {

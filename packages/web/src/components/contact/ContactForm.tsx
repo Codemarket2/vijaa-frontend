@@ -57,42 +57,6 @@ export default function ContactForm() {
             <InputGroup>
               <TextField
                 fullWidth
-                label="Mailing List Name"
-                variant="outlined"
-                name="mailingListName"
-                size="small"
-                type="text"
-                placeholder="Enter Mailing List Name"
-                value={formik.values.mailingListName}
-                onChange={formik.handleChange}
-                error={formik.touched.mailingListName && Boolean(formik.errors.mailingListName)}
-                helperText={formik.touched.mailingListName && formik.errors.mailingListName}
-              />
-            </InputGroup>
-          </Grid>
-          <Grid item lg={6}>
-            <InputGroup>
-              <TextField
-                fullWidth
-                label="Title"
-                variant="outlined"
-                name="title"
-                size="small"
-                type="text"
-                placeholder="Enter Title"
-                value={formik.values.title}
-                onChange={formik.handleChange}
-                error={formik.touched.title && Boolean(formik.errors.title)}
-                helperText={formik.touched.title && formik.errors.title}
-              />
-            </InputGroup>
-          </Grid>
-        </Grid>
-        <Grid container spacing={1}>
-          <Grid item lg={6}>
-            <InputGroup>
-              <TextField
-                fullWidth
                 label="First Name"
                 variant="outlined"
                 name="firstName"
@@ -129,6 +93,23 @@ export default function ContactForm() {
             <InputGroup>
               <TextField
                 fullWidth
+                label="Title"
+                variant="outlined"
+                name="title"
+                size="small"
+                type="text"
+                placeholder="Enter Title"
+                value={formik.values.title}
+                onChange={formik.handleChange}
+                error={formik.touched.title && Boolean(formik.errors.title)}
+                helperText={formik.touched.title && formik.errors.title}
+              />
+            </InputGroup>
+          </Grid>
+          <Grid item lg={6}>
+            <InputGroup>
+              <TextField
+                fullWidth
                 label="Business Name"
                 variant="outlined"
                 name="businessName"
@@ -142,6 +123,8 @@ export default function ContactForm() {
               />
             </InputGroup>
           </Grid>
+        </Grid>
+        <Grid container spacing={1}>
           <Grid item lg={6}>
             <InputGroup>
               <TextField
@@ -159,23 +142,24 @@ export default function ContactForm() {
               />
             </InputGroup>
           </Grid>
+          <Grid item lg={6}>
+            <InputGroup>
+              <TextField
+                fullWidth
+                label="Email Address"
+                variant="outlined"
+                name="email"
+                size="small"
+                type="email"
+                placeholder="Enter Email Address"
+                value={formik.values.email}
+                onChange={formik.handleChange}
+                error={formik.touched.email && Boolean(formik.errors.email)}
+                helperText={formik.touched.email && formik.errors.email}
+              />
+            </InputGroup>
+          </Grid>
         </Grid>
-
-        <InputGroup>
-          <TextField
-            fullWidth
-            label="Email Address"
-            variant="outlined"
-            name="email"
-            size="small"
-            type="email"
-            placeholder="Enter Email Address"
-            value={formik.values.email}
-            onChange={formik.handleChange}
-            error={formik.touched.email && Boolean(formik.errors.email)}
-            helperText={formik.touched.email && formik.errors.email}
-          />
-        </InputGroup>
 
         <Typography>Extra Fields</Typography>
         {formValues.map((element, index) => (
@@ -234,7 +218,7 @@ export default function ContactForm() {
         ))}
         <InputGroup>
           <LoadingButton onClick={() => formik.handleSubmit()} size="small" loading={formLoading}>
-            Send
+            Save
           </LoadingButton>
         </InputGroup>
       </div>
