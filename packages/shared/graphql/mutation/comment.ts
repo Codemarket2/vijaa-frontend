@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client';
 
 export const CREATE_COMMENT = gql`
-  mutation MyMutation($threadId: ID!, $parentId: ID!, $body: String!) {
-    createComment(body: $body, parentId: $parentId, threadId: $threadId) {
+  mutation MyMutation($threadId: ID!, $parentId: ID!, $body: String!, $type: String) {
+    createComment(body: $body, parentId: $parentId, threadId: $threadId, type: $type) {
       _id
       body
       createdAt
