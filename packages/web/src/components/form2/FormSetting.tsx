@@ -12,8 +12,8 @@ export default function FormSetting({ settings, onChange }: any): any {
         <FormControlLabel
           control={
             <Checkbox
-              checked={settings?.authRequired}
-              onChange={({ target }) => onChange({ authRequired: target.checked })}
+              checked={!settings?.authRequired}
+              onChange={({ target }) => onChange({ authRequired: !target.checked })}
               name="authRequired"
               color="primary"
             />
@@ -59,6 +59,23 @@ export default function FormSetting({ settings, onChange }: any): any {
           }
           label="Show form title"
         />
+      </InputGroup>
+      <InputGroup>
+        <h3>Leader Board</h3>
+        <div style={{ display: 'flex', marginTop: '10px', width: '50%' }}>
+          <input
+            className="form-control mr-3"
+            value={settings?.minValue}
+            onChange={(e) => onChange({ minValue: e.target.value })}
+            placeholder="min value"
+          />
+          <input
+            className="form-control"
+            value={settings?.maxValue}
+            onChange={(e) => onChange({ maxValue: e.target.value })}
+            placeholder="max value"
+          />
+        </div>
       </InputGroup>
       <InputGroup>
         <InputLabel>After Form Submit Message</InputLabel>

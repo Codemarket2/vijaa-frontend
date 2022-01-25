@@ -2,6 +2,7 @@ import { useState } from 'react';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
+import { useSelector } from 'react-redux';
 import FormLabel from '@material-ui/core/FormLabel';
 import IconButton from '@material-ui/core/IconButton';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
@@ -13,6 +14,8 @@ import Field from './Field';
 import { validateValue } from './validate';
 import { onAlert } from '../../utils/alert';
 import DisplayRichText from '../common/DisplayRichText';
+import Overlay from '../common/Overlay';
+import AuthScreen from '../../screens/AuthScreen';
 
 interface IProps {
   form: any;
@@ -28,6 +31,7 @@ export const defualtValue = {
   valueDate: null,
   itemId: null,
   media: [],
+  values: [],
 };
 
 export default function FormViewWrapper({
@@ -44,13 +48,15 @@ export default function FormViewWrapper({
   const handleSubmit = async (values) => {
     const payload = { formId: _id, values };
     const response = await handleCreateUpdateResponse(payload, fields);
-    setShowMessage(true);
-    if (createCallback) {
-      createCallback(response);
+    if (response) {
+      setShowMessage(true);
+      if (createCallback) {
+        createCallback(response);
+      }
     }
+    return response;
   };
 
-  console.log(settings);
   return (
     <div>
       {settings?.showFormTitle && (
@@ -72,7 +78,12 @@ export default function FormViewWrapper({
           </InputGroup>
         </div>
       ) : (
-        <FormView fields={fields} handleSubmit={handleSubmit} loading={createLoading} />
+        <FormView
+          authRequired={!settings?.authRequired}
+          fields={fields}
+          handleSubmit={handleSubmit}
+          loading={createLoading}
+        />
       )}
     </div>
   );
@@ -80,10 +91,11 @@ export default function FormViewWrapper({
 
 interface IProps2 {
   fields: any;
-  handleSubmit: (payload: any) => void;
+  handleSubmit: (payload: any) => any;
   loading?: boolean;
   onCancel?: () => void;
   initialValues?: any[];
+  authRequired?: boolean;
 }
 
 const initialSubmitState = {
@@ -110,9 +122,12 @@ export function FormView({
   loading,
   onCancel,
   initialValues = [],
+  authRequired = false,
 }: IProps2): any {
   const [values, setValues] = useState(initialValues);
   const [submitState, setSubmitState] = useState(initialSubmitState);
+  const authenticated = useSelector(({ auth }: any) => auth.authenticated);
+  const [showAuthModal, setShowAuthModal] = useState(false);
 
   const onChange = (sValue, valueIndex) => {
     const newValue = { ...defualtValue, ...sValue };
@@ -158,10 +173,17 @@ export function FormView({
     });
     if (validate) {
       setSubmitState({ ...submitState, validate, loading: false });
+    } else if (authRequired && !authenticated) {
+      setSubmitState({ ...submitState, loading: false });
+      return setShowAuthModal(true);
     } else {
-      await handleSubmit(values);
-      setSubmitState(initialSubmitState);
-      setValues([]);
+      const response = await handleSubmit(values);
+      if (response) {
+        setSubmitState(initialSubmitState);
+        setValues([]);
+      } else {
+        setSubmitState({ ...submitState, loading: false });
+      }
     }
   };
 
@@ -186,7 +208,14 @@ export function FormView({
   };
 
   return (
-    <div>
+    <div className="position-relative">
+      {!authenticated && showAuthModal && (
+        <Overlay onClose={() => setShowAuthModal(false)} open={showAuthModal} minWidth="60vw">
+          <div className="p-2">
+            <AuthScreen />
+          </div>
+        </Overlay>
+      )}
       <Grid container spacing={0}>
         {fields?.map((field) => (
           <Grid

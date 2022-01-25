@@ -1,23 +1,27 @@
 import { useState } from 'react';
 import Button from '@material-ui/core/Button';
-import Dialog from '@material-ui/core/Dialog';
 import AuthScreen from '../../screens/AuthScreen';
+import Overlay from './Overlay';
 
-export default function UnAuthorised() {
-  const [showAuthModal, setshowAuthModal] = useState(false);
+export default function UnAuthorised({
+  caption = 'Please Sign In to access this page!',
+}: {
+  caption?: string;
+}) {
+  const [showAuthModal, setShowAuthModal] = useState(false);
   return (
     <div className="mt-3 py-5">
-      <h2 className="text-center">Please Sign In to access this page!</h2>
+      <h2 className="text-center">{caption}</h2>
       <div className="d-flex justify-content-center errorPageContentWrap">
-        <Button variant="contained" color="primary" onClick={() => setshowAuthModal(true)}>
+        <Button variant="contained" color="primary" onClick={() => setShowAuthModal(true)}>
           SIGN IN
         </Button>
         {showAuthModal && (
-          <Dialog fullScreen open={showAuthModal}>
+          <Overlay onClose={() => setShowAuthModal(false)} open={showAuthModal} minWidth="60vw">
             <div className="container pt-2">
               <AuthScreen />
             </div>
-          </Dialog>
+          </Overlay>
         )}
       </div>
     </div>
