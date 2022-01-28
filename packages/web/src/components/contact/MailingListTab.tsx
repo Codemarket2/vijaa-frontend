@@ -4,7 +4,6 @@ import Tab from '@material-ui/core/Tab';
 import Paper from '@material-ui/core/Paper';
 import styled from 'styled-components';
 
-import ContactCard from './ContactCard';
 import BulkInput from './BulkInput';
 
 const StyledPaper = styled(Paper)`
@@ -35,7 +34,7 @@ export default function MailingListTab() {
           <BulkInput />
         </Paper>
       )}
-      {options.currentTab === 'mailingList' && <ContactCard />}
+      {options.currentTab === 'mailingList' && 'mailingList'}
     </div>
   );
 }

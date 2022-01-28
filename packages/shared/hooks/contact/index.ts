@@ -4,8 +4,8 @@ import { useEffect, useState } from 'react';
 import { useMutation, useQuery } from '@apollo/client';
 import produce from 'immer';
 
-import { CREATE_CONTACT } from '../../graphql/mutation/contact';
-import { GET_ALL_CONTACTS } from '../../graphql/query/contact';
+import { CREATE_CONTACT, DELETE_CONTACT } from '../../graphql/mutation/contact';
+import { GET_ALL_CONTACTS, GET_CONTACT } from '../../graphql/query/contact';
 
 const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
 
@@ -45,7 +45,11 @@ const defaultFormValues = {
 };
 
 export function useContactForm(): any {
+  const [showForm, setShowForm] = useState(false);
   const [createContact, { loading }] = useMutation(CREATE_CONTACT);
+  useEffect(() => {
+    setShowForm(showForm);
+  }, [showForm]);
 
   const onCreate = async (payload) => {
     const updateCache = (client, mutationResult) => {
@@ -72,8 +76,7 @@ export function useContactForm(): any {
     onSubmit: async (payload: IFormValues) => {
       try {
         onCreate(payload);
-        console.log('payload', payload);
-
+        setShowForm(!showForm);
         formik.handleReset('');
       } catch (error) {
         alert(error.message);
@@ -91,7 +94,7 @@ export function useContactForm(): any {
   };
 
   const formLoading = loading || formik.isSubmitting;
-  return { formik, formLoading, setFormValues };
+  return { formik, formLoading, setFormValues, setShowForm, showForm };
 }
 
 export const useGetAllContact = () => {
@@ -101,6 +104,44 @@ export const useGetAllContact = () => {
   return {
     data,
     error,
+    loading,
+  };
+};
+
+export const useGetContact = (_id) => {
+  const { data, error, loading } = useQuery(GET_CONTACT, {
+    variables: {
+      _id,
+    },
+    fetchPolicy: 'cache-and-network',
+  });
+  return { data, error, loading };
+};
+
+export const useDeleteContact = (_id: string) => {
+  const [deleteContactMutation, { loading }] = useMutation(DELETE_CONTACT);
+  const updateCache = (client) => {
+    const { getAllContacts } = client.readQuery({
+      query: GET_CONTACT,
+    });
+    let newData = produce(getAllContacts, (draft: any) => {
+      draft.data.filter((c) => c._id !== _id);
+    });
+    client.writeQuery({
+      query: GET_ALL_CONTACTS,
+      data: newData,
+    });
+  };
+  const handleDelete = () => {
+    deleteContactMutation({
+      variables: {
+        _id,
+        update: updateCache,
+      },
+    });
+  };
+  return {
+    handleDelete,
     loading,
   };
 };
