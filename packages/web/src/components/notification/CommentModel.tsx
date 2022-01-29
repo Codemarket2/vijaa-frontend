@@ -17,6 +17,8 @@ const useStyles = makeStyles((theme: Theme) =>
       border: '2px solid #eee',
       boxShadow: theme.shadows[5],
       padding: theme.spacing(2, 4, 3),
+      height: '70vh',
+      overflowY: 'scroll',
     },
   }),
 );
