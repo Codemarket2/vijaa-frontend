@@ -52,7 +52,7 @@ interface IProps {
 }
 
 export function DisplayMentions(value) {
-  const { data } = useGetListItemById(value?._id);
+  const { data } = useGetListItemById(value._id);
   const router = useRouter();
   return (
     <span
@@ -86,6 +86,7 @@ export default function ItemScreen({
   const { templateMentionsField } = useGetTemplateFieldMentions(data?.getListItemBySlug?._id);
   const { pageMentionsField } = useGetpageFieldMentions(data?.getListItemBySlug?._id);
   const mentions = Array.from(new Set(templateMentionsField?.concat(pageMentionsField)));
+  console.log(mentions);
   const deleteCallBack = () => {
     router.push(
       `/types/${data?.getListItemBySlug?.types && data?.getListItemBySlug?.types[0]?.slug}`,

@@ -127,7 +127,7 @@ export function useGetListItemBySlug({ slug }: any) {
       });
     }
   }, [data]);
-
+  console.log(data);
   return { data: lisItem ? { getListItemBySlug: lisItem } : null, error, loading };
 }
 

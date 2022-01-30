@@ -39,7 +39,7 @@ export default function DisplayRichText({ value = 'dd' }: IProps) {
               <div
                 style={{ cursor: 'pointer', color: 'blue' }}
                 onClick={() => {
-                  getData(domNode.attribs['data-user-id']);
+                  getData(domNode.attribs['data-id']);
                 }}
               >
                 {console.log(domNode)}
