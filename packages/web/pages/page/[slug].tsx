@@ -4,8 +4,7 @@ import UserLayout from '../../src/components/common/UserLayout';
 import Head from '../../src/components/common/Head';
 import PublishedPage from '../../src/screens/PublishedPage';
 import { QRCodeGenerator } from '../../src/components/qrcode/QRCode';
-import { useEffect } from 'react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 interface IProps {
   metaTags: any;
