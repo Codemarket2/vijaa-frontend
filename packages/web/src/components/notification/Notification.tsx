@@ -19,6 +19,7 @@ import { useEffect, useState } from 'react';
 import { Accordion, AccordionDetails, AccordionSummary } from '@material-ui/core';
 import { ExpandMore } from '@material-ui/icons';
 import CommentModel from './CommentModel';
+import moment from 'moment';
 
 export default function Notification() {
   const { state, setState } = useNotificationSub();
@@ -160,6 +161,11 @@ const NotificationItem = ({ notification, onClose }: any) => {
           </div>
         )}
       </AlertTitle>
+      <span data-testid="post-timestamp">
+        {moment(notification.createdAt) > moment().subtract(7, 'days')
+          ? moment(notification.createdAt).fromNow()
+          : moment(notification.createdAt).format('LL')}
+      </span>
       {notification.description}
     </Alert>
   );

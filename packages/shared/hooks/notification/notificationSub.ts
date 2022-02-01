@@ -50,14 +50,22 @@ const updateCache = (newNotification) => {
   const oldData = apolloClient.readQuery({
     query: GET_NOTIFICATION_LIST,
   });
+
+  let data = { getNotificationList: [] };
   if (oldData?.getNotificationList) {
-    const newData = {
-      getNotificationList: { ...oldData?.getNotificationList, ...newNotification },
-      ...oldData,
-    };
-    apolloClient.writeQuery({
-      query: GET_NOTIFICATION_LIST,
-      data: newData,
-    });
+    data = oldData;
   }
+  const newData = {
+    ...data,
+    getNotificationList: [...data?.getNotificationList, newNotification].sort(
+      (a, b) => a.lastNotification.createdAt?.getTime() - b.lastNotification.createdAt.getTime(),
+    ),
+  };
+
+  console.log('New Data', newData);
+
+  apolloClient.writeQuery({
+    query: GET_NOTIFICATION_LIST,
+    data: newData,
+  });
 };

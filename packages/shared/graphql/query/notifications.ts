@@ -14,6 +14,7 @@ export const GET_MY_NOTIFICATIONS = gql`
         threadId
         parentId
         isClicked
+        createdAt
       }
     }
   }
@@ -32,6 +33,7 @@ export const GET_NOTIFICATION_LIST = gql`
         threadId
         parentId
         isClicked
+        createdAt
       }
       _id
       notificationCount
