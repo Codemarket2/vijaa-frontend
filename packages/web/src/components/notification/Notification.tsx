@@ -27,7 +27,7 @@ export default function Notification() {
   const { notificationList } = useGetNotificationList();
   useEffect(() => {
     setList(notificationList);
-  }, [notificationList]);
+  }, [notificationList, state]);
 
   useEffect(() => {
     setState({ ...state, notifications: store });
@@ -102,8 +102,7 @@ export default function Notification() {
 }
 
 const NotificationListItem = ({ list, store, setStore, state }) => {
-  const { notifications } = useGetMyNotifications({ formId: list._id });
-
+  const { notifications, count } = useGetMyNotifications({ threadId: list?._id });
   useEffect(() => {
     setStore({ ...store, [list._id]: notifications });
   }, [notifications]);
@@ -115,7 +114,7 @@ const NotificationListItem = ({ list, store, setStore, state }) => {
         aria-controls="panel1a-content"
         id="panel1a-header"
       >
-        <Badge color="secondary" badgeContent={list.notificationCount}>
+        <Badge color="secondary" badgeContent={count}>
           <Typography>{list?.lastNotification?.title}</Typography>
         </Badge>
       </AccordionSummary>

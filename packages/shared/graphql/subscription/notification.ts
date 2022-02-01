@@ -10,6 +10,7 @@ export const NOTIFICATION_SUB = gql`
       link
       formId
       parentId
+      threadId
       isClicked
     }
   }

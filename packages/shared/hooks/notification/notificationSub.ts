@@ -2,6 +2,8 @@ import { useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 import { useSubscription } from '@apollo/client';
 import { NOTIFICATION_SUB } from '../../graphql/subscription/notification';
+import { client as apolloClient } from '../../graphql/index';
+import { GET_NOTIFICATION_LIST } from '../../graphql/query/notifications';
 
 export const useNotificationSub = () => {
   const [state, setState] = useState({
@@ -10,6 +12,7 @@ export const useNotificationSub = () => {
     showSnack: false,
     title: 'New Notification',
     description: 'Sumi commented on your post',
+    threadId: '',
     link: '',
   });
 
@@ -20,22 +23,41 @@ export const useNotificationSub = () => {
 
   useEffect(() => {
     if (data?.notificationSub) {
+      console.log('data.NotifSub', data?.notificationSub);
+      updateCache(data?.notificationSub);
       let temp = [];
-      if (state.notifications[data.notificationSub.formId]) {
-        temp = [data.notificationSub, ...state.notifications[data.notificationSub.formId]];
+      if (state.notifications[data.notificationSub.threadId]) {
+        temp = [data.notificationSub, ...state.notifications[data.notificationSub.threadId]];
       } else {
         temp = [data.notificationSub];
       }
       setState({
         ...state,
-        notifications: { ...state.notifications, [data.notificationSub.formId]: temp },
+        notifications: { ...state.notifications, [data.notificationSub.threadId]: temp },
         showSnack: true,
         title: data?.notificationSub?.title,
         description: data?.notificationSub?.description,
+        threadId: data?.notificationSub?.threadId,
         link: data?.notificationSub?.link,
       });
     }
   }, [data]);
 
   return { state, setState };
+};
+
+const updateCache = (newNotification) => {
+  const oldData = apolloClient.readQuery({
+    query: GET_NOTIFICATION_LIST,
+  });
+  if (oldData?.getNotificationList) {
+    const newData = {
+      getNotificationList: { ...oldData?.getNotificationList, ...newNotification },
+      ...oldData,
+    };
+    apolloClient.writeQuery({
+      query: GET_NOTIFICATION_LIST,
+      data: newData,
+    });
+  }
 };
