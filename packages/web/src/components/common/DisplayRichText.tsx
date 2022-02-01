@@ -36,15 +36,14 @@ export default function DisplayRichText({ value = 'dd' }: IProps) {
         replace: (domNode: any) => {
           if (domNode.name == 'a' && domNode.attribs.class == 'mention') {
             return (
-              <div
+              <span
                 style={{ cursor: 'pointer', color: 'blue' }}
                 onClick={() => {
                   getData(domNode.attribs['data-id']);
                 }}
               >
-                {console.log(domNode)}
                 {domNode.attribs['data-mention']}
-              </div>
+              </span>
             );
           }
         },
