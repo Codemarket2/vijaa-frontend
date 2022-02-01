@@ -315,22 +315,32 @@ export default function Fields({
             settings={JSON.parse(state?.selectedField?.options)?.settings ?? null}
             customSettings={JSON.parse(state?.selectedField?.options)?.customSettings ?? false}
             toggleCustomSettings={(value) => {
-              handleUpdateFieldOptions(
-                state.selectedField?._id,
-                JSON.stringify({
-                  ...JSON.parse(state?.selectedField?.options),
-                  customSettings: value,
-                }),
-              );
+              const options = JSON.stringify({
+                ...JSON.parse(state?.selectedField?.options),
+                customSettings: value,
+              });
+              handleUpdateFieldOptions(state.selectedField?._id, options);
+              setState({
+                ...state,
+                selectedField: {
+                  ...state.selectedField,
+                  options,
+                },
+              });
             }}
             onSettingsChange={(settings) => {
-              handleUpdateFieldOptions(
-                state.selectedField?._id,
-                JSON.stringify({
-                  ...JSON.parse(state?.selectedField?.options),
-                  settings,
-                }),
-              );
+              const options = JSON.stringify({
+                ...JSON.parse(state?.selectedField?.options),
+                settings,
+              });
+              handleUpdateFieldOptions(state.selectedField?._id, options);
+              setState({
+                ...state,
+                selectedField: {
+                  ...state.selectedField,
+                  options,
+                },
+              });
             }}
           />
         )}
