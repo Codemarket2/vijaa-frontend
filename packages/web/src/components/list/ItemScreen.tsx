@@ -37,6 +37,7 @@ import NotFound from '../common/NotFound';
 import DisplayRichText from '../common/DisplayRichText';
 import ListItemsFields from './ListItemsFields';
 import ListItemsFieldsValue from './ListItemsFieldsValue';
+import Overlay from '../common/Overlay';
 
 interface IProps {
   slug: string;
@@ -59,11 +60,16 @@ export default function ItemScreen({
   const theme = useTheme();
   const matches = useMediaQuery(theme.breakpoints.down('xs'));
   const setting = useSelector((state: any) => state.setting);
-  const [state, setState] = useState({ fieldName: '', fields: [], hideLeftNavigation: false });
+  const [state, setState] = useState({
+    fieldName: '',
+    fields: [],
+    hideLeftNavigation: false,
+  });
+  const [seoFields, setSeoFields] = useState({ showDescription: false, showMedia: false });
   const [fieldValueCount, setFieldValueCount] = useState({});
   const { data, error } = useGetListItemBySlug({ slug });
   const authorized = useAuthorization([data?.getListItemBySlug?.createdBy?._id], true);
-
+  console.log(seoFields.showDescription);
   const deleteCallBack = () => {
     router.push(
       `/types/${data?.getListItemBySlug?.types && data?.getListItemBySlug?.types[0]?.slug}`,
@@ -105,7 +111,7 @@ export default function ItemScreen({
     setFormValues(data.getListItemBySlug);
     setState({ ...state, fieldName });
   };
-
+  console.log(state.fieldName);
   useEffect(() => {
     if (data && data.getListItemBySlug && setItem) {
       setItem(data.getListItemBySlug);
@@ -222,6 +228,9 @@ export default function ItemScreen({
               <LeftNavigation
                 style={{ maxHeight: '50vh' }}
                 onClick={handleHideBottomSheet}
+                setEditValue={(val: string) => {
+                  onEdit(val);
+                }}
                 {...leftNavigationProps}
               >
                 <ListItemsFields listItem={data.getListItemBySlug} previewMode={!authorized} />
@@ -237,6 +246,9 @@ export default function ItemScreen({
                 paddingBottom: 10,
                 overflowX: 'hidden',
                 overflowY: 'auto',
+              }}
+              setEditValue={(val: string) => {
+                onEdit(val);
               }}
               {...leftNavigationProps}
             >
@@ -283,53 +295,38 @@ export default function ItemScreen({
                 </Typography>
               </>
             )}
-            {state.fieldName === 'description' ? (
-              <InlineForm
-                multiline
-                fieldName={state.fieldName}
-                label="Description"
-                onCancel={onCancel}
-                formik={formik}
-                formLoading={CRUDLoading}
-              />
-            ) : (
-              <>
-                <Typography id="description" className="d-flex align-items-center mt-2 mb-1">
-                  Description
-                  {authorized && (
-                    <Tooltip title="Edit Description">
-                      <IconButton onClick={() => onEdit('description')} size="small">
-                        <EditIcon fontSize="small" />
-                      </IconButton>
-                    </Tooltip>
-                  )}
-                </Typography>
-                <DisplayRichText value={data.getListItemBySlug.description} />
-              </>
-            )}
-            {state.fieldName === 'media' ? (
-              <MediaForm
-                state={crudState}
-                setState={setCrudState}
-                onCancel={onCancel}
-                onSave={formik.handleSubmit}
-                loading={CRUDLoading}
-              />
-            ) : (
-              <>
-                <Typography className="d-flex align-items-center mt-2 mb-1" id="media">
-                  Media
-                  {authorized && (
-                    <Tooltip title="Edit Media">
-                      <IconButton onClick={() => onEdit('media')} size="small">
-                        <EditIcon fontSize="small" />
-                      </IconButton>
-                    </Tooltip>
-                  )}
-                </Typography>
-                <ImageList media={data.getListItemBySlug.media} />
-              </>
-            )}
+            <Overlay
+              open={state.fieldName === 'description' || state.fieldName === 'media'}
+              title={state.fieldName}
+              onClose={() => {
+                onCancel();
+              }}
+            >
+              <div style={{ padding: '20px' }}>
+                {state.fieldName === 'description' && (
+                  <>
+                    <InlineForm
+                      multiline
+                      fieldName={state.fieldName}
+                      label={state.fieldName}
+                      onCancel={onCancel}
+                      formik={formik}
+                      formLoading={CRUDLoading}
+                    />
+                    <DisplayRichText value={data.getListItemBySlug.description} />
+                  </>
+                )}
+                {state.fieldName === 'media' && (
+                  <MediaForm
+                    state={crudState}
+                    setState={setCrudState}
+                    onCancel={onCancel}
+                    onSave={formik.handleSubmit}
+                    loading={CRUDLoading}
+                  />
+                )}
+              </div>
+            </Overlay>
           </>
           {data.getListItemBySlug?.types[0]?._id && (
             <FieldValues
