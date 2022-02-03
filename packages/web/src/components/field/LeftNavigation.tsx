@@ -155,6 +155,21 @@ export default function LeftNavigation({
                     </IconButton>
                   </Tooltip>
                 </ListItem>
+                <ListItem button>
+                  <Link href={`#`}>
+                    <ListItemText primary="Permalink" />
+                  </Link>
+                  <Tooltip
+                    onClick={() => {
+                      setEditValue('permaLink');
+                    }}
+                    title="Edit Permalink"
+                  >
+                    <IconButton size="small">
+                      <EditIcon fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
+                </ListItem>
               </>
             )}
             {fields.length < 1 ? (

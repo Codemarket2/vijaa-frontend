@@ -32,7 +32,6 @@ import LeftNavigation from '../field/LeftNavigation';
 import Breadcrumbs from '../common/Breadcrumbs';
 import ErrorLoading from '../common/ErrorLoading';
 import Backdrop from '../common/Backdrop';
-import ImageList from '../post/ImageList';
 import NotFound from '../common/NotFound';
 import DisplayRichText from '../common/DisplayRichText';
 import ListItemsFields from './ListItemsFields';
@@ -57,6 +56,7 @@ export default function ItemScreen({
   hideleft = false,
 }: IProps): any {
   const router = useRouter();
+  console.log(router.query);
   const theme = useTheme();
   const matches = useMediaQuery(theme.breakpoints.down('xs'));
   const setting = useSelector((state: any) => state.setting);
@@ -98,7 +98,7 @@ export default function ItemScreen({
     onAlert,
     updateCallBack,
   });
-
+  console.log(crudState);
   const handleHideBottomSheet = () => {
     dispatch(updateSettingAction({ bottomDrawer: false }));
   };
@@ -296,7 +296,11 @@ export default function ItemScreen({
               </>
             )}
             <Overlay
-              open={state.fieldName === 'description' || state.fieldName === 'media'}
+              open={
+                state.fieldName === 'description' ||
+                state.fieldName === 'media' ||
+                state.fieldName === 'permaLink'
+              }
               title={state.fieldName}
               onClose={() => {
                 onCancel();
@@ -325,6 +329,7 @@ export default function ItemScreen({
                     loading={CRUDLoading}
                   />
                 )}
+                {state.fieldName === 'permaLink' && 'this is permalink'}
               </div>
             </Overlay>
           </>
@@ -342,6 +347,7 @@ export default function ItemScreen({
               authorized={authorized}
             />
           )}
+          {console.log(data?.getListItemBySlug)}
           <ListItemsFieldsValue listItem={data?.getListItemBySlug} previewMode={!authorized} />
         </Paper>
       </div>
