@@ -22,6 +22,7 @@ export default function Page({ metaTags, itemSlug, slug, createdBy }: IProps) {
   }, []);
   return (
     <>
+      {console.log('tags', metaTags)}
       <Head {...metaTags} />
       <UserLayout container={false} authRequired>
         <QRCodeGenerator url={currUrl} />
@@ -51,10 +52,7 @@ export async function getServerSideProps(context) {
           ? response?.data?.getListItemBySlug?.title
           : null,
         description,
-        image:
-          response.data.getListItemBySlug.media.length >= 1
-            ? response.data.getListItemBySlug.media[0].url
-            : null,
+        image: response?.data?.getListItemBySlug?.media[0]?.url,
       };
       createdBy = response.data.getListItemBySlug?.createdBy;
     }
