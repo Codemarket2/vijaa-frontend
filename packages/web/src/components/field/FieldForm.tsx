@@ -18,7 +18,7 @@ import SelectListType from '../form2/SelectListType';
 import ErrorLoading from '../common/ErrorLoading';
 
 export const fieldTypes = [
-  { label: 'Form', value: 'form' },
+  { label: 'Form1', value: 'form' },
   { label: 'Form2', value: 'form2' },
   { label: 'Text', value: 'text' },
   { label: 'Number', value: 'number' },
@@ -80,13 +80,7 @@ function UpdateFieldInput({ formik }: any) {
   );
 }
 
-export default function FieldForm({
-  onCancel,
-  parentId,
-  field = null,
-  edit = false,
-  formBuilder = false,
-}: IProps): any {
+export default function FieldForm({ onCancel, parentId, field = null, edit = false }: IProps): any {
   const { formik, formLoading, setFormValues } = useCRUDFields({
     onAlert,
     parentId,
@@ -177,40 +171,35 @@ export default function FieldForm({
           )}
         </>
       )}
-      {!['form', 'form2'].includes(formik.values.fieldType) && (
-        <>
-          <InputGroup>
-            <FormControlLabel
-              disabled={formik.isSubmitting}
-              control={
-                <Checkbox
-                  checked={formik.values.oneUserMultipleValues}
-                  onChange={({ target }) =>
-                    formik.setFieldValue('oneUserMultipleValues', target.checked)
-                  }
-                  name="oneUserMultipleValues"
-                  color="primary"
-                />
-              }
-              label="Mutiple values"
+      <InputGroup>
+        <FormControlLabel
+          disabled={formik.isSubmitting}
+          control={
+            <Checkbox
+              checked={formik.values.multipleValues}
+              onChange={({ target }) => formik.setFieldValue('multipleValues', target.checked)}
+              name="multipleValues"
+              color="primary"
             />
-          </InputGroup>
-          <InputGroup>
-            <FormControlLabel
-              disabled={formik.isSubmitting}
-              control={
-                <Checkbox
-                  checked={formik.values.multipleValues}
-                  onChange={({ target }) => formik.setFieldValue('multipleValues', target.checked)}
-                  name="multipleValues"
-                  color="primary"
-                />
-              }
-              label="Allow other users to add value"
+          }
+          label="Mutiple values"
+        />
+      </InputGroup>
+      <InputGroup>
+        <FormControlLabel
+          disabled={formik.isSubmitting}
+          control={
+            <Checkbox
+              checked={formik.values.allowOthers}
+              onChange={({ target }) => formik.setFieldValue('allowOthers', target.checked)}
+              name="allowOthers"
+              color="primary"
             />
-          </InputGroup>
-        </>
-      )}
+          }
+          label="Allow other users to add value"
+        />
+      </InputGroup>
+
       <InputGroup>
         <LoadingButton type="submit" data-testid="save-button" loading={formLoading} size="small">
           Save
