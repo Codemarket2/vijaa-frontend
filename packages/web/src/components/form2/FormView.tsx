@@ -16,6 +16,7 @@ import { onAlert } from '../../utils/alert';
 import DisplayRichText from '../common/DisplayRichText';
 import Overlay from '../common/Overlay';
 import AuthScreen from '../../screens/AuthScreen';
+import { ResponseChild2 } from './Response';
 
 interface IProps {
   form: any;
@@ -44,6 +45,7 @@ export default function FormViewWrapper({
     parentId,
   );
   const [showMessage, setShowMessage] = useState(false);
+  const [formResponse, setFormResponse] = useState(null);
 
   const handleSubmit = async (values) => {
     const payload = { formId: _id, values };
@@ -54,6 +56,8 @@ export default function FormViewWrapper({
         createCallback(response);
       }
     }
+
+    setFormResponse(response);
     return response;
   };
 
@@ -76,6 +80,8 @@ export default function FormViewWrapper({
               </Button>
             )}
           </InputGroup>
+
+          <ResponseChild2 formId={_id} response={formResponse} hideAuthor hideNavigation />
         </div>
       ) : (
         <FormView
