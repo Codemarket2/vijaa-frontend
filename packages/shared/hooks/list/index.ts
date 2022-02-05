@@ -11,8 +11,8 @@ export {
   useGetListItemBySlug,
   useDeleteListItem,
   useCreateListItem,
-  useGetTemplateFieldMentions,
   useGetpageFieldMentions,
+  useGetTemplateFieldMentions,
   useGetListItemById,
 } from './listItems';
 export { useMentionList } from './mentionList';
