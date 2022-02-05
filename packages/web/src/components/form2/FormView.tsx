@@ -22,6 +22,7 @@ interface IProps {
   form: any;
   parentId?: string;
   createCallback?: (response: any) => void;
+  setResponded?: () => void;
 }
 
 export const defualtValue = {
@@ -39,6 +40,7 @@ export default function FormViewWrapper({
   form: { _id, name, fields, settings },
   parentId,
   createCallback,
+  setResponded,
 }: IProps): any {
   const { handleCreateUpdateResponse, createLoading } = useCreateUpdateResponse(
     { onAlert },
@@ -55,6 +57,7 @@ export default function FormViewWrapper({
       if (createCallback) {
         createCallback(response);
       }
+      if (setResponded) setResponded();
     }
 
     setFormResponse(response);
