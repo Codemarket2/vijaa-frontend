@@ -10,7 +10,7 @@ export const GET_FIELD = gql`
       label
       fieldType
       multipleValues
-      oneUserMultipleValues
+      allowOthers
       typeId {
         _id
         title
@@ -34,7 +34,7 @@ export const GET_FIELDS = gql`
       label
       fieldType
       multipleValues
-      oneUserMultipleValues
+      allowOthers
       typeId {
         _id
         title
@@ -107,6 +107,16 @@ export const GET_FIELD_VALUE = gql`
         name
       }
       createdAt
+    }
+  }
+`;
+
+export const GET_PAGE_MENTIONS = gql`
+  query MyQuery($_id: ID!) {
+    getPageMentions(_id: $_id) {
+      data {
+        parentId
+      }
     }
   }
 `;

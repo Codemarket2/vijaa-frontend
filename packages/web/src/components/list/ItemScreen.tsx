@@ -18,6 +18,9 @@ import {
   useGetListItemBySlug,
   useDeleteListItem,
   usePublishListItem,
+  useGetTemplateFieldMentions,
+  useGetpageFieldMentions,
+  useGetListItemById,
 } from '@frontend/shared/hooks/list';
 import { useAuthorization } from '@frontend/shared/hooks/auth';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
@@ -32,11 +35,12 @@ import LeftNavigation from '../field/LeftNavigation';
 import Breadcrumbs from '../common/Breadcrumbs';
 import ErrorLoading from '../common/ErrorLoading';
 import Backdrop from '../common/Backdrop';
+import ImageList from '../post/ImageList';
 import NotFound from '../common/NotFound';
 import DisplayRichText from '../common/DisplayRichText';
 import ListItemsFields from './ListItemsFields';
 import ListItemsFieldsValue from './ListItemsFieldsValue';
-import Overlay from '../common/Overlay';
+import Grid from '@material-ui/core/Grid';
 
 interface IProps {
   slug: string;
@@ -45,6 +49,22 @@ interface IProps {
   pushToAnchor?: () => void;
   hideBreadcrumbs?: boolean;
   hideleft?: boolean;
+}
+
+export function DisplayMentions(value) {
+  const { data } = useGetListItemById(value._id);
+  const router = useRouter();
+  return (
+    <span
+      onClick={() => {
+        router.push(`/page/${data?.getListItem?.slug}`);
+      }}
+      style={{ cursor: 'pointer', color: 'blue' }}
+      className="mr-3"
+    >
+      {`${data?.getListItem?.slug} | ${data?.getListItem?.types[0]?.slug}`}
+    </span>
+  );
 }
 
 export default function ItemScreen({
@@ -56,20 +76,17 @@ export default function ItemScreen({
   hideleft = false,
 }: IProps): any {
   const router = useRouter();
-  console.log(router.query);
   const theme = useTheme();
   const matches = useMediaQuery(theme.breakpoints.down('xs'));
   const setting = useSelector((state: any) => state.setting);
-  const [state, setState] = useState({
-    fieldName: '',
-    fields: [],
-    hideLeftNavigation: false,
-  });
-  const [seoFields, setSeoFields] = useState({ showDescription: false, showMedia: false });
+  const [state, setState] = useState({ fieldName: '', fields: [], hideLeftNavigation: false });
   const [fieldValueCount, setFieldValueCount] = useState({});
   const { data, error } = useGetListItemBySlug({ slug });
   const authorized = useAuthorization([data?.getListItemBySlug?.createdBy?._id], true);
-  console.log(seoFields.showDescription);
+  const { templateMentionsField } = useGetTemplateFieldMentions(data?.getListItemBySlug?._id);
+  const { pageMentionsField } = useGetpageFieldMentions(data?.getListItemBySlug?._id);
+  const mentions = Array.from(new Set(templateMentionsField?.concat(pageMentionsField)));
+
   const deleteCallBack = () => {
     router.push(
       `/types/${data?.getListItemBySlug?.types && data?.getListItemBySlug?.types[0]?.slug}`,
@@ -98,7 +115,7 @@ export default function ItemScreen({
     onAlert,
     updateCallBack,
   });
-  console.log(crudState);
+
   const handleHideBottomSheet = () => {
     dispatch(updateSettingAction({ bottomDrawer: false }));
   };
@@ -111,7 +128,7 @@ export default function ItemScreen({
     setFormValues(data.getListItemBySlug);
     setState({ ...state, fieldName });
   };
-  console.log(state.fieldName);
+
   useEffect(() => {
     if (data && data.getListItemBySlug && setItem) {
       setItem(data.getListItemBySlug);
@@ -228,9 +245,6 @@ export default function ItemScreen({
               <LeftNavigation
                 style={{ maxHeight: '50vh' }}
                 onClick={handleHideBottomSheet}
-                setEditValue={(val: string) => {
-                  onEdit(val);
-                }}
                 {...leftNavigationProps}
               >
                 <ListItemsFields listItem={data.getListItemBySlug} previewMode={!authorized} />
@@ -246,9 +260,6 @@ export default function ItemScreen({
                 paddingBottom: 10,
                 overflowX: 'hidden',
                 overflowY: 'auto',
-              }}
-              setEditValue={(val: string) => {
-                onEdit(val);
               }}
               {...leftNavigationProps}
             >
@@ -295,43 +306,53 @@ export default function ItemScreen({
                 </Typography>
               </>
             )}
-            <Overlay
-              open={
-                state.fieldName === 'description' ||
-                state.fieldName === 'media' ||
-                state.fieldName === 'permaLink'
-              }
-              title={state.fieldName}
-              onClose={() => {
-                onCancel();
-              }}
-            >
-              <div style={{ padding: '20px' }}>
-                {state.fieldName === 'description' && (
-                  <>
-                    <InlineForm
-                      multiline
-                      fieldName={state.fieldName}
-                      label={state.fieldName}
-                      onCancel={onCancel}
-                      formik={formik}
-                      formLoading={CRUDLoading}
-                    />
-                    <DisplayRichText value={data.getListItemBySlug.description} />
-                  </>
-                )}
-                {state.fieldName === 'media' && (
-                  <MediaForm
-                    state={crudState}
-                    setState={setCrudState}
-                    onCancel={onCancel}
-                    onSave={formik.handleSubmit}
-                    loading={CRUDLoading}
-                  />
-                )}
-                {state.fieldName === 'permaLink' && 'this is permalink'}
-              </div>
-            </Overlay>
+            {state.fieldName === 'description' ? (
+              <InlineForm
+                multiline
+                fieldName={state.fieldName}
+                label="Description"
+                onCancel={onCancel}
+                formik={formik}
+                formLoading={CRUDLoading}
+              />
+            ) : (
+              <>
+                <Typography id="description" className="d-flex align-items-center mt-2 mb-1">
+                  Description
+                  {authorized && (
+                    <Tooltip title="Edit Description">
+                      <IconButton onClick={() => onEdit('description')} size="small">
+                        <EditIcon fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                  )}
+                </Typography>
+                <DisplayRichText value={data.getListItemBySlug.description} />
+              </>
+            )}
+            {state.fieldName === 'media' ? (
+              <MediaForm
+                state={crudState}
+                setState={setCrudState}
+                onCancel={onCancel}
+                onSave={formik.handleSubmit}
+                loading={CRUDLoading}
+              />
+            ) : (
+              <>
+                <Typography className="d-flex align-items-center mt-2 mb-1" id="media">
+                  Media
+                  {authorized && (
+                    <Tooltip title="Edit Media">
+                      <IconButton onClick={() => onEdit('media')} size="small">
+                        <EditIcon fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                  )}
+                </Typography>
+                <ImageList media={data.getListItemBySlug.media} />
+              </>
+            )}
           </>
           {data.getListItemBySlug?.types[0]?._id && (
             <FieldValues
@@ -347,8 +368,17 @@ export default function ItemScreen({
               authorized={authorized}
             />
           )}
-          {console.log(data?.getListItemBySlug)}
           <ListItemsFieldsValue listItem={data?.getListItemBySlug} previewMode={!authorized} />
+          {mentions.length != 0 && (
+            <Grid>
+              <Typography className="my-3">Mentions</Typography>
+              <div className="my-3">
+                {mentions.map((val) => (
+                  <DisplayMentions _id={val} />
+                ))}
+              </div>
+            </Grid>
+          )}
         </Paper>
       </div>
       <Backdrop open={deleteLoading || CRUDLoading} />

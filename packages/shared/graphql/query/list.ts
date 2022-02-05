@@ -38,6 +38,7 @@ export const GET_LIST_TYPE_BY_SLUG = gql`
       }
       inUse
       active
+      showInMenu
       fields {
         _id
         label
@@ -54,6 +55,15 @@ export const GET_LIST_TYPE_BY_SLUG = gql`
         _id
         name
       }
+    }
+  }
+`;
+export const GET_MENU_LIST_TYPES = gql`
+  query getMenuListTypes {
+    getMenuListTypes {
+      _id
+      slug
+      title
     }
   }
 `;
@@ -161,6 +171,16 @@ export const GET_LIST_ITEM_BY_ID = gql`
       slug
       types {
         slug
+      }
+    }
+  }
+`;
+
+export const GET_LIST_PAGE_MENTIONS = gql`
+  query MyQuery($_id: ID!) {
+    getListPageMentions(_id: $_id) {
+      data {
+        _id
       }
     }
   }
