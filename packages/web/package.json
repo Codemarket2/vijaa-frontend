@@ -36,6 +36,7 @@
     "immer": "^9.0.5",
     "moment": "2.29.1",
     "next": "10.2.0",
+    "next-absolute-url": "^1.2.2",
     "next-compose-plugins": "2.2.1",
     "next-images": "1.7.0",
     "next-pwa": "^5.4.4",

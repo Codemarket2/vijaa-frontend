@@ -9,6 +9,7 @@ export const GET_LIST_TYPES = gql`
         slug
         title
         description
+        permaLink
         media {
           url
           caption
@@ -32,6 +33,7 @@ export const GET_LIST_TYPE_BY_SLUG = gql`
       slug
       title
       description
+      permaLink
       media {
         url
         caption
@@ -77,6 +79,7 @@ export const GET_LIST_ITEMS_BY_TYPE = gql`
         slug
         title
         description
+        permaLink
         types {
           _id
           title
@@ -105,6 +108,7 @@ export const GET_LIST_ITEMS = gql`
         slug
         title
         description
+        permaLink
         types {
           _id
           title
@@ -135,6 +139,7 @@ export const GET_LIST_ITEM_BY_SLUG = gql`
       slug
       title
       description
+      permaLink
       media {
         url
         caption

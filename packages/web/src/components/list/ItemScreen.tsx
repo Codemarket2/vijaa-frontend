@@ -5,7 +5,6 @@ import EditIcon from '@material-ui/icons/Edit';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import IconButton from '@material-ui/core/IconButton';
 import Paper from '@material-ui/core/Paper';
-import DeleteIcon from '@material-ui/icons/Delete';
 import Hidden from '@material-ui/core/Hidden';
 import Tooltip from '@material-ui/core/Tooltip';
 import Drawer from '@material-ui/core/Drawer';
@@ -13,16 +12,12 @@ import Typography from '@material-ui/core/Typography';
 import { useSelector, useDispatch } from 'react-redux';
 import { useTheme } from '@material-ui/core/styles';
 import ShareIcon from '@material-ui/icons/Share';
-// import FileCopyIcon from '@material-ui/icons/FileCopy';
-import Grid from '@material-ui/core/Grid';
+import FileCopyIcon from '@material-ui/icons/FileCopy';
 import {
   useCRUDListItems,
   useGetListItemBySlug,
   useDeleteListItem,
   usePublishListItem,
-  useGetTemplateFieldMentions,
-  useGetpageFieldMentions,
-  useGetListItemById,
 } from '@frontend/shared/hooks/list';
 import { useAuthorization } from '@frontend/shared/hooks/auth';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
@@ -30,6 +25,7 @@ import Switch from '@material-ui/core/Switch';
 import { updateSettingAction } from '@frontend/shared/redux/actions/setting';
 import { onAlert } from '../../utils/alert';
 import FieldValues from '../field/FieldValues';
+import ActionButtons from './ActionButtons';
 import InlineForm from './InlineForm';
 import MediaForm from './MediaForm';
 import LeftNavigation from '../field/LeftNavigation';
@@ -41,7 +37,8 @@ import NotFound from '../common/NotFound';
 import DisplayRichText from '../common/DisplayRichText';
 import ListItemsFields from './ListItemsFields';
 import ListItemsFieldsValue from './ListItemsFieldsValue';
-import UnAuthorised from '../common/UnAuthorised';
+import Overlay from '../common/Overlay';
+import PermaLink from './PermaLink';
 
 interface IProps {
   slug: string;
@@ -50,22 +47,6 @@ interface IProps {
   pushToAnchor?: () => void;
   hideBreadcrumbs?: boolean;
   hideleft?: boolean;
-}
-
-export function DisplayMentions(value) {
-  const { data } = useGetListItemById(value._id);
-  const router = useRouter();
-  return (
-    <span
-      onClick={() => {
-        router.push(`/page/${data?.getListItem?.slug}`);
-      }}
-      style={{ cursor: 'pointer', color: 'blue' }}
-      className="mr-3"
-    >
-      {`${data?.getListItem?.slug} | ${data?.getListItem?.types[0]?.slug}`}
-    </span>
-  );
 }
 
 export default function ItemScreen({
@@ -79,17 +60,21 @@ export default function ItemScreen({
   const router = useRouter();
   const theme = useTheme();
   const matches = useMediaQuery(theme.breakpoints.down('xs'));
-  const { setting, auth } = useSelector((state: any) => state);
-  const [state, setState] = useState({ fieldName: '', fields: [], hideLeftNavigation: false });
+  const setting = useSelector((state: any) => state.setting);
+  const [state, setState] = useState({
+    fieldName: '',
+    fields: [],
+    hideLeftNavigation: false,
+  });
+  const [seoFields, setSeoFields] = useState({ showDescription: false, showMedia: false });
   const [fieldValueCount, setFieldValueCount] = useState({});
   const { data, error } = useGetListItemBySlug({ slug });
   const authorized = useAuthorization([data?.getListItemBySlug?.createdBy?._id], true);
-  const { templateMentionsField } = useGetTemplateFieldMentions(data?.getListItemBySlug?._id);
-  const { pageMentionsField } = useGetpageFieldMentions(data?.getListItemBySlug?._id);
-  const mentions = Array.from(new Set(templateMentionsField?.concat(pageMentionsField)));
-
+  console.log(seoFields.showDescription);
   const deleteCallBack = () => {
-    router.push(`/${data?.getListItemBySlug?.types[0]?.slug}`);
+    router.push(
+      `/types/${data?.getListItemBySlug?.types && data?.getListItemBySlug?.types[0]?.slug}`,
+    );
   };
 
   const updateCallBack = (newSlug) => {
@@ -114,7 +99,6 @@ export default function ItemScreen({
     onAlert,
     updateCallBack,
   });
-
   const handleHideBottomSheet = () => {
     dispatch(updateSettingAction({ bottomDrawer: false }));
   };
@@ -127,7 +111,7 @@ export default function ItemScreen({
     setFormValues(data.getListItemBySlug);
     setState({ ...state, fieldName });
   };
-
+  console.log(crudState);
   useEffect(() => {
     if (data && data.getListItemBySlug && setItem) {
       setItem(data.getListItemBySlug);
@@ -141,14 +125,13 @@ export default function ItemScreen({
   if (!data?.getListItemBySlug || (!authorized && !data?.getListItemBySlug?.active)) {
     return <NotFound />;
   }
-
-  if (!auth.authenticated && data?.getListItemBySlug?.authenticateUser) {
-    return <UnAuthorised />;
-  }
-
+  console.log(router.basePath);
   const leftNavigationProps = {
     parentId: data.getListItemBySlug?.types[0]?._id,
-    slug: `/${data?.getListItemBySlug?.types[0]?.slug}/${data?.getListItemBySlug?.slug}`,
+    slug: `/types/${data?.getListItemBySlug?.types[0]?.slug}/${data?.getListItemBySlug?.slug}`,
+    // slug: previewMode
+    //   ? `/page/${data?.getListItemBySlug?.slug}`
+    //   : `/types/${data?.getListItemBySlug?.types[0]?.slug}/${data?.getListItemBySlug?.slug}`,
     fields: state.fields,
     fieldValueCount,
     layouts: JSON.parse(data.getListItemBySlug?.layouts) || {},
@@ -162,8 +145,8 @@ export default function ItemScreen({
       {!hideBreadcrumbs && (
         <div className="d-flex justify-content-between align-content-center align-items-center">
           <Breadcrumbs>
-            {/* <Link href="/types">Template</Link> */}
-            <Link href={`/${data.getListItemBySlug.types[0].slug}`}>
+            <Link href="/types">Template</Link>
+            <Link href={`/types/${data.getListItemBySlug.types[0].slug}`}>
               <a>{data.getListItemBySlug.types[0].title}</a>
             </Link>
             <Typography color="textPrimary">
@@ -173,27 +156,14 @@ export default function ItemScreen({
             </Typography>
           </Breadcrumbs>
           <div className="d-flex align-items-center">
-            <Tooltip title="share">
-              <IconButton
-                edge="start"
-                onClick={() =>
-                  navigator.clipboard.writeText(
-                    `${window?.location?.origin}/${data?.getListItemBySlug?.types[0]?.slug}/${data?.getListItemBySlug?.slug}`,
-                  )
-                }
-              >
-                <ShareIcon />
-              </IconButton>
-            </Tooltip>
             {authorized && (
               <>
-                {/* <Tooltip title="Make a copy">
+                <Tooltip title="Make a copy">
                   <IconButton onClick={() => alert('Comming soon')}>
                     <FileCopyIcon />
                   </IconButton>
-                </Tooltip> */}
+                </Tooltip>
                 <FormControlLabel
-                  className="m-0"
                   control={
                     <Switch
                       color="primary"
@@ -212,7 +182,6 @@ export default function ItemScreen({
                 />
                 {data.getListItemBySlug?.active && (
                   <FormControlLabel
-                    className="m-0"
                     control={
                       <Switch
                         color="primary"
@@ -230,21 +199,25 @@ export default function ItemScreen({
                     label="Auth Required"
                   />
                 )}
-                <Tooltip title="Delete">
-                  <IconButton
-                    edge="end"
-                    onClick={() => {
-                      const answer = confirm('Are you sure you want to delete?');
-                      if (answer) {
-                        handleDelete(data.getListItemBySlug._id, deleteCallBack);
-                      }
-                    }}
-                  >
-                    <DeleteIcon />
-                  </IconButton>
-                </Tooltip>
+                <ActionButtons
+                  onDelete={() => {
+                    const answer = confirm('Are you sure you want to delete?');
+                    if (answer) {
+                      handleDelete(data.getListItemBySlug._id, deleteCallBack);
+                    }
+                  }}
+                />
               </>
             )}
+            <Tooltip title="share">
+              <IconButton
+                onClick={() =>
+                  navigator.clipboard.writeText(`${window?.location?.origin}/page/${slug}`)
+                }
+              >
+                <ShareIcon />
+              </IconButton>
+            </Tooltip>
           </div>
         </div>
       )}
@@ -255,6 +228,9 @@ export default function ItemScreen({
               <LeftNavigation
                 style={{ maxHeight: '50vh' }}
                 onClick={handleHideBottomSheet}
+                setEditValue={(val: string) => {
+                  onEdit(val);
+                }}
                 {...leftNavigationProps}
               >
                 <ListItemsFields listItem={data.getListItemBySlug} previewMode={!authorized} />
@@ -270,6 +246,9 @@ export default function ItemScreen({
                 paddingBottom: 10,
                 overflowX: 'hidden',
                 overflowY: 'auto',
+              }}
+              setEditValue={(val: string) => {
+                onEdit(val);
               }}
               {...leftNavigationProps}
             >
@@ -316,53 +295,51 @@ export default function ItemScreen({
                 </Typography>
               </>
             )}
-            {state.fieldName === 'description' ? (
-              <InlineForm
-                multiline
-                fieldName={state.fieldName}
-                label="Description"
-                onCancel={onCancel}
-                formik={formik}
-                formLoading={CRUDLoading}
-              />
-            ) : (
-              <>
-                <Typography id="description" className="d-flex align-items-center mt-2 mb-1">
-                  Description
-                  {authorized && (
-                    <Tooltip title="Edit Description">
-                      <IconButton onClick={() => onEdit('description')} size="small">
-                        <EditIcon fontSize="small" />
-                      </IconButton>
-                    </Tooltip>
-                  )}
-                </Typography>
-                <DisplayRichText value={data.getListItemBySlug.description} />
-              </>
-            )}
-            {state.fieldName === 'media' ? (
-              <MediaForm
-                state={crudState}
-                setState={setCrudState}
-                onCancel={onCancel}
-                onSave={formik.handleSubmit}
-                loading={CRUDLoading}
-              />
-            ) : (
-              <>
-                <Typography className="d-flex align-items-center mt-2 mb-1" id="media">
-                  Media
-                  {authorized && (
-                    <Tooltip title="Edit Media">
-                      <IconButton onClick={() => onEdit('media')} size="small">
-                        <EditIcon fontSize="small" />
-                      </IconButton>
-                    </Tooltip>
-                  )}
-                </Typography>
-                <ImageList media={data.getListItemBySlug.media} />
-              </>
-            )}
+            <Overlay
+              open={
+                state.fieldName === 'description' ||
+                state.fieldName === 'media' ||
+                state.fieldName === 'permaLink'
+              }
+              title={state.fieldName}
+              onClose={() => {
+                onCancel();
+              }}
+            >
+              <div style={{ padding: '20px' }}>
+                {state.fieldName === 'description' && (
+                  <>
+                    <InlineForm
+                      multiline
+                      fieldName={state.fieldName}
+                      label={state.fieldName}
+                      onCancel={onCancel}
+                      formik={formik}
+                      formLoading={CRUDLoading}
+                    />
+                    <DisplayRichText value={data.getListItemBySlug.description} />
+                  </>
+                )}
+                {state.fieldName === 'media' && (
+                  <MediaForm
+                    state={crudState}
+                    setState={setCrudState}
+                    onCancel={onCancel}
+                    onSave={formik.handleSubmit}
+                    loading={CRUDLoading}
+                  />
+                )}
+                {state.fieldName === 'permaLink' && (
+                  <PermaLink
+                    fieldName="permaLink"
+                    label="permaLink"
+                    onCancel={onCancel}
+                    formik={formik}
+                    formLoading={CRUDLoading}
+                  />
+                )}
+              </div>
+            </Overlay>
           </>
           {data.getListItemBySlug?.types[0]?._id && (
             <FieldValues
@@ -379,16 +356,6 @@ export default function ItemScreen({
             />
           )}
           <ListItemsFieldsValue listItem={data?.getListItemBySlug} previewMode={!authorized} />
-          {mentions.length != 0 && (
-            <Grid>
-              <Typography className="my-3">Mentions</Typography>
-              <div className="my-3">
-                {mentions.map((val) => (
-                  <DisplayMentions _id={val} />
-                ))}
-              </div>
-            </Grid>
-          )}
         </Paper>
       </div>
       <Backdrop open={deleteLoading || CRUDLoading} />

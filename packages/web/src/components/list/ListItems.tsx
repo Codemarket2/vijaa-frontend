@@ -62,6 +62,7 @@ export default function ListItems({ types, slug }: any) {
           <List dense>
             {data.getListItems.data.map((lisItem, i) => (
               <Fragment key={lisItem._id}>
+                {console.log(lisItem)}
                 {i > 0 && <Divider />}
                 <Link href={`/${lisItem.types[0].slug}/${lisItem.slug}`}>
                   <ListItem button>

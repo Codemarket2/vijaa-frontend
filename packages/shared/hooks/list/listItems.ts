@@ -41,6 +41,7 @@ export function useGetListItemById(_id) {
   });
   return { data };
 }
+export function useUpdatePermaLink(_id, permaLink) {}
 export function useGetListItemsByType({ types = [] }: any) {
   const [state, setState] = useState({
     search: '',
@@ -140,6 +141,7 @@ interface IListItemsFormValues {
   edit: boolean;
   title: string;
   description: string;
+  permaLink: string;
   types: [string];
 }
 
@@ -148,6 +150,7 @@ const listItemsDefaultValue = {
   edit: false,
   title: '',
   description: '',
+  permaLink: '',
 };
 
 interface IProps extends IHooksProps {
@@ -196,7 +199,7 @@ export function useCRUDListItems({ onAlert, types, createCallBack, updateCallBac
       }
     },
   });
-
+  console.log(formik);
   const onCreate = async (payload) => {
     // const createInCache = (client, mutationResult) => {
     //   const { getListItems } = client.readQuery({
@@ -244,9 +247,11 @@ export function useCRUDListItems({ onAlert, types, createCallBack, updateCallBac
   };
 
   const setFormValues = (item) => {
+    console.log('item', item);
     formik.setFieldValue('edit', true, false);
     formik.setFieldValue('title', item.title, false);
     formik.setFieldValue('description', item.description, false);
+    formik.setFieldValue('permaLink', item.permaLink, false);
     formik.setFieldValue('_id', item._id, false);
 
     setState({
@@ -270,6 +275,7 @@ export function useCreateListItem({ onAlert }: IHooksProps) {
         types,
         title: `${uuid()}-${new Date().getTime()}-n-e-w`,
         description: '',
+        permaLink: '',
         media: [],
       };
       const res = await createListItemMutation({
