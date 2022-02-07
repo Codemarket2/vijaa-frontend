@@ -126,7 +126,7 @@ export default function LeftNavigation({
             {!previewMode && (
               <>
                 <ListItem button>
-                  <Link href={`${slug}#description`}>
+                  <Link href={`#description`}>
                     <ListItemText primary="Description" />
                   </Link>
                   <Tooltip
@@ -141,7 +141,7 @@ export default function LeftNavigation({
                   </Tooltip>
                 </ListItem>
                 <ListItem button>
-                  <Link href={`${slug}#media`}>
+                  <Link href={`#media`}>
                     <ListItemText primary="Media" />
                   </Link>
                   <Tooltip
@@ -156,7 +156,7 @@ export default function LeftNavigation({
                   </Tooltip>
                 </ListItem>
                 <ListItem button>
-                  <Link href={`#`}>
+                  <Link href={`#permaLink`}>
                     <ListItemText primary="PermaLink" />
                   </Link>
                   <Tooltip

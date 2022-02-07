@@ -23,7 +23,7 @@ export default function PermaLink({
   const router = useRouter();
   return (
     <div>
-      <h4>{router.asPath}</h4>
+      <h4>{window.location.href}</h4>
       <form onSubmit={formik.handleSubmit}>
         <InputGroup>
           {

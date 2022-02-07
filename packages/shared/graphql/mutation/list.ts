@@ -239,6 +239,7 @@ export const UPDATE_LIST_ITEM = gql`
     $description: String
     $media: [MediaInput]
     $layouts: AWSJSON
+    $slug: String
   ) {
     updateListItem(
       _id: $_id
@@ -246,6 +247,7 @@ export const UPDATE_LIST_ITEM = gql`
       description: $description
       media: $media
       layouts: $layouts
+      slug: $slug
     ) {
       _id
       active

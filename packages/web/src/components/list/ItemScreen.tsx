@@ -331,8 +331,9 @@ export default function ItemScreen({
                 )}
                 {state.fieldName === 'permaLink' && (
                   <PermaLink
-                    fieldName="permaLink"
-                    label="permaLink"
+                    multiline
+                    fieldName={'slug'}
+                    label={state.fieldName}
                     onCancel={onCancel}
                     formik={formik}
                     formLoading={CRUDLoading}
