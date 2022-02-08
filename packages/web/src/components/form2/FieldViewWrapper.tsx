@@ -111,8 +111,6 @@ export default function FieldViewWrapper({
 
   if (settings?.widgetType === 'leaderboard') return null;
 
-  if (settings?.widgetType === 'oneField') return null;
-
   return (
     <FormView
       form={{ ...data.getForm, settings }}
@@ -121,6 +119,7 @@ export default function FieldViewWrapper({
       setResponded={() => {
         setState({ ...state, responded: true });
       }}
+      fieldWiseView={settings?.widgetType === 'oneField'}
     />
   );
 }
