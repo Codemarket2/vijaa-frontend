@@ -3,9 +3,10 @@ import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import { useSelector } from 'react-redux';
-import FormLabel from '@material-ui/core/FormLabel';
 import IconButton from '@material-ui/core/IconButton';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
+import FormHelperText from '@material-ui/core/FormHelperText';
+import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { useCreateUpdateResponse } from '@frontend/shared/hooks/response';
 import InputGroup from '../common/InputGroup';
@@ -16,6 +17,7 @@ import { onAlert } from '../../utils/alert';
 import DisplayRichText from '../common/DisplayRichText';
 import Overlay from '../common/Overlay';
 import AuthScreen from '../../screens/AuthScreen';
+import DisplayValue from './DisplayValue';
 
 interface IProps {
   form: any;
@@ -197,13 +199,30 @@ export function FormView({
     } else {
       newValues = [{ ...defualtValue, field: fieldId }];
     }
-    setValues([...values, ...newValues]);
+    setValues([...newValues, ...values]);
   };
 
-  const onRemoveOneValue = (fieldId) => {
+  const onRemoveOneValue = (fieldId, index) => {
     const oldValues = values.filter((f) => f.field !== fieldId);
-    const newValues = values.filter((f) => f.field === fieldId);
-    newValues.pop();
+    const newValues = values.filter((f) => f.field === fieldId).filter((f, i) => i !== index);
+    setValues([...oldValues, ...newValues]);
+  };
+
+  const onEditOneValue = (fieldId, index) => {
+    let selectedField = null;
+    const oldValues = values.filter((f) => f.field !== fieldId);
+    let newValues = values
+      .filter((f) => f.field === fieldId)
+      .filter((f, i) => {
+        if (i !== index) {
+          return true;
+        }
+        selectedField = f;
+        return false;
+      });
+    if (selectedField) {
+      newValues = [selectedField, ...newValues];
+    }
     setValues([...oldValues, ...newValues]);
   };
 
@@ -228,43 +247,67 @@ export function FormView({
             key={field._id}
           >
             <InputGroup key={field._id}>
-              <>
-                <FormLabel>
-                  {field?.options?.required ? `${field?.label}*` : field?.label}
-                </FormLabel>
+              <Typography>
+                {field?.options?.required ? `${field?.label}*` : field?.label}
                 {field?.options?.multipleValues && (
-                  <>
-                    <IconButton
-                      edge="end"
-                      color="primary"
-                      onClick={() => onAddOneMoreValue(field._id)}
-                    >
-                      <AddCircleIcon fontSize="small" />
-                    </IconButton>
-                    {values.filter((f) => f.field === field._id).length > 1 && (
+                  <IconButton
+                    edge="end"
+                    color="primary"
+                    onClick={() => onAddOneMoreValue(field._id)}
+                  >
+                    <AddCircleIcon fontSize="small" />
+                  </IconButton>
+                )}
+              </Typography>
+              {filterValues(values, field).map((value, valueIndex) => (
+                <div key={valueIndex} className="mb-2 d-flex align-items-center">
+                  {valueIndex === 0 ? (
+                    <div className="w-100">
+                      <Field
+                        {...field}
+                        disabled={submitState.loading}
+                        validate={submitState.validate}
+                        label={field?.options?.required ? `${field?.label}*` : field?.label}
+                        onChangeValue={(changedValue) =>
+                          onChange({ ...changedValue, field: field._id }, valueIndex)
+                        }
+                        value={value}
+                      />
+                    </div>
+                  ) : (
+                    <div className="w-100">
+                      <DisplayValue imageAvatar value={value} field={field} />
+                      {validateValue(submitState.validate, value, field.options, field.fieldType)
+                        .error && (
+                        <FormHelperText className="text-danger">
+                          {
+                            validateValue(
+                              submitState.validate,
+                              value,
+                              field.options,
+                              field.fieldType,
+                            ).errorMessage
+                          }
+                        </FormHelperText>
+                      )}
+                    </div>
+                  )}
+
+                  {filterValues(values, field)?.length > 1 && (
+                    <>
+                      {!(valueIndex === 0) && (
+                        <IconButton onClick={() => onEditOneValue(field._id, valueIndex)}>
+                          <EditIcon />
+                        </IconButton>
+                      )}
                       <IconButton
                         edge="end"
-                        className="text-danger"
-                        onClick={() => onRemoveOneValue(field._id)}
+                        onClick={() => onRemoveOneValue(field._id, valueIndex)}
                       >
-                        <DeleteIcon fontSize="small" />
+                        <DeleteIcon />
                       </IconButton>
-                    )}
-                  </>
-                )}
-              </>
-              {filterValues(values, field).map((value, valueIndex) => (
-                <div className="mb-2">
-                  <Field
-                    disabled={submitState.loading}
-                    validate={submitState.validate}
-                    {...field}
-                    label={field?.options?.required ? `${field?.label}*` : field?.label}
-                    onChangeValue={(changedValue) =>
-                      onChange({ ...changedValue, field: field._id }, valueIndex)
-                    }
-                    value={value}
-                  />
+                    </>
+                  )}
                 </div>
               ))}
             </InputGroup>
