@@ -15,48 +15,43 @@ interface IProps {
   loading: boolean;
 }
 
-export default function MediaForm({
-  state,
-  setState,
-  seoState,
-  setSeoState,
-  onCancel,
-  onSave,
-  loading = false,
-}: IProps) {
+export default function MediaForm({ state, setState, onCancel, onSave, loading = false }: IProps) {
   return (
     <div>
+      <Typography variant="h6" className="d-flex align-items-center justify-content-betweens">
+        Media
+        <div className="ml-5 d-flex align-items-center">
+          <Tooltip title="Save">
+            <LoadingButton
+              loading={loading}
+              onClick={onSave}
+              className="mr-2"
+              size="small"
+              variant="contained"
+              type="button"
+              color="primary"
+            >
+              Save
+            </LoadingButton>
+          </Tooltip>
+          <Tooltip title="Cancel">
+            <Button
+              disabled={loading}
+              onClick={() => {
+              setSeoState({ ...seoState, media: false });
+              }}
+              size="small"
+              variant="outlined"
+              component="span"
+              color="primary"
+            >
+              Cancel
+            </Button>
+          </Tooltip>
+        </div>
+      </Typography>
       <InputGroup>
         <ImagePicker state={state} setState={setState} />
-      </InputGroup>
-      <InputGroup>
-        <Tooltip title="Save">
-          <LoadingButton
-            loading={loading}
-            onClick={onSave}
-            className="mr-2"
-            size="small"
-            variant="contained"
-            type="button"
-            color="primary"
-          >
-            Save
-          </LoadingButton>
-        </Tooltip>
-        <Tooltip title="Cancel">
-          <Button
-            disabled={loading}
-            onClick={() => {
-              setSeoState({ ...seoState, media: false });
-            }}
-            size="small"
-            variant="outlined"
-            component="span"
-            color="primary"
-          >
-            Cancel
-          </Button>
-        </Tooltip>
       </InputGroup>
     </div>
   );
