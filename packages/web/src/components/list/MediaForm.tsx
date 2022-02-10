@@ -1,4 +1,3 @@
-import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import Tooltip from '@material-ui/core/Tooltip';
 import ImagePicker from '../common/ImagePicker';
@@ -20,7 +19,6 @@ export default function MediaForm({
   setState,
   seoState,
   setSeoState,
-  onCancel,
   onSave,
   loading = false,
 }: IProps) {
