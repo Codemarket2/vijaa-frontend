@@ -10,7 +10,7 @@ export const QRCodeGenerator = ({ url }: { url: string }) => {
         zIndex: '1000',
       }}
     >
-      <QRCode value={url} includeMargin="true" size={76} />
+      <QRCode value={url} includeMargin="true" size={100} />
     </div>
   ) : null;
 };

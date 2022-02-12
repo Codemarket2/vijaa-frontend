@@ -16,7 +16,7 @@ export default function Page({ metaTags, itemSlug, slug }: IProps) {
   const [currUrl, setCurrUrl] = useState('');
   useEffect(() => {
     setCurrUrl(window.location.href);
-  }, []);
+  }, [window.location.href]);
   return (
     <>
       <Head {...metaTags} />
