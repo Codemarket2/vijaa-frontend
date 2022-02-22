@@ -11,9 +11,8 @@ import RichTextarea from '../common/RichTextarea2';
 import DisplayRichText from '../common/DisplayRichText';
 import SelectListItem from './SelectListItem';
 import { validateValue } from './validate';
-import SelectResponse from './SelectResponse';
+import SelectResponse from '../response/SelectResponse';
 import Select from './Select';
-
 import 'react-phone-input-2/lib/style.css';
 
 interface IProps {
@@ -145,12 +144,11 @@ export default function FieldValueForm2({
     case 'image': {
       return (
         <div>
-          {/* <InputLabel component="legend">{label}</InputLabel> */}
           <ImagePicker
             label="Select Image"
             fileType="image/*"
-            mutiple={options?.multipleValues}
-            state={value || { tempMedia: [], tempMediaFiles: [] }}
+            // mutiple={options?.multipleValues}
+            state={value}
             setState={(newValue) => onChange({ field: _id, ...newValue })}
           />
           {validateValue(validate, value, options, fieldType).error && (

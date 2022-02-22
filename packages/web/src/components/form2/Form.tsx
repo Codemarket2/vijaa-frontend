@@ -8,7 +8,6 @@ import IconButton from '@material-ui/core/IconButton';
 import ShareIcon from '@material-ui/icons/Share';
 import DeleteIcon from '@material-ui/icons/Delete';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import { useUpdateSection } from '@frontend/shared/hooks/section';
 import Typography from '@material-ui/core/Typography';
 import Alert from '@material-ui/lab/Alert';
 import Snackbar from '@material-ui/core/Snackbar';
@@ -23,13 +22,13 @@ import Backdrop from '../common/Backdrop';
 import FormFields from './FormFields';
 import FormView from './FormView';
 import FormSetting from './FormSetting';
-import ResponseList from './ResponseList';
+import ResponseList from '../response/ResponseList';
 import Actions from './Actions';
 import { onAlert } from '../../utils/alert';
 import Authorization from '../common/Authorization';
 import InlineInput from '../common/InlineInput';
 import { QRButton } from '../qrcode/QRButton';
-import ResponseSections from './ResponseSection';
+import ResponseLayout from '../response/ResponseLayout';
 
 interface IProps {
   _id: string;
@@ -42,7 +41,6 @@ export default function Form({ _id, drawerMode = false, onSlugChange }: IProps):
     onAlert,
     _id,
   });
-  const { onSectionChange, section } = useUpdateSection({ onAlert, _id });
 
   const { handleDelete } = useDeleteForm({
     onAlert,
@@ -160,13 +158,13 @@ export default function Form({ _id, drawerMode = false, onSlugChange }: IProps):
           </div>
         )}
         <Grid container spacing={1} style={{ minHeight: 'calc(100vh - 130px)' }}>
-          <Grid item xs={4}>
+          <Grid item xs={12} md={4}>
             <FormFields
               fields={state.fields}
               setFields={(newFields) => handleOnChange({ fields: newFields })}
             />
           </Grid>
-          <Grid item xs={8}>
+          <Grid item xs={12} md={8}>
             <Paper variant="outlined">
               <Tabs
                 variant="scrollable"
@@ -197,26 +195,10 @@ export default function Form({ _id, drawerMode = false, onSlugChange }: IProps):
                     })
                   }
                 />
-                <ResponseSections
-                  section={section}
-                  onSectionChange={onSectionChange}
-                  authorized
-                  title="Response sections"
-                />
+                <ResponseLayout _id={_id} />
               </>
             )}
             {options.currentTab === 'responses' && <ResponseList form={state} />}
-            {/* {options.currentTab === 'design' && (
-              <DesignTab
-                form={state}
-                onChange={(design) =>
-                  setState({
-                    ...state,
-                    settings: { ...state.settings, design },
-                  })
-                }
-              />
-            )} */}
             {options.currentTab === 'actions' && (
               <Actions
                 form={state}

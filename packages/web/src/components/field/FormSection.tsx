@@ -16,9 +16,9 @@ import Backdrop from '../common/Backdrop';
 import EditFormDrawer from '../form2/EditFormDrawer';
 import FieldViewWrapper from '../form2/FieldViewWrapper';
 import SelectFormSection from './SelectFormSection';
-import ResponseCount from '../form2/ResponseCount';
+import ResponseCount from '../response/ResponseCount';
+import Response from '../response/Response';
 import { convertToSlug } from './LeftNavigation';
-import Response from '../form2/Response';
 
 interface IProps {
   field: any;
@@ -100,7 +100,6 @@ export default function FormSection({ field, parentId, authorized }: IProps): an
           formId={data?.getFieldValues?.data[0]?.value}
           parentId={parentId}
           authorized={authorized}
-          allowOthers={field.allowOthers}
           customSettings={{
             ...options?.settings,
             useCustomSettings: options?.customSettings,
@@ -127,13 +126,11 @@ export default function FormSection({ field, parentId, authorized }: IProps): an
 export const DisplayForm = ({
   formId,
   parentId,
-  allowOthers,
   authorized,
   customSettings,
 }: {
   formId: string;
   parentId: string;
-  allowOthers: boolean;
   authorized: boolean;
   customSettings: any;
 }) => {
@@ -145,7 +142,7 @@ export const DisplayForm = ({
 
   return (
     <>
-      {allowOthers ? (
+      {!customSettings?.onlyOwnerCanSubmit ? (
         <>
           <ResponseCount formId={formId} parentId={parentId} />
           <FieldViewWrapper _id={formId} parentId={parentId} customSettings={customSettings} />
@@ -189,7 +186,6 @@ export const Form2Section = ({
         formId={formId}
         parentId={parentId}
         authorized={authorized}
-        allowOthers={field.allowOthers}
         customSettings={{
           ...options?.settings,
           useCustomSettings: options?.customSettings,

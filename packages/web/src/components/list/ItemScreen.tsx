@@ -14,7 +14,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useTheme } from '@material-ui/core/styles';
 import ShareIcon from '@material-ui/icons/Share';
 // import FileCopyIcon from '@material-ui/icons/FileCopy';
-import Grid from '@material-ui/core/Grid';
 import {
   useCRUDListItems,
   useGetListItemBySlug,
@@ -38,7 +37,6 @@ import ErrorLoading from '../common/ErrorLoading';
 import Backdrop from '../common/Backdrop';
 import NotFound from '../common/NotFound';
 import ListItemsFields from './ListItemsFields';
-import ListItemsFieldsValue from './ListItemsFieldsValue';
 import UnAuthorised from '../common/UnAuthorised';
 import SeoOverlay from './SeoOverlay';
 import { QRButton } from '../qrcode/QRButton';
@@ -84,13 +82,13 @@ export default function ItemScreen({
   pushToAnchor,
   hideleft = false,
 }: IProps): any {
+  const { data, error } = useGetListItemBySlug({ slug });
   const router = useRouter();
   const theme = useTheme();
   const matches = useMediaQuery(theme.breakpoints.down('xs'));
   const { setting, auth } = useSelector((state: any) => state);
   const [state, setState] = useState(initialState);
   const [fieldValueCount, setFieldValueCount] = useState({});
-  const { data, error } = useGetListItemBySlug({ slug });
   const authorized = useAuthorization([data?.getListItemBySlug?.createdBy?._id], true);
   const { templateMentionsField } = useGetTemplateFieldMentions(data?.getListItemBySlug?._id);
   const { pageMentionsField } = useGetpageFieldMentions(data?.getListItemBySlug?._id);
@@ -364,17 +362,17 @@ export default function ItemScreen({
             fields={data?.getListItemBySlug?.fields}
             values={data?.getListItemBySlug?.values}
             handleValueChange={handleUpdate}
+            pageId={data?.getListItemBySlug?._id}
           />
-          {/* <ListItemsFieldsValue listItem={data?.getListItemBySlug} previewMode={!authorized} /> */}
-          {mentions.length !== 0 && (
-            <Grid>
+          {mentions.length > 0 && (
+            <div>
               <Typography className="my-3">Mentions</Typography>
               <div className="my-3">
-                {mentions.map((val) => (
-                  <DisplayMentions _id={val} />
-                ))}
+                {mentions.map(
+                  (val: any) => val?._id && <DisplayMentions _id={val} key={val?._id} />,
+                )}
               </div>
-            </Grid>
+            </div>
           )}
         </Paper>
       </div>

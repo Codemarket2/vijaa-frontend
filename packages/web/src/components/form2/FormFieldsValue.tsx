@@ -10,7 +10,7 @@ import CRUDMenu from '../common/CRUDMenu';
 import { FormView } from './FormView';
 import DisplayValue from './DisplayValue';
 import BackdropComponent from '../common/Backdrop';
-import ResponseCount from './ResponseCount';
+import ResponseCount from '../response/ResponseCount';
 import FieldViewWrapper from './FieldViewWrapper';
 import CommentLikeShare from '../common/commentLikeShare/CommentLikeShare';
 
@@ -19,6 +19,7 @@ interface IProps {
   values: any;
   handleValueChange: any;
   authorized: boolean;
+  pageId?: string;
 }
 
 const initialState = {
@@ -34,6 +35,7 @@ export default function FormFieldsValue({
   values = [],
   handleValueChange,
   authorized,
+  pageId,
 }: IProps) {
   const [state, setState] = useState(initialState);
 
@@ -80,12 +82,14 @@ export default function FormFieldsValue({
                     <ResponseCount
                       formId={field.options?.formId}
                       settings={field?.options?.customSettings ? field?.options?.settings : null}
+                      parentId={pageId}
                     />
                     <FieldViewWrapper
                       _id={field.options?.formId}
                       customSettings={
                         field?.options?.customSettings ? field?.options?.settings : null
                       }
+                      parentId={pageId}
                     />
                   </>
                 )}

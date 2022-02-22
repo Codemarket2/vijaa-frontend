@@ -2,7 +2,7 @@ import { Fragment } from 'react';
 import moment from 'moment';
 import Avatar from '@material-ui/core/Avatar';
 import DisplayRichText from '../common/DisplayRichText';
-import { ShowResponseLabel } from './ResponseDrawer';
+import { ShowResponseLabel } from '../response/ResponseDrawer';
 import ListItemDrawer from '../list/ListItemDrawer';
 import ImageList from '../post/ImageList';
 
@@ -63,7 +63,11 @@ export default function DisplayValue({ field, value, imageAvatar }: IProps) {
           </>
         );
       }
-      return <ImageList media={value?.media} />;
+      return (
+        <ImageList
+          media={value?.tempMedia ? [...value?.media, ...value?.tempMedia] : value?.media}
+        />
+      );
     default:
       return <>{value?.value}</>;
   }

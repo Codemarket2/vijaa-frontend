@@ -1,3 +1,4 @@
+import { fileUpload } from '@frontend/shared/utils/fileUpload';
 import { useEffect, useState } from 'react';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
@@ -19,7 +20,7 @@ import { onAlert } from '../../utils/alert';
 import DisplayRichText from '../common/DisplayRichText';
 import Overlay from '../common/Overlay';
 import AuthScreen from '../../screens/AuthScreen';
-import { ResponseChild2 } from './Response';
+import { ResponseChild2 } from '../response/Response';
 import DisplayValue from './DisplayValue';
 
 interface IProps {
@@ -39,6 +40,8 @@ export const defualtValue = {
   itemId: null,
   media: [],
   values: [],
+  tempMedia: [],
+  tempMediaFiles: [],
 };
 
 export default function FormViewWrapper({
@@ -56,17 +59,24 @@ export default function FormViewWrapper({
   const [formResponse, setFormResponse] = useState(null);
 
   const handleSubmit = async (values) => {
-    const payload = { formId: _id, values };
+    let payload: any = { formId: _id, values };
+    if (settings?.customResponseLayout && settings?.customSectionId) {
+      payload = {
+        ...payload,
+        options: JSON.stringify({ customSectionId: settings?.customSectionId }),
+      };
+    }
     const response = await handleCreateUpdateResponse(payload, fields);
     if (response) {
       setShowMessage(true);
+      setFormResponse(response);
       if (createCallback) {
         createCallback(response);
       }
-      if (setResponded) setResponded();
+      if (setResponded) {
+        setResponded();
+      }
     }
-
-    setFormResponse(response);
     return response;
   };
 
@@ -89,8 +99,9 @@ export default function FormViewWrapper({
               </Button>
             )}
           </InputGroup>
-
-          <ResponseChild2 formId={_id} response={formResponse} hideAuthor hideNavigation />
+          {formResponse && (
+            <ResponseChild2 formId={_id} response={formResponse} hideAuthor hideNavigation />
+          )}
         </div>
       ) : (
         <FormView
@@ -203,7 +214,27 @@ export function FormView({
       setSubmitState({ ...submitState, loading: false });
       return setShowAuthModal(true);
     } else {
-      const response = await handleSubmit(values);
+      const payload = [];
+      for (let i = 0; i < values.length; i += 1) {
+        const value = { ...values[i] };
+        const field = fields?.filter((f) => f._id === value.field)[0];
+        if (field) {
+          if (field.fieldType === 'image' && value?.tempMedia?.length > 0) {
+            let newMedia = [];
+            if (value.tempMediaFiles.length > 0) {
+              // eslint-disable-next-line no-await-in-loop
+              newMedia = await fileUpload(value.tempMediaFiles, '/form-response');
+            }
+            if (newMedia?.length > 0) {
+              newMedia = newMedia.map((n, i) => ({ url: n, caption: value?.tempMedia[i].caption }));
+              value.media = newMedia;
+            }
+          }
+        }
+        const { tempMedia, tempMediaFiles, ...finalValue } = value;
+        payload.push(finalValue);
+      }
+      const response = await handleSubmit(payload);
       if (response) {
         setSubmitState(initialSubmitState);
         setValues([]);
@@ -313,7 +344,7 @@ export function FormView({
                   ) : (
                     <div className="mb-2 d-flex align-items-start">
                       <div className="w-100">
-                        <DisplayValue imageAvatar value={value} field={field} />
+                        <DisplayValue value={value} field={field} />
                         {validateValue(submitState.validate, value, field.options, field.fieldType)
                           .error && (
                           <FormHelperText className="text-danger">
@@ -417,7 +448,13 @@ export function FormView({
                 Submit
               </LoadingButton>
               {onCancel && (
-                <Button variant="outlined" size="small" className="ml-2" onClick={onCancel}>
+                <Button
+                  variant="outlined"
+                  size="small"
+                  className="ml-2"
+                  onClick={onCancel}
+                  disabled={submitState.loading || loading}
+                >
                   Cancel
                 </Button>
               )}
