@@ -21,3 +21,9 @@ export const CREATE_SEND_EMAIL = gql`
     }
   }
 `;
+
+export const CREATE_MAILING_LIST = gql`
+  mutation MyMutation($fileUrl: String!, $collectionName: String!, $map: AWSJSON!) {
+    createMailingList(fileUrl: $fileUrl, collectionName: $collectionName, map: $map)
+  }
+`;
