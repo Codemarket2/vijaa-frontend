@@ -1,37 +1,39 @@
 import { gql } from '@apollo/client';
 
 export const CREATE_CONTACT = gql`
-  mutation MyMutation($parentId: ID, $values: [FieldValue2Input]) {
-    createContact(parentId: $parentId, values: $values) {
+  mutation MyMutation(
+    $firstName: String
+    $lastName: String
+    $title: String
+    $businessName: String
+    $email: String!
+    $phone: String
+    $groupName: String!
+    $website: String
+    $city: String
+  ) {
+    createContact(
+      firstName: $firstName
+      lastName: $lastName
+      title: $title
+      businessName: $businessName
+      email: $email
+      phone: $phone
+      groupName: $groupName
+      website: $website
+      city: $city
+    ) {
       _id
-      parentId {
-        _id
-        title
-      }
-      values {
-        _id
-        field
-        value
-        values
-        valueNumber
-        valueBoolean
-        valueDate
-        itemId {
-          _id
-          title
-          slug
-        }
-        media {
-          url
-          caption
-        }
-      }
-      createdBy {
-        _id
-        picture
-        name
-      }
+      businessName
+      city
       createdAt
+      email
+      firstName
+      groupName
+      lastName
+      phone
+      title
+      updatedAt
     }
   }
 `;

@@ -6,6 +6,7 @@ import styled from 'styled-components';
 
 import MailingListTab from './MailingListTab';
 import ContactList from './ContactList';
+import ContactForm from './ContactForm';
 
 const StyledPaper = styled(Paper)`
   margin-top: 20px !important;
@@ -32,6 +33,7 @@ export default function ContactTab() {
       </StyledPaper>
       {options.currentTab === 'contact' && (
         <Paper variant="outlined" className="px-2">
+          <ContactForm />
           <ContactList />
         </Paper>
       )}

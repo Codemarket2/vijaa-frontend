@@ -14,6 +14,9 @@ const validationSchema = yup.object({
   firstName: yup.string().required('First Name is required'),
   lastName: yup.string(),
   businessName: yup.string(),
+  groupName: yup.string(),
+  website: yup.string(),
+  city: yup.string(),
   phone: yup.string().matches(phoneRegExp, 'Phone number is not valid'),
   email: yup.string().email('Invalid Email').required('Email is required'),
   extraField: yup.array().of(
@@ -31,6 +34,9 @@ interface IFormValues {
   email: string;
   phone: string;
   businessName: string;
+  groupName: string;
+  website: string;
+  city: string;
   extraField: [{ fieldName: string; fieldValue: string }];
 }
 
@@ -41,6 +47,9 @@ const defaultFormValues = {
   email: '',
   phone: '',
   businessName: '',
+  groupName: '',
+  website: '',
+  city: '',
   extraField: [{ fieldName: '', fieldValue: '' }],
 };
 
@@ -91,6 +100,9 @@ export function useContactForm(): any {
     formik.setFieldValue('email', form.email, false);
     formik.setFieldValue('phone', form.phone, false);
     formik.setFieldValue('businessName', form.businessName, false);
+    formik.setFieldValue('groupName', form.groupName, false);
+    formik.setFieldValue('website', form.website, false);
+    formik.setFieldValue('city', form.city, false);
   };
 
   const formLoading = loading || formik.isSubmitting;

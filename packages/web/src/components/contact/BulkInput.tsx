@@ -14,6 +14,7 @@ import {
 } from '@material-ui/core';
 import { fileUpload } from '@frontend/shared/utils/fileUpload';
 import { useCreateMailingList } from '@frontend/shared/hooks/email/createMailingList';
+import { useContactForm } from '@frontend/shared/hooks/contact';
 
 const initialState = {
   showForm: false,
@@ -28,6 +29,7 @@ export default function BulkInput() {
   const [selectedFile, setSelectedFile] = useState([]);
   const [isFilePicked, setIsFilePicked] = useState(false);
   const [cName, setCname] = useState('');
+  const { formik, formLoading } = useContactForm();
 
   const { handleCreateList, createLoading } = useCreateMailingList();
 
@@ -156,38 +158,44 @@ export default function BulkInput() {
                 Variables
               </Typography>
 
-              {files?.map((field, i) => (
-                <div className="d-flex align-items-center my-3" key={i}>
-                  <TextField
-                    fullWidth
-                    className="mr-2"
-                    label="Name"
-                    variant="outlined"
-                    name="name"
-                    size="small"
-                    value={field}
-                  />
-                  <FormControl fullWidth variant="outlined" size="small">
-                    <InputLabel id="variablefield-simple-select-outlined-label">Field</InputLabel>
-                    <Select
-                      labelId="variablefield-simple-select-outlined-label"
-                      id="variablefield-simple-select-outlined"
-                      name="value"
-                      value={map[field]}
-                      onChange={({ target }) => {
-                        setMap({ ...map, [field]: target.value });
-                      }}
-                      label="Field"
-                    >
-                      {files?.map((keys, i) => (
-                        <MenuItem key={i} value={keys}>
-                          {keys}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                </div>
-              ))}
+              {Object.keys(formik.values)?.map((field, i) => {
+                if (field !== 'groupName') {
+                  return (
+                    <div className="d-flex align-items-center my-3" key={i}>
+                      <TextField
+                        fullWidth
+                        className="mr-2"
+                        label="Name"
+                        variant="outlined"
+                        name="name"
+                        size="small"
+                        value={field}
+                      />
+                      <FormControl fullWidth variant="outlined" size="small">
+                        <InputLabel id="variablefield-simple-select-outlined-label">
+                          Field
+                        </InputLabel>
+                        <Select
+                          labelId="variablefield-simple-select-outlined-label"
+                          id="variablefield-simple-select-outlined"
+                          name="value"
+                          value={map[field]}
+                          onChange={({ target }) => {
+                            setMap({ ...map, [field]: target.value });
+                          }}
+                          label="Field"
+                        >
+                          {files?.map((keys, i) => (
+                            <MenuItem key={i} value={keys}>
+                              {keys}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                    </div>
+                  );
+                }
+              })}
             </InputGroup>
             <InputGroup>
               <LoadingButton

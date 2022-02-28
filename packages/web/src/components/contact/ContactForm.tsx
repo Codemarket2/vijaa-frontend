@@ -160,6 +160,42 @@ export default function ContactForm() {
             </InputGroup>
           </Grid>
         </Grid>
+        <Grid container spacing={1}>
+          <Grid item lg={6}>
+            <InputGroup>
+              <TextField
+                fullWidth
+                label="City"
+                variant="outlined"
+                name="city"
+                size="small"
+                type="text"
+                placeholder="Enter City Name"
+                value={formik.values.city}
+                onChange={formik.handleChange}
+                error={formik.touched.city && Boolean(formik.errors.city)}
+                helperText={formik.touched.city && formik.errors.city}
+              />
+            </InputGroup>
+          </Grid>
+          <Grid item lg={6}>
+            <InputGroup>
+              <TextField
+                fullWidth
+                label="Collection Name"
+                variant="outlined"
+                name="groupName"
+                size="small"
+                type="text"
+                placeholder="Enter Collection Name"
+                value={formik.values.groupName}
+                onChange={formik.handleChange}
+                error={formik.touched.groupName && Boolean(formik.errors.groupName)}
+                helperText={formik.touched.groupName && formik.errors.groupName}
+              />
+            </InputGroup>
+          </Grid>
+        </Grid>
 
         <Typography>Extra Fields</Typography>
         {formValues.map((element, index) => (
