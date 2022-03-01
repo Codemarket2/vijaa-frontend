@@ -22,12 +22,14 @@ const validationSchema = yup.object({
 interface IFormValues {
   receiverEmail: any;
   senderEmail: string;
+  mailingList: string;
   subject: string;
   body: string;
 }
 
 const defaultFormValues = {
   receiverEmail: [],
+  mailingList: '',
   senderEmail: '',
   subject: '',
   body: '',
@@ -42,6 +44,7 @@ export function useSendEmail(): any {
       try {
         const newPayload = {
           receiverEmail: payload.receiverEmail,
+          mailingList: payload.mailingList,
           senderEmail: payload.senderEmail,
           subject: payload.subject,
           body: payload.body,

@@ -23,7 +23,7 @@ export const useGetAllMailingList = () => {
   const { data, error, loading } = useQuery(GET_ALL_MAILING_LIST, {
     fetchPolicy: 'cache-and-network',
   });
-  const mailingList = data?.getAllMailingList.data;
+  const mailingList = data?.getAllMailingList;
 
   return {
     mailingList,

@@ -5,13 +5,15 @@ export const CREATE_SEND_EMAIL = gql`
     $body: String!
     $senderEmail: String!
     $subject: String!
-    $receiverEmail: [String]!
+    $receiverEmail: [String]
+    $mailingList: String
   ) {
     createSendEmail(
       body: $body
       senderEmail: $senderEmail
       subject: $subject
       receiverEmail: $receiverEmail
+      mailingList: $mailingList
     ) {
       _id
       body
