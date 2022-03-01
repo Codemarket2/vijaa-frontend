@@ -3,17 +3,21 @@ import { gql } from '@apollo/client';
 export const GET_ALL_CONTACTS = gql`
   query MyQuery($page: Int, $limit: Int) {
     getAllContacts(page: $page, limit: $limit) {
-      _id
-      businessName
-      city
-      createdAt
-      email
-      firstName
-      groupName
-      lastName
-      phone
-      title
-      updatedAt
+      count
+      data {
+        _id
+        firstName
+        lastName
+        title
+        businessName
+        email
+        phone
+        groupName
+        website
+        city
+        createdAt
+        updatedAt
+      }
     }
   }
 `;
@@ -57,6 +61,17 @@ export const GET_CONTACT = gql`
         name
       }
       createdAt
+    }
+  }
+`;
+
+export const GET_ALL_MAILING_LIST = gql`
+  query MyQuery($page: Int, $limit: Int) {
+    getAllMailingList(page: $page, limit: $limit) {
+      count
+      data {
+        email
+      }
     }
   }
 `;

@@ -1,5 +1,6 @@
-import { useMutation } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client';
 import { CREATE_MAILING_LIST } from '../../graphql/mutation/email';
+import { GET_ALL_MAILING_LIST } from '../../graphql/query/contact';
 
 export function useCreateMailingList() {
   const [createMutation, { loading: createLoading }] = useMutation(CREATE_MAILING_LIST);
@@ -17,3 +18,16 @@ export function useCreateMailingList() {
   };
   return { handleCreateList, createLoading };
 }
+
+export const useGetAllMailingList = () => {
+  const { data, error, loading } = useQuery(GET_ALL_MAILING_LIST, {
+    fetchPolicy: 'cache-and-network',
+  });
+  const mailingList = data?.getAllMailingList.data;
+
+  return {
+    mailingList,
+    error,
+    loading,
+  };
+};

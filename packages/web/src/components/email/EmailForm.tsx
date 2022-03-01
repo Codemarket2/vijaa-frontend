@@ -8,9 +8,13 @@ import InputGroup from '../common/InputGroup';
 import RichTextarea from '../common/RichTextarea2';
 import LoadingButton from '../common/LoadingButton';
 import MultipleEmails from '../common/MultipleEmails';
+import { useGetAllMailingList } from '@frontend/shared/hooks/email/createMailingList';
 
 export default function EmailForm() {
   const { formik, formLoading } = useSendEmail();
+  const { mailingList, error, loading } = useGetAllMailingList();
+  console.log('mailingList', mailingList);
+  console.log('mailingList error', error);
   const [state, setState] = useState({
     value: '',
     receiverEmail: [],

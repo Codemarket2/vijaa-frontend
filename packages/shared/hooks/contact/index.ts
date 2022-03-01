@@ -113,6 +113,7 @@ export const useGetAllContact = () => {
   const { data, error, loading } = useQuery(GET_ALL_CONTACTS, {
     fetchPolicy: 'cache-and-network',
   });
+
   return {
     data,
     error,
