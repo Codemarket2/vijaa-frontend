@@ -85,7 +85,7 @@ export default function EmailForm() {
             >
               {mailingList?.map((list, i) => (
                 <MenuItem key={i} value={list._id}>
-                  <em>{list._id}</em>
+                  <em>{list._id} | </em> {list.emailCount} emails
                 </MenuItem>
               ))}
             </Select>
