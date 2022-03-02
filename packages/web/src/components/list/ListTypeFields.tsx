@@ -4,13 +4,20 @@ import FormFields from '../form2/FormFields';
 
 interface IProps {
   listType: any;
+  previewMode?: boolean;
 }
 
-export default function ListTypeFields({ listType }: IProps) {
-  const { onFieldsChange } = useUpdateListType({ listType, onAlert });
+export default function ListTypeFields({ listType, previewMode }: IProps) {
+  const { onListTypeChange } = useUpdateListType({ listType, onAlert });
   return (
     <div>
-      <FormFields fields={listType?.fields} setFields={onFieldsChange} title="Sections" />
+      <FormFields
+        fields={listType?.fields}
+        setFields={(fields) => onListTypeChange({ fields })}
+        title="Sections"
+        previewMode={previewMode}
+        isSection
+      />
     </div>
   );
 }

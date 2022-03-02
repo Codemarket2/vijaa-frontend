@@ -7,16 +7,15 @@ interface IProps {
   previewMode?: boolean;
 }
 
-export default function ListTypeFields({ listItem, previewMode }: IProps) {
-  const { onFieldsChange } = useUpdateListItemFields({ listItem, onAlert });
+export default function ListItemFields({ listItem, previewMode }: IProps) {
+  const { onListItemChange } = useUpdateListItemFields({ listItem, onAlert });
   return (
     <FormFields
       fields={listItem?.fields || []}
-      setFields={onFieldsChange}
+      setFields={(fields) => onListItemChange({ fields })}
       title="Sections"
       isSection
       previewMode={previewMode}
-      // pageId={listItem?._id}
     />
   );
 }

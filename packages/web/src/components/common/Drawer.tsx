@@ -2,6 +2,7 @@ import Drawer from '@material-ui/core/Drawer';
 import List from '@material-ui/core/List';
 import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
+import { useMenuListTypes } from '@frontend/shared/hooks/list';
 import CloseIcon from '@material-ui/icons/Close';
 import { useSelector } from 'react-redux';
 import { useState, useEffect } from 'react';
@@ -18,7 +19,6 @@ import ListItemText from '@material-ui/core/ListItemText';
 import Link from 'next/link';
 import AnalyticsIcon from '@material-ui/icons/Announcement';
 import DarkModeToggle from './DarkModeToggle';
-import { useMenuListTypes } from '@frontend/shared/hooks/list';
 
 interface IProps {
   showDrawer: boolean;
@@ -44,6 +44,7 @@ export default function DrawerContent({ showDrawer, toggleDrawer, admin }: IProp
       setActiveRoute({ ...activeRoute, pathname: router.pathname });
     }
   }, [router.asPath]);
+
   return (
     <Drawer anchor="left" open={showDrawer} onClose={() => toggleDrawer(false)}>
       <div

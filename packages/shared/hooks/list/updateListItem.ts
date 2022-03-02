@@ -41,8 +41,8 @@ export const useUpdateListItemFields = ({ listItem, onAlert }: IProps) => {
     return () => clearTimeout(timeOutId);
   }, [listItem]);
 
-  const onFieldsChange = (fields) => {
-    const payload = stringifyPayload({ ...listItem, fields });
+  const onListItemChange = (newListItem) => {
+    const payload = stringifyPayload({ ...listItem, ...newListItem });
     updateCache(listItem.slug, payload);
     setSaveToServer(true);
   };
@@ -53,7 +53,7 @@ export const useUpdateListItemFields = ({ listItem, onAlert }: IProps) => {
         newListItem ? { ...listItem, ...newListItem } : listItem,
         true,
       );
-      await updateMutation({
+      const res = await updateMutation({
         variables: payload,
       });
       if (callback) {
@@ -66,5 +66,5 @@ export const useUpdateListItemFields = ({ listItem, onAlert }: IProps) => {
     }
   };
 
-  return { onFieldsChange, handleUpdate };
+  return { onListItemChange, handleUpdate };
 };

@@ -1,4 +1,4 @@
-import Grid from '@material-ui/core/Grid';
+// import Grid from '@material-ui/core/Grid';
 import IconButton from '@material-ui/core/IconButton';
 import { generateObjectId } from '@frontend/shared/utils/objectId';
 import Tooltip from '@material-ui/core/Tooltip';
@@ -6,13 +6,18 @@ import Typography from '@material-ui/core/Typography';
 import EditIcon from '@material-ui/icons/Edit';
 import { useState } from 'react';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
+import { WidthProvider, Responsive } from 'react-grid-layout';
 import CRUDMenu from '../common/CRUDMenu';
 import { FormView } from './FormView';
 import DisplayValue from './DisplayValue';
 import BackdropComponent from '../common/Backdrop';
-import ResponseCount from '../response/ResponseCount';
-import FieldViewWrapper from './FieldViewWrapper';
 import CommentLikeShare from '../common/commentLikeShare/CommentLikeShare';
+import { DisplayForm } from './FormSection';
+
+import 'react-grid-layout/css/styles.css';
+import 'react-resizable/css/styles.css';
+
+const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
 interface IProps {
   fields: any;
@@ -20,6 +25,9 @@ interface IProps {
   handleValueChange: any;
   authorized: boolean;
   pageId?: string;
+  layouts: any;
+  disableGrid?: boolean;
+  onLayoutChange?: (layouts: any) => void;
 }
 
 const initialState = {
@@ -36,8 +44,12 @@ export default function FormFieldsValue({
   handleValueChange,
   authorized,
   pageId,
+  layouts = {},
+  disableGrid = true,
+  onLayoutChange,
 }: IProps) {
   const [state, setState] = useState(initialState);
+  // const [layout, setLayout] = useState({});
 
   const setInitialState = () => setState(initialState);
 
@@ -63,91 +75,96 @@ export default function FormFieldsValue({
   return (
     <div className="p-2">
       <BackdropComponent open={state.loading} />
-      <Grid container>
+      <ResponsiveReactGridLayout
+        className="layout"
+        cols={{ lg: 12, md: 10, sm: 6, xs: 4, xxs: 2 }}
+        rowHeight={30}
+        layouts={layouts}
+        onLayoutChange={(newLayout, newLayouts) => {
+          if (onLayoutChange && !disableGrid) onLayoutChange(newLayouts);
+        }}
+        isDraggable={authorized && !disableGrid}
+        isResizable={authorized && !disableGrid}
+      >
         {fields?.map((field) => (
-          <Grid
-            key={field._id}
-            xs={field?.options?.grid?.xs || 12}
-            sm={field?.options?.grid?.sm}
-            md={field?.options?.grid?.md}
-            lg={field?.options?.grid?.lg}
-            xl={field?.options?.grid?.xl}
-            item
-          >
-            {field.fieldType === 'form' ? (
-              <>
-                <Typography className="mt-2">{field.label}</Typography>
-                {field.options?.formId && (
-                  <>
-                    <ResponseCount
+          <div key={field._id}>
+            <div style={field?.options?.style || {}}>
+              {field.fieldType === 'form' ? (
+                <>
+                  <Typography className="mt-2">{field.label}</Typography>
+                  {field.options?.formId && (
+                    <DisplayForm
                       formId={field.options?.formId}
-                      settings={field?.options?.customSettings ? field?.options?.settings : null}
                       parentId={pageId}
-                    />
-                    <FieldViewWrapper
-                      _id={field.options?.formId}
+                      authorized={authorized}
                       customSettings={
-                        field?.options?.customSettings ? field?.options?.settings : null
+                        field?.options?.customSettings
+                          ? {
+                              ...field?.options?.settings,
+                              customSettings: field?.options?.customSettings,
+                            }
+                          : null
                       }
-                      parentId={pageId}
                     />
-                  </>
-                )}
-              </>
-            ) : (
-              <>
-                {state.showForm && state.field?._id === field?._id ? (
-                  <FormView
-                    fields={[field]}
-                    handleSubmit={(tempValues) => handleSubmit(tempValues)}
-                    onCancel={() => setState(initialState)}
-                    initialValues={state?.value ? [state?.value] : []}
-                  />
-                ) : (
-                  <>
-                    <Typography className="d-flex align-items-center mt-2">
-                      {field?.label}
-                      {authorized &&
-                        (field.options?.multipleValues ||
-                          !values?.some((v) => v.field === field._id)) && (
+                  )}
+                </>
+              ) : (
+                <>
+                  {state.showForm && state.field?._id === field?._id ? (
+                    <FormView
+                      fields={[field]}
+                      handleSubmit={(tempValues) => handleSubmit(tempValues)}
+                      onCancel={() => setState(initialState)}
+                      initialValues={state?.value ? [state?.value] : []}
+                    />
+                  ) : (
+                    <>
+                      <Typography className="d-flex align-items-center mt-2">
+                        {field?.label}
+                        {authorized &&
+                          (field.options?.multipleValues ||
+                            !values?.some((v) => v.field === field._id)) && (
+                            <Tooltip title="Actions">
+                              <IconButton
+                                edge="end"
+                                color="primary"
+                                onClick={(e) =>
+                                  setState({ ...initialState, field, showForm: true })
+                                }
+                              >
+                                <AddCircleIcon fontSize="small" />
+                              </IconButton>
+                            </Tooltip>
+                          )}
+                      </Typography>
+                    </>
+                  )}
+                  {values
+                    ?.filter((v) => v.field === field._id)
+                    ?.map((value) => (
+                      <>
+                        {authorized && (
                           <Tooltip title="Actions">
                             <IconButton
-                              edge="end"
-                              color="primary"
-                              onClick={(e) => setState({ ...initialState, field, showForm: true })}
+                              edge="start"
+                              onClick={(e) =>
+                                setState({ ...initialState, showMenu: e.target, field, value })
+                              }
                             >
-                              <AddCircleIcon fontSize="small" />
+                              <EditIcon fontSize="small" />
                             </IconButton>
                           </Tooltip>
                         )}
-                    </Typography>
-                  </>
-                )}
-                {values
-                  ?.filter((v) => v.field === field._id)
-                  ?.map((value) => (
-                    <>
-                      {authorized && (
-                        <Tooltip title="Actions">
-                          <IconButton
-                            edge="start"
-                            onClick={(e) =>
-                              setState({ ...initialState, showMenu: e.target, field, value })
-                            }
-                          >
-                            <EditIcon fontSize="small" />
-                          </IconButton>
-                        </Tooltip>
-                      )}
-                      <DisplayValue key={value?._id} value={value} field={field} />
-                    </>
-                  ))}
-              </>
-            )}
-            {field?.options?.showCommentBox && <CommentLikeShare parentId={field._id} />}
-          </Grid>
+                        <DisplayValue key={value?._id} value={value} field={field} />
+                      </>
+                    ))}
+                </>
+              )}
+              {field?.options?.showCommentBox && <CommentLikeShare parentId={field._id} />}
+            </div>
+          </div>
         ))}
-      </Grid>
+      </ResponsiveReactGridLayout>
       {authorized && (
         <CRUDMenu
           show={state.showMenu}

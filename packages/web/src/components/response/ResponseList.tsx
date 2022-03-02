@@ -1,3 +1,4 @@
+import { useGetForm } from '@frontend/shared/hooks/form';
 import { useRouter } from 'next/router';
 import moment from 'moment';
 import Paper from '@material-ui/core/Paper';
@@ -18,6 +19,8 @@ import ErrorLoading from '../common/ErrorLoading';
 import Backdrop from '../common/Backdrop';
 import { onAlert } from '../../utils/alert';
 import DisplayValue from '../form2/DisplayValue';
+import Typography from '@material-ui/core/Typography';
+import CommentLikeShare from '../common/commentLikeShare/CommentLikeShare';
 
 interface IProps {
   form: any;
@@ -29,11 +32,6 @@ export default function ResponseList({ form, hideDelete = false, parentId }: IPr
   const { data, error, state, setState } = useGetResponses(form._id, parentId);
   const { handleDelete, deleteLoading } = useDeleteResponse({ onAlert });
   const router = useRouter();
-
-  let design = null;
-  if (form?.settings?.design?.value) {
-    design = form?.settings?.design;
-  }
 
   return (
     <>
@@ -52,6 +50,36 @@ export default function ResponseList({ form, hideDelete = false, parentId }: IPr
           <Paper variant="outlined" className="p-5">
             <ErrorLoading error={error} />
           </Paper>
+        ) : form?.settings?.widgetType == 'displayVertical' ? (
+          data?.getResponses?.data?.map((response) => (
+            <div className="p-2">
+              <ListItemText
+                primary={`by ${form?.createdBy ? form?.createdBy?.name : 'Unauthorised user'} ${
+                  form?.parentId?.title ? `from ${form?.parentId?.title} page` : ''
+                }`}
+                secondary={`${moment(form?.createdAt).format('l')} ${moment(form?.createdAt).format(
+                  'LT',
+                )}`}
+              />
+              {form?.fields?.map((field, index) => {
+                return (
+                  <div key={field?._id}>
+                    <Typography>{field?.label}</Typography>
+                    {response?.values
+                      ?.filter((v) => v.field === field._id)
+                      .map((value) => (
+                        <div key={value?._id}>
+                          <DisplayValue field={field} value={value} />
+                          {field?.options?.showCommentBox && (
+                            <CommentLikeShare parentId={value?._id} />
+                          )}
+                        </div>
+                      ))}
+                  </div>
+                );
+              })}
+            </div>
+          ))
         ) : (
           <Table
             aria-label="response table"
@@ -126,4 +154,13 @@ export default function ResponseList({ form, hideDelete = false, parentId }: IPr
       </TableContainer>
     </>
   );
+}
+
+export function ResponseListWrapper({ formId, parentId }: { formId: string; parentId?: string }) {
+  const { data, error } = useGetForm(formId);
+
+  if (error || !data?.getForm) {
+    return <ErrorLoading error={error} />;
+  }
+  return <ResponseList form={data?.getForm} hideDelete parentId={parentId} />;
 }

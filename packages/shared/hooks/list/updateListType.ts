@@ -4,7 +4,8 @@ import { UPDATE_LIST_TYPE_FIELDS } from '../../graphql/mutation/list';
 import { GET_LIST_TYPE_BY_SLUG } from '../../graphql/query/list';
 import { client as apolloClient } from '../../graphql';
 import { IHooksProps } from '../../types/common';
-import { omitTypename } from '../../utils/omitTypename';
+// import { omitTypename } from '../../utils/omitTypename';
+import { stringifyPayload } from '../section/updateSection';
 
 interface IProps extends IHooksProps {
   listType: any;
@@ -36,20 +37,20 @@ export const useUpdateListType = ({ listType, onAlert }: IProps) => {
     let timeOutId;
     if (saveToServer && listType) {
       setSaveToServer(false);
-      timeOutId = setTimeout(() => handleUpdateForm(), 1000);
+      timeOutId = setTimeout(() => handleUpdate(), 1000);
     }
     return () => clearTimeout(timeOutId);
   }, [listType]);
 
-  const onFieldsChange = (fields) => {
-    const payload = stringifyListType({ fields });
+  const onListTypeChange = (newListType) => {
+    const payload = stringifyPayload({ ...listType, ...newListType });
     updateCache(listType.slug, payload);
     setSaveToServer(true);
   };
 
-  const handleUpdateForm = async () => {
+  const handleUpdate = async () => {
     try {
-      const payload = stringifyListType(listType, true);
+      const payload = stringifyPayload(listType, true);
       const res = await updateMutation({
         variables: payload,
       });
@@ -59,25 +60,5 @@ export const useUpdateListType = ({ listType, onAlert }: IProps) => {
     }
   };
 
-  return { onFieldsChange };
-};
-
-export const stringifyListType = (lisType: any, removeTypeId: boolean = false) => {
-  let payload = { ...lisType };
-  payload = {
-    ...payload,
-    fields: payload.fields.map((m) => JSON.parse(JSON.stringify(m), omitTypename)),
-  };
-  payload = {
-    ...payload,
-    fields: payload.fields.map((m) => {
-      const field = { ...m };
-      if (removeTypeId) {
-        field.typeId = field.typeId ? field.typeId._id : null;
-      }
-      field.options = JSON.stringify(field.options);
-      return field;
-    }),
-  };
-  return payload;
+  return { onListTypeChange };
 };
